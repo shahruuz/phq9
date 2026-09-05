@@ -24,7 +24,6 @@
             --border: #E3EDE7;
             --border-focus: #2C4A3E;
             --danger: #A33333;
-            --danger-bg: #FDF2F2;
             --radius-sm: 10px;
             --radius-md: 16px;
             --radius-lg: 24px;
@@ -113,7 +112,6 @@
             gap: 20px;
         }
 
-        /* Cards & Containers */
         .hmw-card-box {
             background: var(--bg-card);
             border: 1px solid var(--border);
@@ -129,7 +127,7 @@
             gap: 16px;
         }
 
-        .hmw-select-wrapper label, .hmw-field-label {
+        .hmw-select-wrapper label {
             font-weight: 600;
             font-size: 0.95rem;
             color: var(--primary);
@@ -349,7 +347,6 @@
             color: var(--text-muted);
         }
 
-        /* Buttons */
         .hmw-btn {
             background: var(--primary);
             color: #FFFFFF;
@@ -401,7 +398,6 @@
             background: #8A2B2B;
         }
 
-        /* Results View */
         .hmw-results-card {
             display: none;
             flex-direction: column;
@@ -557,7 +553,7 @@
                     <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 4px;">Schedule your confidential consultation seamlessly online through Headway.</p>
                     <div class="hmw-action-group" id="hmw-action-container"></div>
                 </div>
-                <button type="button" class="hmw-btn hmw-btn-secondary hmw-btn-full" onclick="hmwDownloadResults()">📥 Download Copy of Results</button>
+                <button type="button" class="hmw-btn hmw-btn-secondary hmw-btn-full" onclick="hmwDownloadResults()">📥 Download Elegant Report</button>
                 <button type="button" class="hmw-btn hmw-btn-secondary hmw-btn-full" onclick="hmwResetForm()">← Take Another Assessment</button>
             </div>
         </div>
@@ -765,30 +761,37 @@
 
         function hmwDownloadResults() {
             const assessment = hmwData[currentAssessmentKey];
-            let reportContent = `HER MIND & WELLNESS - CLIENT ASSESSMENT SUMMARY\n`;
-            reportContent += `==============================================\n`;
-            reportContent += `Timestamp: ${submissionTimestamp || new Date().toLocaleString()}\n`;
-            reportContent += `Client Initials: ${persistentInitials || 'N/A'}\n`;
-            reportContent += `Assessment: ${assessment.title}\n`;
-            reportContent += `Total Score: ${lastScore}\n`;
-            reportContent += `Interpretation: ${assessment.interpret(lastScore)}\n\n`;
-            reportContent += `Responses:\n`;
+            
+            // Styled, elegant plain-text layout suitable for clean note storage or printing
+            let reportContent = `╔════════════════════════════════════════════════════════════╗\n`;
+            reportContent += `║             HER MIND & WELLNESS • CLINICAL SUMMARY         ║\n`;
+            reportContent += `╚════════════════════════════════════════════════════════════╝\n\n`;
+            reportContent += `  • Date & Time:   ${submissionTimestamp || new Date().toLocaleString()}\n`;
+            reportContent += `  • Client Initials: ${persistentInitials || 'N/A'}\n`;
+            reportContent += `  • Assessment Type: ${assessment.title}\n`;
+            reportContent += `  • Total Score:     ${lastScore}\n`;
+            reportContent += `  • Clinical Status: ${assessment.interpret(lastScore)}\n\n`;
+            reportContent += `────────────────────────────────────────────────────────────\n`;
+            reportContent += ` DETAILED ITEM RESPONSES:\n`;
+            reportContent += `────────────────────────────────────────────────────────────\n\n`;
             
             assessment.questions.forEach((q, idx) => {
                 const ansVal = userAnswers[idx];
                 const optObj = assessment.options.find(o => o.value === ansVal);
                 const ansText = optObj ? optObj.text : 'N/A';
-                reportContent += `${idx + 1}. ${q}\n   -> Answer: ${ansText} (Score: ${ansVal})\n\n`;
+                reportContent += `[Q${idx + 1}] ${q}\n`;
+                reportContent += `      Response: ${ansText} (Value: ${ansVal})\n\n`;
             });
 
-            reportContent += `----------------------------------------------\n`;
-            reportContent += `Her Mind & Wellness • https://hermindandwellness.com\n`;
+            reportContent += `────────────────────────────────────────────────────────────\n`;
+            reportContent += ` Verified & Secure Record • Her Mind & Wellness\n`;
+            reportContent += ` https://hermindandwellness.com\n`;
 
             const blob = new Blob([reportContent], { type: 'text/plain;charset=utf-8' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `HMW_${currentAssessmentKey.toUpperCase()}_Summary_${persistentInitials || 'Client'}.txt`;
+            a.download = `HMW_${currentAssessmentKey.toUpperCase()}_Report_${persistentInitials || 'Client'}.txt`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);

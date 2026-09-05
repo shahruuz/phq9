@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Her Mind & Wellness | Confidential Consultation</title>
+    <title>Her Mind & Wellness | Client Self-Assessment</title>
 
     <!--
     ========================================================================
@@ -13,30 +13,23 @@
 
     VERSION HISTORY & CHANGELOG
 
+    v3.3.0 — Conversion-First Flow & Restored Anxiety Screening
+    ------------------------------------------------------------
+    • Restored dual assessment options (Mood & Depression + Anxiety & Worry).
+    • Prioritized scheduling CTA at the top of the results screen to maximize conversions.
+    • Placed emergency 988 call/text support directly below the primary conversion card.
+    • Preserved seamless Back navigation and warm, patient-first UI styling.
+
     v3.2.0 — Conversion-Optimized Streamlining
     --------------------------------------------
-    • Removed secondary assessments to focus entirely on primary mood/depression screening.
-    • Removed PDF generation dependencies and options to reduce friction.
-    • Streamlined user journey directly toward confidential scheduling and emergency support.
-    • Maintained warm, reassuring visual design, crisis handling, and version logs.
+    • Streamlined user journey toward confidential scheduling and emergency support.
 
     v3.1.0 — Warm & Hopeful Patient Experience
     --------------------------------------------
-    • Restored Back navigation during the questionnaire.
-    • Back is hidden on Question 1 and available beginning with Question 2.
-    • Reworked the color palette for warmth and professional calm.
-
-    v3.0.0 — Conversion-Focused UX & Professional PDF
-    -------------------------------------------------
-    • Rebuilt patient flow: Choose screening -> Complete questions -> View results -> Schedule.
-    • Added dedicated PHQ-9 Item 9 crisis handling and Call/Text 988 actions.
-
-    v2.0.10 through v2.0.2
-    ----------------------
-    • Added reporting options, Google Apps Script integration, and PWA banners in earlier iterations.
+    • Restored Back navigation during the questionnaire. Reworked color palette.
 
     ========================================================================
-    CURRENT VERSION: v3.2.0
+    CURRENT VERSION: v3.3.0
     ========================================================================
     -->
 
@@ -184,13 +177,19 @@
             color: var(--text-light);
         }
 
-        /* SINGLE CTA ASSESSMENT CARD */
+        /* ASSESSMENT CARDS GRID */
+        .assessment-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
         .assessment-card {
             position: relative;
             border: 1px solid var(--border);
             background: rgba(255,255,255,0.94);
             border-radius: var(--radius);
-            padding: 30px 24px;
+            padding: 26px 22px;
             box-shadow: var(--shadow);
             text-align: left;
             transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
@@ -232,7 +231,7 @@
 
         .assessment-card h2 {
             margin: 0 0 8px;
-            font-size: 20px;
+            font-size: 19px;
             font-weight: 600;
         }
 
@@ -438,6 +437,7 @@
             border-radius: var(--radius);
             box-shadow: var(--shadow);
             overflow: hidden;
+            margin-bottom: 22px;
         }
 
         .score-section {
@@ -533,10 +533,10 @@
             border-radius: 10px;
         }
 
-        /* NEXT STEP & CONVERSION CTA */
+        /* NEXT STEP & CONVERSION CTA (FIRST) */
         .next-step {
             position: relative;
-            margin-top: 22px;
+            margin-bottom: 22px;
             padding: 27px;
             background: linear-gradient(145deg, #FFFFFF, #FBF6F2);
             border: 1px solid var(--border);
@@ -625,6 +625,9 @@
                 width: min(calc(100% - 24px), 720px);
                 padding-top: 25px;
             }
+            .assessment-grid {
+                grid-template-columns: 1fr;
+            }
             .crisis-actions {
                 grid-template-columns: 1fr;
             }
@@ -648,8 +651,8 @@
         <div class="intro">
             <h1>A Moment to Check In</h1>
             <p>
-                Take a brief check-in to understand how you've been feeling recently 
-                and seamlessly connect with professional support.
+                These brief questionnaires can help you understand how you've been feeling recently 
+                and whether professional support may be helpful.
             </p>
             <div class="privacy-note">
                 <span>🔒</span>
@@ -657,30 +660,43 @@
             </div>
         </div>
 
-        <button
-            type="button"
-            class="assessment-card"
-            onclick="hmwStartAssessment()"
-            aria-label="Start Mood and Depression screening"
-        >
-            <div class="assessment-icon">♡</div>
-            <h2>Mood &amp; Depression Check-In</h2>
-            <p>
-                A confidential 9-question screening regarding mood, interest, energy, 
-                sleep, and overall emotional well-being.
-            </p>
-            <div class="card-link">Begin check-in →</div>
-        </button>
+        <div class="assessment-grid">
+            <!-- MOOD -->
+            <button
+                type="button"
+                class="assessment-card"
+                onclick="hmwStartAssessment('phq9')"
+                aria-label="Start Mood and Depression screening"
+            >
+                <div class="assessment-icon">♡</div>
+                <h2>Mood &amp; Depression</h2>
+                <p>A brief questionnaire about mood, interest, energy, sleep, and common symptoms of depression.</p>
+                <div class="card-link">Begin check-in →</div>
+            </button>
+
+            <!-- ANXIETY -->
+            <button
+                type="button"
+                class="assessment-card"
+                onclick="hmwStartAssessment('gad7')"
+                aria-label="Start Anxiety and Worry screening"
+            >
+                <div class="assessment-icon">◌</div>
+                <h2>Anxiety &amp; Worry</h2>
+                <p>A brief questionnaire about worry, nervousness, restlessness, and symptoms of anxiety.</p>
+                <div class="card-link">Begin check-in →</div>
+            </button>
+        </div>
 
         <div class="hope-note">
             <div class="hope-icon">🌿</div>
             <div>
-                Taking a moment to check in with yourself is a meaningful first step toward feeling better.
+                Taking a moment to check in with yourself is a meaningful first step. Choose what feels most accurate for you.
             </div>
         </div>
 
         <div class="disclaimer">
-            <strong>A gentle note:</strong> This screening tool is designed to provide insight and a starting point for professional consultation, not a medical diagnosis.
+            <strong>A gentle note:</strong> This screening tool is a screening framework, not a medical diagnosis.
         </div>
     </section>
 
@@ -703,7 +719,7 @@
         </div>
 
         <div class="quiz-navigation">
-            <button id="backButton" type="button" class="back-button hidden" onclick="hmwGoBack()" aria-label="Go back">
+            <button id="backButton" type="button" class="back-button hidden" onclick="hmwGoBack()" aria-label="Go back to previous question">
                 ← Back
             </button>
         </div>
@@ -714,31 +730,16 @@
     <section id="resultsScreen" class="screen">
         <div class="results-header">
             <h1>Your Check-In Results</h1>
-            <p>Your screening is complete. Review your results and connect with care below.</p>
+            <p>This result is a screening indication, not a diagnosis.</p>
         </div>
 
-        <div class="result-card">
-            <div class="score-section">
-                <div class="score-label">Your Score</div>
-                <div id="resultScore" class="score">0</div>
-                <div id="resultMax" class="score-max">out of 27</div>
-                <div id="severityLabel" class="severity">Minimal</div>
-            </div>
-
-            <div class="result-body">
-                <h2 id="resultTitle">Your responses suggest minimal symptoms.</h2>
-                <p id="resultDescription">Your responses fall within a lower symptom range.</p>
-                <div id="crisisContainer"></div>
-            </div>
-        </div>
-
+        <!-- 1. SCHEDULE CTA FIRST (CONVERSION PRIORITY) -->
         <div class="next-step">
             <h2>You don't have to figure this out on your own.</h2>
             <p>
-                Professional support can help you navigate what you're experiencing. 
-                Schedule your confidential consultation easily online.
+                If your symptoms are affecting your daily life, mood, or well-being, 
+                talking with a mental health professional can be a helpful next step.
             </p>
-
             <a
                 id="scheduleButton"
                 class="primary-button"
@@ -751,7 +752,26 @@
             <div class="headway-note">Scheduling continues securely through Headway.</div>
         </div>
 
-        <button type="button" class="secondary-button" onclick="hmwStartOver()" style="margin-top:14px;">
+        <!-- 2. SCORE & DETAILS CARD -->
+        <div class="result-card">
+            <div class="score-section">
+                <div class="score-label">Your Score</div>
+                <div id="resultScore" class="score">0</div>
+                <div id="resultMax" class="score-max">out of 27</div>
+                <div id="severityLabel" class="severity">Minimal</div>
+            </div>
+
+            <div class="result-body">
+                <h2 id="resultTitle">Your responses suggest minimal symptoms.</h2>
+                <p id="resultDescription">Your responses fall within a lower symptom range.</p>
+                
+                <!-- CRISIS CONTENT (FOLLOWS CONVERSION & SCORE) -->
+                <div id="crisisContainer"></div>
+            </div>
+        </div>
+
+        <!-- TAKE ANOTHER CHECK-IN -->
+        <button type="button" class="secondary-button" onclick="hmwStartOver()">
             Take Another Check-In
         </button>
     </section>
@@ -764,32 +784,55 @@
 </footer>
 
 <script>
-const HMW_ASSESSMENT = {
-    name: "Mood & Depression",
-    shortName: "PHQ-9",
-    maxScore: 27,
-    questions: [
-        "Little interest or pleasure in doing things",
-        "Feeling down, depressed, or hopeless",
-        "Trouble falling or staying asleep, or sleeping too much",
-        "Feeling tired or having little energy",
-        "Poor appetite or overeating",
-        "Feeling bad about yourself — or that you are a failure or have let yourself or your family down",
-        "Trouble concentrating on things, such as reading the newspaper or watching television",
-        "Moving or speaking so slowly that other people could have noticed? Or the opposite — being so fidgety or restless that you have been moving around a lot more than usual",
-        "Thoughts that you would be better off dead or of hurting yourself in some way"
-    ],
-    answers: ["Not at all", "Several days", "More than half the days", "Nearly every day"],
-    severity: function(score) {
-        if (score <= 4) return { label: "Minimal", title: "Your responses suggest minimal symptoms.", description: "Your responses fall within a lower symptom range." };
-        if (score <= 9) return { label: "Mild", title: "Your responses suggest mild symptoms.", description: "Your responses indicate some symptoms that may be worth paying attention to." };
-        if (score <= 14) return { label: "Moderate", title: "Your responses suggest moderate symptoms.", description: "Your responses indicate symptoms that may be having a meaningful effect on your well-being." };
-        if (score <= 19) return { label: "Moderately severe", title: "Your responses suggest moderately severe symptoms.", description: "Your responses indicate a higher level of symptoms. Professional support can help." };
-        return { label: "Severe", title: "Your responses suggest severe symptoms.", description: "Connecting with a mental health professional is strongly recommended." };
+const HMW_ASSESSMENTS = {
+    phq9: {
+        name: "Mood & Depression",
+        shortName: "PHQ-9",
+        maxScore: 27,
+        questions: [
+            "Little interest or pleasure in doing things",
+            "Feeling down, depressed, or hopeless",
+            "Trouble falling or staying asleep, or sleeping too much",
+            "Feeling tired or having little energy",
+            "Poor appetite or overeating",
+            "Feeling bad about yourself — or that you are a failure or have let yourself or your family down",
+            "Trouble concentrating on things, such as reading the newspaper or watching television",
+            "Moving or speaking so slowly that other people could have noticed? Or the opposite — being so fidgety or restless that you have been moving around a lot more than usual",
+            "Thoughts that you would be better off dead or of hurting yourself in some way"
+        ],
+        answers: ["Not at all", "Several days", "More than half the days", "Nearly every day"],
+        severity: function(score) {
+            if (score <= 4) return { label: "Minimal", title: "Your responses suggest minimal symptoms.", description: "Your responses fall within a lower symptom range." };
+            if (score <= 9) return { label: "Mild", title: "Your responses suggest mild symptoms.", description: "Your responses indicate some symptoms that may be worth paying attention to." };
+            if (score <= 14) return { label: "Moderate", title: "Your responses suggest moderate symptoms.", description: "Your responses indicate symptoms that may be having a meaningful effect on your well-being." };
+            if (score <= 19) return { label: "Moderately severe", title: "Your responses suggest moderately severe symptoms.", description: "Your responses indicate a higher level of symptoms. Professional support can help." };
+            return { label: "Severe", title: "Your responses suggest severe symptoms.", description: "Connecting with a mental health professional is strongly recommended." };
+        }
+    },
+    gad7: {
+        name: "Anxiety & Worry",
+        shortName: "GAD-7",
+        maxScore: 21,
+        questions: [
+            "Feeling nervous, anxious, or on edge",
+            "Not being able to stop or control worrying",
+            "Worrying too much about different things",
+            "Trouble relaxing",
+            "Being so restless that it is hard to sit still",
+            "Becoming easily annoyed or irritable",
+            "Feeling afraid as if something awful might happen"
+        ],
+        answers: ["Not at all", "Several days", "More than half the days", "Nearly every day"],
+        severity: function(score) {
+            if (score <= 4) return { label: "Minimal", title: "Your responses suggest minimal anxiety symptoms.", description: "Your responses fall within a lower symptom range." };
+            if (score <= 9) return { label: "Mild", title: "Your responses suggest mild anxiety symptoms.", description: "Your responses indicate some symptoms of anxiety." };
+            if (score <= 14) return { label: "Moderate", title: "Your responses suggest moderate anxiety symptoms.", description: "Your responses indicate symptoms that may be having a meaningful effect on your well-being." };
+            return { label: "Severe", title: "Your responses suggest severe anxiety symptoms.", description: "Connecting with a mental health professional is recommended." };
+        }
     }
 };
 
-let hmwState = { currentQuestion: 0, answers: [] };
+let hmwState = { assessment: null, currentQuestion: 0, answers: [] };
 
 function hmwShowScreen(id) {
     document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
@@ -797,19 +840,24 @@ function hmwShowScreen(id) {
     window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-function hmwStartAssessment() {
-    hmwState = { currentQuestion: 0, answers: [] };
+function hmwStartAssessment(type) {
+    const assessment = HMW_ASSESSMENTS[type];
+    if (!assessment) return;
+
+    hmwState = { assessment: type, currentQuestion: 0, answers: [] };
+    document.getElementById("assessmentTitle").textContent = assessment.name;
     hmwShowScreen("quizScreen");
     hmwRenderQuestion();
 }
 
 function hmwRenderQuestion() {
+    const assessment = HMW_ASSESSMENTS[hmwState.assessment];
     const index = hmwState.currentQuestion;
-    const total = HMW_ASSESSMENT.questions.length;
+    const total = assessment.questions.length;
 
     document.getElementById("questionNumber").textContent = `Question ${index + 1}`;
     document.getElementById("questionCounter").textContent = `Question ${index + 1} of ${total}`;
-    document.getElementById("questionText").textContent = HMW_ASSESSMENT.questions[index];
+    document.getElementById("questionText").textContent = assessment.questions[index];
 
     const progress = (index / total) * 100;
     const progressBar = document.getElementById("progressBar");
@@ -818,7 +866,7 @@ function hmwRenderQuestion() {
     const answerList = document.getElementById("answerList");
     answerList.innerHTML = "";
 
-    HMW_ASSESSMENT.answers.forEach((answer, answerIndex) => {
+    assessment.answers.forEach((answer, answerIndex) => {
         const button = document.createElement("button");
         button.type = "button";
         button.className = "answer-button";
@@ -834,10 +882,11 @@ function hmwRenderQuestion() {
 }
 
 function hmwSelectAnswer(answerIndex) {
+    const assessment = HMW_ASSESSMENTS[hmwState.assessment];
     hmwState.answers[hmwState.currentQuestion] = answerIndex;
 
     setTimeout(() => {
-        if (hmwState.currentQuestion < HMW_ASSESSMENT.questions.length - 1) {
+        if (hmwState.currentQuestion < assessment.questions.length - 1) {
             hmwState.currentQuestion++;
             hmwRenderQuestion();
         } else {
@@ -854,11 +903,12 @@ function hmwGoBack() {
 }
 
 function hmwCompleteAssessment() {
+    const assessment = HMW_ASSESSMENTS[hmwState.assessment];
     const score = hmwState.answers.reduce((total, val) => total + (Number(val) || 0), 0);
-    const severity = HMW_ASSESSMENT.severity(score);
+    const severity = assessment.severity(score);
 
     document.getElementById("resultScore").textContent = score;
-    document.getElementById("resultMax").textContent = `out of ${HMW_ASSESSMENT.maxScore}`;
+    document.getElementById("resultMax").textContent = `out of ${assessment.maxScore}`;
     document.getElementById("severityLabel").textContent = severity.label;
     document.getElementById("resultTitle").textContent = severity.title;
     document.getElementById("resultDescription").textContent = severity.description;
@@ -872,6 +922,8 @@ function hmwCompleteAssessment() {
 function hmwRenderCrisisMessage() {
     const container = document.getElementById("crisisContainer");
     container.innerHTML = "";
+
+    if (hmwState.assessment !== "phq9") return;
 
     const question9 = hmwState.answers[8];
     if (typeof question9 !== "number" || question9 <= 0) return;
@@ -891,7 +943,7 @@ function hmwRenderCrisisMessage() {
 }
 
 function hmwStartOver() {
-    hmwState = { currentQuestion: 0, answers: [] };
+    hmwState = { assessment: null, currentQuestion: 0, answers: [] };
     document.getElementById("crisisContainer").innerHTML = "";
     hmwShowScreen("startScreen");
 }

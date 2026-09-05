@@ -3,63 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Her Mind & Wellness | Client Self-Assessment</title>
 
     <!--
     ========================================================================
-    HER MIND & WELLNESS CLIENT SELF-ASSESSMENT TOOL
-    ========================================================================
-
-    VERSION HISTORY & CHANGELOG
-
-    v3.5.0 — Two-Week Timeframe Clarification
-    ------------------------------------------------------------
-    • Added explicit "Over the last 2 weeks" framing to the first question of each assessment.
-    • Preserved all meaningful SVG icons, warm color palettes, and Headway integration flow.
-
-    v3.4.0 — Meaningful & Heart-Warming Visual Redesign
-    ------------------------------------------------------------
-    • Replaced basic characters with bespoke, harmonious SVG icons for mood, anxiety, privacy, and hope.
-
-    ========================================================================
-    CURRENT VERSION: v3.5.0
+    HER MIND & WELLNESS CLIENT SELF-ASSESSMENT TOOL (v4.0 Redesign)
     ========================================================================
     -->
 
     <style>
-
-        /* ================================================================
-           WARM & HOPEFUL COLOR SYSTEM
-           ================================================================= */
-
         :root {
-            --primary: #8A6576;
-            --primary-dark: #684957;
-            --primary-light: #F3E8EC;
+            --primary: #795568;
+            --primary-dark: #5A3E4D;
+            --primary-light: #F4EBEF;
 
-            --accent: #A8B89F;
-            --accent-dark: #71866A;
-            --accent-light: #EEF3EB;
+            --accent: #8FA385;
+            --accent-dark: #5F7355;
+            --accent-light: #EBF2EA;
 
-            --warm: #D8B39D;
-            --warm-light: #FBF1EA;
+            --warm-bg: #FAF6F2;
+            --card-bg: #FFFFFF;
+            
+            --text-main: #363035;
+            --text-muted: #736A71;
 
-            --text: #3F3940;
-            --text-light: #756D73;
+            --border-color: #E8DFDC;
+            --danger: #9C4A50;
+            --danger-bg: #FAEEEE;
 
-            --background: #FCF9F5;
-            --card: #FFFFFF;
-
-            --border: #E9DFDA;
-
-            --danger: #A55F63;
-            --danger-light: #FBEEEE;
-
-            --shadow: 0 5px 24px rgba(104, 73, 87, 0.08);
-            --shadow-hover: 0 9px 30px rgba(104, 73, 87, 0.12);
-
-            --radius: 16px;
+            --shadow-soft: 0 10px 30px rgba(121, 85, 104, 0.06);
+            --shadow-hover: 0 14px 36px rgba(121, 85, 104, 0.10);
+            --radius-lg: 20px;
+            --radius-md: 12px;
         }
 
         * {
@@ -72,13 +47,16 @@
 
         body {
             margin: 0;
-            background:
-                radial-gradient(circle at 10% 5%, rgba(216, 179, 157, 0.10), transparent 28%),
-                radial-gradient(circle at 90% 25%, rgba(168, 184, 159, 0.09), transparent 25%),
-                var(--background);
-            color: var(--text);
+            background: 
+                radial-gradient(circle at 15% 10%, rgba(216, 180, 160, 0.12), transparent 35%),
+                radial-gradient(circle at 85% 90%, rgba(143, 163, 133, 0.10), transparent 35%),
+                var(--warm-bg);
+            color: var(--text-main);
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
         button {
@@ -86,44 +64,45 @@
             cursor: pointer;
         }
 
-        button:focus-visible, a:focus-visible {
-            outline: 3px solid rgba(138, 101, 118, 0.28);
-            outline-offset: 3px;
-        }
-
         /* HEADER */
         .site-header {
-            background: rgba(255, 255, 255, 0.94);
-            border-bottom: 1px solid var(--border);
-            backdrop-filter: blur(8px);
+            background: rgba(255, 255, 255, 0.85);
+            border-bottom: 1px solid var(--border-color);
+            backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
 
         .header-inner {
-            max-width: 860px;
+            max-width: 760px;
             margin: auto;
-            padding: 20px 20px 18px;
+            padding: 16px 20px;
             text-align: center;
         }
 
         .logo {
-            font-size: 22px;
-            font-weight: 600;
-            letter-spacing: 0.2px;
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
             color: var(--primary-dark);
         }
 
         .logo-subtitle {
             margin-top: 2px;
-            font-size: 12px;
-            color: var(--text-light);
-            letter-spacing: 0.4px;
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
         }
 
         /* CONTAINER */
         .container {
-            width: min(calc(100% - 32px), 720px);
+            width: min(calc(100% - 32px), 640px);
             margin: 0 auto;
-            padding: 36px 0 70px;
+            padding: 32px 0 60px;
+            flex: 1;
         }
 
         .screen {
@@ -132,49 +111,53 @@
 
         .screen.active {
             display: block;
-            animation: fadeIn 0.25s ease;
+            animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(5px); }
+            from { opacity: 0; transform: translateY(8px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
         /* INTRO */
         .intro {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 28px;
         }
 
         .intro h1 {
-            margin: 0 0 12px;
-            font-size: clamp(28px, 6vw, 38px);
-            line-height: 1.15;
-            font-weight: 600;
+            margin: 0 0 10px;
+            font-size: clamp(26px, 5vw, 34px);
+            line-height: 1.2;
+            font-weight: 700;
             color: var(--primary-dark);
+            letter-spacing: -0.5px;
         }
 
         .intro p {
-            max-width: 580px;
+            max-width: 520px;
             margin: 0 auto;
-            color: var(--text-light);
-            font-size: 16px;
+            color: var(--text-muted);
+            font-size: 15px;
         }
 
-        .privacy-note {
-            display: flex;
+        .privacy-badge {
+            display: inline-flex;
             align-items: center;
-            justify-content: center;
-            gap: 8px;
-            margin-top: 15px;
-            font-size: 13px;
-            color: var(--text-light);
+            gap: 6px;
+            margin-top: 16px;
+            padding: 6px 14px;
+            background: var(--accent-light);
+            color: var(--accent-dark);
+            border-radius: 99px;
+            font-size: 12px;
+            font-weight: 500;
         }
 
-        .privacy-note svg {
-            width: 15px;
-            height: 15px;
-            stroke: var(--primary);
+        .privacy-badge svg {
+            width: 14px;
+            height: 14px;
+            stroke: currentColor;
             fill: none;
             stroke-width: 2;
             stroke-linecap: round;
@@ -184,138 +167,130 @@
         /* ASSESSMENT CARDS GRID */
         .assessment-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
             gap: 16px;
         }
 
         .assessment-card {
             position: relative;
-            border: 1px solid var(--border);
-            background: rgba(255,255,255,0.94);
-            border-radius: var(--radius);
-            padding: 26px 22px;
-            box-shadow: var(--shadow);
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: var(--shadow-soft);
             text-align: left;
-            transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+            transition: all 0.2s ease;
             appearance: none;
             width: 100%;
             color: inherit;
-            overflow: hidden;
-        }
-
-        .assessment-card::before {
-            content: "";
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 4px;
-            background: linear-gradient(90deg, var(--warm), var(--accent));
-            opacity: 0.75;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
 
         .assessment-card:hover {
-            transform: translateY(-3px);
+            transform: translateY(-2px);
             box-shadow: var(--shadow-hover);
-            border-color: #D8C9D0;
+            border-color: var(--primary);
+        }
+
+        .card-header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
         .assessment-icon {
-            width: 48px;
-            height: 48px;
+            width: 44px;
+            height: 44px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 14px;
+            border-radius: var(--radius-md);
             background: var(--primary-light);
             color: var(--primary-dark);
-            margin-bottom: 17px;
         }
 
         .assessment-icon svg {
-            width: 24px;
-            height: 24px;
+            width: 22px;
+            height: 22px;
             stroke: currentColor;
             fill: none;
-            stroke-width: 1.8;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .card-arrow {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--warm-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-dark);
+            transition: background 0.2s;
+        }
+
+        .assessment-card:hover .card-arrow {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .card-arrow svg {
+            width: 16px;
+            height: 16px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
             stroke-linecap: round;
             stroke-linejoin: round;
         }
 
         .assessment-card h2 {
-            margin: 0 0 8px;
-            font-size: 19px;
+            margin: 0;
+            font-size: 18px;
             font-weight: 600;
+            color: var(--text-main);
         }
 
         .assessment-card p {
             margin: 0;
-            color: var(--text-light);
+            color: var(--text-muted);
             font-size: 14px;
-            line-height: 1.55;
+            line-height: 1.5;
         }
 
-        .card-link {
-            margin-top: 18px;
-            color: var(--primary-dark);
-            font-weight: 600;
-            font-size: 14px;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        /* HOPE NOTE & DISCLAIMER */
-        .hope-note {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            margin-top: 18px;
-            padding: 16px 17px;
-            background: var(--accent-light);
-            border: 1px solid #DCE6D8;
-            border-radius: 13px;
-            color: #596353;
+        /* HELPER FOOTER CARDS */
+        .info-card {
+            margin-top: 20px;
+            padding: 16px 18px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
             font-size: 13px;
-            line-height: 1.55;
-        }
-
-        .hope-icon {
-            flex: 0 0 auto;
+            color: var(--text-muted);
             display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--accent-dark);
+            gap: 12px;
+            align-items: flex-start;
+            box-shadow: var(--shadow-soft);
         }
 
-        .hope-icon svg {
-            width: 20px;
-            height: 20px;
-            stroke: currentColor;
+        .info-card svg {
+            width: 18px;
+            height: 18px;
+            stroke: var(--accent-dark);
             fill: none;
-            stroke-width: 1.8;
+            stroke-width: 2;
             stroke-linecap: round;
             stroke-linejoin: round;
+            flex-shrink: 0;
+            margin-top: 1px;
         }
 
-        .disclaimer {
-            margin-top: 16px;
-            background: rgba(255,255,255,0.7);
-            border: 1px solid var(--border);
-            border-radius: 13px;
-            padding: 16px 18px;
-            font-size: 12px;
-            color: var(--text-light);
-            line-height: 1.6;
-        }
-
-        .disclaimer strong {
-            color: var(--text);
-        }
-
-        /* QUIZ */
+        /* QUIZ CONTAINER */
         .quiz-header {
-            margin-bottom: 25px;
+            margin-bottom: 24px;
         }
 
         .quiz-top {
@@ -323,13 +298,16 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 10px;
-            font-size: 13px;
-            color: var(--text-light);
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .progress-track {
-            height: 7px;
-            background: #EAE2DF;
+            height: 6px;
+            background: var(--border-color);
             border-radius: 99px;
             overflow: hidden;
         }
@@ -337,32 +315,34 @@
         .progress-bar {
             height: 100%;
             width: 0;
-            background: linear-gradient(90deg, var(--primary), var(--warm));
+            background: var(--primary);
             border-radius: inherit;
-            transition: width 0.25s ease;
+            transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .question-card {
-            background: rgba(255,255,255,0.97);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
             padding: 28px 24px;
-            box-shadow: var(--shadow);
+            box-shadow: var(--shadow-soft);
         }
 
         .question-number {
             color: var(--primary);
             font-weight: 600;
-            font-size: 13px;
-            margin-bottom: 12px;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
         }
 
         .question-text {
-            font-size: clamp(20px, 5vw, 25px);
-            line-height: 1.3;
+            font-size: clamp(19px, 4.5vw, 23px);
+            line-height: 1.35;
             font-weight: 600;
             margin: 0 0 24px;
-            color: var(--text);
+            color: var(--text-main);
         }
 
         .answer-list {
@@ -371,25 +351,26 @@
         }
 
         .answer-button {
-            border: 1px solid var(--border);
-            background: #fff;
-            color: var(--text);
-            border-radius: 12px;
-            padding: 16px;
+            border: 1px solid var(--border-color);
+            background: var(--card-bg);
+            color: var(--text-main);
+            border-radius: var(--radius-md);
+            padding: 14px 16px;
             text-align: left;
-            transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
-            min-height: 56px;
+            transition: all 0.15s ease;
+            min-height: 52px;
         }
 
         .answer-button:hover {
             border-color: var(--primary);
-            background: #FBF6F7;
+            background: var(--primary-light);
         }
 
         .answer-button.selected {
             background: var(--primary-light);
             border-color: var(--primary);
             box-shadow: inset 0 0 0 1px var(--primary);
+            font-weight: 500;
         }
 
         .answer-label {
@@ -399,11 +380,12 @@
         }
 
         .answer-dot {
-            width: 19px;
-            height: 19px;
-            border: 1px solid #C8BDC3;
+            width: 18px;
+            height: 18px;
+            border: 2px solid #CFC4CE;
             border-radius: 50%;
             flex: 0 0 auto;
+            transition: all 0.15s ease;
         }
 
         .selected .answer-dot {
@@ -414,28 +396,37 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            min-height: 48px;
-            margin-top: 14px;
+            margin-top: 16px;
         }
 
-        .back-button {
+        .nav-group-left {
+            display: flex;
+            gap: 8px;
+        }
+
+        .nav-button {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            min-height: 44px;
-            padding: 10px 14px;
-            border: 1px solid var(--border);
-            background: rgba(255,255,255,0.85);
-            border-radius: 10px;
+            min-height: 42px;
+            padding: 8px 14px;
+            border: 1px solid var(--border-color);
+            background: var(--card-bg);
+            border-radius: var(--radius-md);
             color: var(--primary-dark);
             font-size: 13px;
             font-weight: 600;
             gap: 6px;
+            transition: background 0.15s;
         }
 
-        .back-button svg {
-            width: 15px;
-            height: 15px;
+        .nav-button:hover {
+            background: var(--primary-light);
+        }
+
+        .nav-button svg {
+            width: 14px;
+            height: 14px;
             stroke: currentColor;
             fill: none;
             stroke-width: 2;
@@ -443,156 +434,208 @@
             stroke-linejoin: round;
         }
 
-        .back-button.hidden {
+        .nav-button.hidden {
             visibility: hidden;
         }
 
         .quiz-help {
             text-align: center;
-            margin-top: 10px;
-            color: var(--text-light);
+            margin-top: 14px;
+            color: var(--text-muted);
             font-size: 12px;
         }
 
-        /* RESULTS */
+        /* IN-TEST EMERGENCY BOX */
+        .test-crisis-box {
+            margin-top: 20px;
+            padding: 16px;
+            border-radius: var(--radius-md);
+            background: var(--danger-bg);
+            border: 1px solid #E8CCCC;
+        }
+
+        .test-crisis-box h3 {
+            margin: 0 0 4px;
+            font-size: 14px;
+            color: var(--danger);
+            font-weight: 600;
+        }
+
+        .test-crisis-box p {
+            margin: 0 0 10px;
+            font-size: 12px;
+            color: var(--text-main);
+        }
+
+        .test-crisis-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .test-crisis-button {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 38px;
+            text-decoration: none;
+            border: 1px solid #DDBBBB;
+            color: var(--danger);
+            background: #fff;
+            font-weight: 600;
+            font-size: 12px;
+            border-radius: 8px;
+            gap: 6px;
+            transition: background 0.15s;
+        }
+
+        .test-crisis-button:hover {
+            background: #FCE8E8;
+        }
+
+        .test-crisis-button svg {
+            width: 14px;
+            height: 14px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* RESULTS SCREEN */
         .results-header {
             text-align: center;
-            margin-bottom: 25px;
+            margin-bottom: 24px;
         }
 
         .results-header h1 {
-            margin: 0 0 8px;
+            margin: 0 0 6px;
             color: var(--primary-dark);
-            font-size: 31px;
+            font-size: 28px;
         }
 
         .results-header p {
             margin: 0;
-            color: var(--text-light);
+            color: var(--text-muted);
+            font-size: 14px;
         }
 
         .result-card {
-            background: #fff;
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-soft);
             overflow: hidden;
-            margin-bottom: 22px;
+            margin-bottom: 20px;
         }
 
         .score-section {
-            position: relative;
             text-align: center;
-            padding: 30px 20px 25px;
-            background: linear-gradient(145deg, var(--primary-light), #F8EFE9);
+            padding: 28px 20px;
+            background: linear-gradient(135deg, var(--primary-light), #F2E3E8);
         }
 
         .score-label {
-            font-size: 12px;
-            color: var(--text-light);
+            font-size: 11px;
+            color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 1px;
-        }
-
-        .score {
-            font-size: 60px;
-            line-height: 1;
-            margin: 8px 0;
-            color: var(--primary-dark);
             font-weight: 600;
         }
 
+        .score {
+            font-size: 52px;
+            line-height: 1;
+            margin: 6px 0;
+            color: var(--primary-dark);
+            font-weight: 700;
+        }
+
         .score-max {
-            font-size: 13px;
-            color: var(--text-light);
+            font-size: 12px;
+            color: var(--text-muted);
         }
 
         .severity {
             display: inline-block;
-            margin-top: 15px;
-            padding: 7px 13px;
+            margin-top: 12px;
+            padding: 5px 12px;
             border-radius: 99px;
-            background: rgba(255,255,255,0.9);
+            background: #fff;
             color: var(--primary-dark);
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
         }
 
         .result-body {
-            padding: 25px;
+            padding: 22px;
         }
 
         .result-body h2 {
-            font-size: 20px;
-            margin: 0 0 9px;
+            font-size: 18px;
+            margin: 0 0 6px;
+            color: var(--text-main);
         }
 
         .result-body p {
-            color: var(--text-light);
+            color: var(--text-muted);
             margin: 0;
+            font-size: 14px;
         }
 
-        /* CRISIS */
+        /* CRISIS RESULT */
         .crisis-box {
-            margin-top: 20px;
-            padding: 18px;
-            border-radius: 13px;
-            background: var(--danger-light);
-            border: 1px solid #EFD5D5;
+            margin-top: 16px;
+            padding: 16px;
+            border-radius: var(--radius-md);
+            background: var(--danger-bg);
+            border: 1px solid #E8CCCC;
         }
 
         .crisis-box h3 {
-            margin: 0 0 7px;
-            font-size: 17px;
+            margin: 0 0 6px;
+            font-size: 15px;
             color: var(--danger);
         }
 
         .crisis-box p {
-            font-size: 14px;
-            color: var(--text);
+            font-size: 13px;
+            color: var(--text-main);
         }
 
         .crisis-actions {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 14px;
+            gap: 8px;
+            margin-top: 12px;
         }
 
         .crisis-button {
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 48px;
+            min-height: 42px;
             text-decoration: none;
-            border: 1px solid #DFC1C1;
+            border: 1px solid #DDBBBB;
             color: var(--danger);
             background: #fff;
             font-weight: 600;
-            font-size: 14px;
-            border-radius: 10px;
+            font-size: 13px;
+            border-radius: 8px;
             gap: 6px;
         }
 
-        .crisis-button svg {
-            width: 16px;
-            height: 16px;
-            stroke: currentColor;
-            fill: none;
-            stroke-width: 2;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-        }
-
-        /* NEXT STEP & CONVERSION CTA (FIRST) */
+        /* CONVERSION CTA */
         .next-step {
             position: relative;
-            margin-bottom: 22px;
-            padding: 27px;
-            background: linear-gradient(145deg, #FFFFFF, #FBF6F2);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+            padding: 24px;
+            background: linear-gradient(135deg, #FFFFFF, #FAF5F2);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-soft);
             text-align: center;
             overflow: hidden;
         }
@@ -604,20 +647,20 @@
             top: 0;
             width: 100%;
             height: 4px;
-            background: linear-gradient(90deg, var(--accent), var(--warm), var(--primary));
+            background: linear-gradient(90deg, var(--accent), var(--primary));
         }
 
         .next-step h2 {
-            margin: 0 0 8px;
-            font-size: 22px;
+            margin: 0 0 6px;
+            font-size: 20px;
             color: var(--primary-dark);
         }
 
         .next-step p {
-            margin: 0 auto 18px;
-            max-width: 530px;
-            color: var(--text-light);
-            font-size: 14px;
+            margin: 0 auto 16px;
+            max-width: 480px;
+            color: var(--text-muted);
+            font-size: 13.5px;
         }
 
         .primary-button {
@@ -625,21 +668,22 @@
             justify-content: center;
             align-items: center;
             width: 100%;
-            min-height: 54px;
-            padding: 14px 20px;
+            min-height: 50px;
+            padding: 12px 18px;
             border: 0;
-            border-radius: 11px;
+            border-radius: var(--radius-md);
             background: var(--primary);
             color: #fff;
             font-weight: 600;
             text-decoration: none;
-            transition: background 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+            transition: background 0.15s ease, transform 0.1s ease;
             gap: 8px;
+            font-size: 14px;
         }
 
         .primary-button svg {
-            width: 18px;
-            height: 18px;
+            width: 16px;
+            height: 16px;
             stroke: currentColor;
             fill: none;
             stroke-width: 2;
@@ -649,48 +693,42 @@
 
         .primary-button:hover {
             background: var(--primary-dark);
-            box-shadow: 0 5px 15px rgba(104,73,87,0.16);
         }
 
         .headway-note {
-            margin-top: 10px;
-            font-size: 12px;
-            color: var(--text-light);
+            margin-top: 8px;
+            font-size: 11px;
+            color: var(--text-muted);
         }
 
         .secondary-button {
             width: 100%;
-            min-height: 48px;
-            border-radius: 10px;
-            border: 1px solid var(--border);
-            background: #fff;
+            min-height: 46px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            background: var(--card-bg);
             color: var(--primary-dark);
             font-weight: 600;
             margin-top: 10px;
-            transition: background 0.15s ease, border-color 0.15s ease;
+            transition: background 0.15s;
         }
 
         .secondary-button:hover {
             background: var(--primary-light);
-            border-color: var(--primary);
         }
 
         footer {
             text-align: center;
-            padding: 30px 20px 40px;
-            color: var(--text-light);
+            padding: 24px 20px;
+            color: var(--text-muted);
             font-size: 11px;
         }
 
-        @media (max-width: 620px) {
+        @media (max-width: 580px) {
             .container {
-                width: min(calc(100% - 24px), 720px);
-                padding-top: 25px;
+                width: min(calc(100% - 24px), 640px);
             }
-            .assessment-grid {
-                grid-template-columns: 1fr;
-            }
-            .crisis-actions {
+            .test-crisis-actions, .crisis-actions {
                 grid-template-columns: 1fr;
             }
         }
@@ -713,64 +751,52 @@
         <div class="intro">
             <h1>A Moment to Check In</h1>
             <p>
-                These brief questionnaires can help you understand how you've been feeling recently 
+                These brief questionnaires help you understand how you've been feeling recently 
                 and whether professional support may be helpful.
             </p>
-            <div class="privacy-note">
+            <div class="privacy-badge">
                 <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                <span>Your responses stay confidential in your browser.</span>
+                <span>Confidential browser screening</span>
             </div>
         </div>
 
         <div class="assessment-grid">
-            <!-- MOOD -->
-            <button
-                type="button"
-                class="assessment-card"
-                onclick="hmwStartAssessment('phq9')"
-                aria-label="Start Mood and Depression screening"
-            >
-                <div class="assessment-icon">
-                    <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            <!-- MOOD CARD -->
+            <button type="button" class="assessment-card" onclick="hmwStartAssessment('phq9')">
+                <div class="card-header-row">
+                    <div class="assessment-icon">
+                        <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                    </div>
+                    <div class="card-arrow">
+                        <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </div>
                 </div>
-                <h2>Mood &amp; Depression</h2>
-                <p>A brief questionnaire about mood, interest, energy, sleep, and common symptoms of depression.</p>
-                <div class="card-link">
-                    Begin check-in 
-                    <svg style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                <div>
+                    <h2>Mood &amp; Depression Check-In</h2>
+                    <p>Reflect on mood, interest, energy levels, sleep patterns, and daily vitality over recent weeks.</p>
                 </div>
             </button>
 
-            <!-- ANXIETY -->
-            <button
-                type="button"
-                class="assessment-card"
-                onclick="hmwStartAssessment('gad7')"
-                aria-label="Start Anxiety and Worry screening"
-            >
-                <div class="assessment-icon">
-                    <svg viewBox="0 0 24 24"><path d="M12 3v18M5.5 10.5C3 12 2 15 3 18c3 1 6-1 9-5 3 4 6 6 9 5 1-3 0-6-2.5-7.5M12 12c-3-2-5-5-5-8 4 0 7 2 5 8z"/></svg>
+            <!-- ANXIETY CARD -->
+            <button type="button" class="assessment-card" onclick="hmwStartAssessment('gad7')">
+                <div class="card-header-row">
+                    <div class="assessment-icon">
+                        <svg viewBox="0 0 24 24"><path d="M12 3v18M5.5 10.5C3 12 2 15 3 18c3 1 6-1 9-5 3 4 6 6 9 5 1-3 0-6-2.5-7.5M12 12c-3-2-5-5-5-8 4 0 7 2 5 8z"/></svg>
+                    </div>
+                    <div class="card-arrow">
+                        <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </div>
                 </div>
-                <h2>Anxiety &amp; Worry</h2>
-                <p>A brief questionnaire about worry, nervousness, restlessness, and symptoms of anxiety.</p>
-                <div class="card-link">
-                    Begin check-in 
-                    <svg style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                <div>
+                    <h2>Anxiety &amp; Worry Check-In</h2>
+                    <p>Reflect on nervousness, continuous worry, restlessness, and physical tension.</p>
                 </div>
             </button>
         </div>
 
-        <div class="hope-note">
-            <div class="hope-icon">
-                <svg viewBox="0 0 24 24"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 21 8.5 21 15c0 3-2 5-5 5h-5z"/><path d="M2 21c0-3 1.8-5.5 4.5-6.5"/></svg>
-            </div>
-            <div>
-                Taking a moment to check in with yourself is a meaningful first step. Choose what feels most accurate for you.
-            </div>
-        </div>
-
-        <div class="disclaimer">
-            <strong>A gentle note:</strong> This screening tool is a screening framework, not a medical diagnosis.
+        <div class="info-card">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            <div>These clinical frameworks are supportive self-reflection tools designed to help guide your wellness journey and are not an official medical diagnosis.</div>
         </div>
     </section>
 
@@ -781,7 +807,7 @@
                 <span id="assessmentTitle">Mood &amp; Depression</span>
                 <span id="questionCounter">Question 1 of 9</span>
             </div>
-            <div class="progress-track" role="progressbar" aria-label="Assessment progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+            <div class="progress-track">
                 <div id="progressBar" class="progress-bar"></div>
             </div>
         </div>
@@ -793,30 +819,51 @@
         </div>
 
         <div class="quiz-navigation">
-            <button id="backButton" type="button" class="back-button hidden" onclick="hmwGoBack()" aria-label="Go back to previous question">
-                <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-                Back
-            </button>
+            <div class="nav-group-left">
+                <button id="backButton" type="button" class="nav-button hidden" onclick="hmwGoBack()">
+                    <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                    Back
+                </button>
+                <button type="button" class="nav-button" onclick="hmwStartOver()">
+                    <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                    Main Menu
+                </button>
+            </div>
         </div>
-        <div class="quiz-help">Choose the answer that best describes how you've been feeling over the last 2 weeks.</div>
+        <div class="quiz-help">Select the option that best reflects your experience over the past two weeks.</div>
+
+        <!-- PERMANENT IN-TEST EMERGENCY ACCESS -->
+        <div class="test-crisis-box">
+            <h3>Need immediate support?</h3>
+            <p>If you are experiencing overwhelming distress right now, help is available 24/7.</p>
+            <div class="test-crisis-actions">
+                <a class="test-crisis-button" href="tel:988">
+                    <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                    Call 988
+                </a>
+                <a class="test-crisis-button" href="sms:988">
+                    <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    Text 988
+                </a>
+            </div>
+        </div>
     </section>
 
     <!-- RESULTS SCREEN -->
     <section id="resultsScreen" class="screen">
         <div class="results-header">
             <h1>Your Check-In Results</h1>
-            <p>This result is a screening indication, not a diagnosis.</p>
+            <p>A summary reflection based on your inputs.</p>
         </div>
 
-        <!-- 1. SCHEDULE CTA FIRST (CONVERSION PRIORITY) -->
+        <!-- 1. HEADWAY CONVERSION CTA -->
         <div class="next-step">
-            <h2>You don't have to figure this out on your own.</h2>
+            <h2>Support is available when you are ready.</h2>
             <p>
-                If your symptoms are affecting your daily life, mood, or well-being, 
-                talking with a mental health professional can be a helpful next step.
+                If your results or daily well-being indicate a need for professional guidance, 
+                connecting with a specialist can help you move forward.
             </p>
             <a
-                id="scheduleButton"
                 class="primary-button"
                 href="https://care.headway.co/providers/elizabeth-ghadimi?utm_source=assessment&utm_medium=direct_link&utm_campaign=207711"
                 target="_blank"
@@ -825,13 +872,13 @@
                 <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
                 Schedule a Confidential Consultation
             </a>
-            <div class="headway-note">Scheduling continues securely through Headway.</div>
+            <div class="headway-note">Secure booking handled safely via Headway.</div>
         </div>
 
-        <!-- 2. SCORE & DETAILS CARD -->
+        <!-- 2. SCORE CARD -->
         <div class="result-card">
             <div class="score-section">
-                <div class="score-label">Your Score</div>
+                <div class="score-label">Total Score</div>
                 <div id="resultScore" class="score">0</div>
                 <div id="resultMax" class="score-max">out of 27</div>
                 <div id="severityLabel" class="severity">Minimal</div>
@@ -839,16 +886,14 @@
 
             <div class="result-body">
                 <h2 id="resultTitle">Your responses suggest minimal symptoms.</h2>
-                <p id="resultDescription">Your responses fall within a lower symptom range.</p>
+                <p id="resultDescription">Your score falls within a lower range.</p>
                 
-                <!-- CRISIS CONTENT (FOLLOWS CONVERSION & SCORE) -->
                 <div id="crisisContainer"></div>
             </div>
         </div>
 
-        <!-- TAKE ANOTHER CHECK-IN -->
         <button type="button" class="secondary-button" onclick="hmwStartOver()">
-            Take Another Check-In
+            Return to Main Menu
         </button>
     </section>
 
@@ -856,54 +901,52 @@
 
 <footer>
     <div>Her Mind &amp; Wellness, PLLC</div>
-    <div style="margin-top:5px;">Texas telehealth mental health services</div>
+    <div style="margin-top:4px;">Texas Telehealth Psychiatric Care</div>
 </footer>
 
 <script>
 const HMW_ASSESSMENTS = {
     phq9: {
         name: "Mood & Depression",
-        shortName: "PHQ-9",
         maxScore: 27,
         questions: [
             "Over the last 2 weeks, how often have you had little interest or pleasure in doing things?",
-            "Feeling down, depressed, or hopeless",
-            "Trouble falling or staying asleep, or sleeping too much",
-            "Feeling tired or having little energy",
-            "Poor appetite or overeating",
-            "Feeling bad about yourself — or that you are a failure or have let yourself or your family down",
-            "Trouble concentrating on things, such as reading the newspaper or watching television",
-            "Moving or speaking so slowly that other people could have noticed? Or the opposite — being so fidgety or restless that you have been moving around a lot more than usual",
-            "Thoughts that you would be better off dead or of hurting yourself in some way"
+            "Over the last 2 weeks, how often have you felt down, depressed, or hopeless?",
+            "Over the last 2 weeks, have you had trouble falling or staying asleep, or sleeping too much?",
+            "Over the last 2 weeks, have you felt tired or had little energy?",
+            "Over the last 2 weeks, have you experienced poor appetite or overeating?",
+            "Over the last 2 weeks, have you felt bad about yourself — or that you are a failure or have let yourself or your family down?",
+            "Over the last 2 weeks, have you had trouble concentrating on things, such as reading the newspaper or watching television?",
+            "Over the last 2 weeks, have you been moving or speaking so slowly that other people could have noticed? Or the opposite — being so fidgety or restless that you have been moving around a lot more than usual?",
+            "Over the last 2 weeks, have you had thoughts that you would be better off dead or of hurting yourself in some way?"
         ],
         answers: ["Not at all", "Several days", "More than half the days", "Nearly every day"],
         severity: function(score) {
-            if (score <= 4) return { label: "Minimal", title: "Your responses suggest minimal symptoms.", description: "Your responses fall within a lower symptom range." };
-            if (score <= 9) return { label: "Mild", title: "Your responses suggest mild symptoms.", description: "Your responses indicate some symptoms that may be worth paying attention to." };
-            if (score <= 14) return { label: "Moderate", title: "Your responses suggest moderate symptoms.", description: "Your responses indicate symptoms that may be having a meaningful effect on your well-being." };
-            if (score <= 19) return { label: "Moderately severe", title: "Your responses suggest moderately severe symptoms.", description: "Your responses indicate a higher level of symptoms. Professional support can help." };
-            return { label: "Severe", title: "Your responses suggest severe symptoms.", description: "Connecting with a mental health professional is strongly recommended." };
+            if (score <= 4) return { label: "Minimal", title: "Minimal symptom range reported.", description: "Your responses fall within a lower range of frequency." };
+            if (score <= 9) return { label: "Mild", title: "Mild symptom range reported.", description: "Your responses indicate some mild challenges worth keeping an eye on." };
+            if (score <= 14) return { label: "Moderate", title: "Moderate symptom range reported.", description: "Your responses suggest symptoms that may be having a meaningful impact on your routine." };
+            if (score <= 19) return { label: "Moderately severe", title: "Moderately severe symptoms reported.", description: "Professional support can provide effective tools and relief." };
+            return { label: "Severe", title: "Severe symptoms reported.", description: "Connecting with a mental health professional is strongly recommended." };
         }
     },
     gad7: {
         name: "Anxiety & Worry",
-        shortName: "GAD-7",
         maxScore: 21,
         questions: [
             "Over the last 2 weeks, how often have you been feeling nervous, anxious, or on edge?",
-            "Not being able to stop or control worrying",
-            "Worrying too much about different things",
-            "Trouble relaxing",
-            "Being so restless that it is hard to sit still",
-            "Becoming easily annoyed or irritable",
-            "Feeling afraid as if something awful might happen"
+            "Over the last 2 weeks, have you experienced not being able to stop or control worrying?",
+            "Over the last 2 weeks, have you been worrying too much about different things?",
+            "Over the last 2 weeks, have you experienced trouble relaxing?",
+            "Over the last 2 weeks, have you been so restless that it is hard to sit still?",
+            "Over the last 2 weeks, have you become easily annoyed or irritable?",
+            "Over the last 2 weeks, have you felt afraid as if something awful might happen?"
         ],
         answers: ["Not at all", "Several days", "More than half the days", "Nearly every day"],
         severity: function(score) {
-            if (score <= 4) return { label: "Minimal", title: "Your responses suggest minimal anxiety symptoms.", description: "Your responses fall within a lower symptom range." };
-            if (score <= 9) return { label: "Mild", title: "Your responses suggest mild anxiety symptoms.", description: "Your responses indicate some symptoms of anxiety." };
-            if (score <= 14) return { label: "Moderate", title: "Your responses suggest moderate anxiety symptoms.", description: "Your responses indicate symptoms that may be having a meaningful effect on your well-being." };
-            return { label: "Severe", title: "Your responses suggest severe anxiety symptoms.", description: "Connecting with a mental health professional is recommended." };
+            if (score <= 4) return { label: "Minimal", title: "Minimal anxiety symptoms reported.", description: "Your responses fall within a lower range." };
+            if (score <= 9) return { label: "Mild", title: "Mild anxiety symptoms reported.", description: "Your responses show some signs of standard worry or tension." };
+            if (score <= 14) return { label: "Moderate", title: "Moderate anxiety symptoms reported.", description: "Your responses suggest noticeable feelings of anxiety affecting daily life." };
+            return { label: "Severe", title: "Severe anxiety symptoms reported.", description: "Connecting with a professional is strongly recommended to find support." };
         }
     }
 };
@@ -936,8 +979,7 @@ function hmwRenderQuestion() {
     document.getElementById("questionText").textContent = assessment.questions[index];
 
     const progress = (index / total) * 100;
-    const progressBar = document.getElementById("progressBar");
-    progressBar.style.width = `${progress}%`;
+    document.getElementById("progressBar").style.width = `${progress}%`;
 
     const answerList = document.getElementById("answerList");
     answerList.innerHTML = "";
@@ -968,7 +1010,7 @@ function hmwSelectAnswer(answerIndex) {
         } else {
             hmwCompleteAssessment();
         }
-    }, 180);
+    }, 160);
 }
 
 function hmwGoBack() {
@@ -990,7 +1032,6 @@ function hmwCompleteAssessment() {
     document.getElementById("resultDescription").textContent = severity.description;
 
     hmwRenderCrisisMessage();
-
     document.getElementById("progressBar").style.width = "100%";
     hmwShowScreen("resultsScreen");
 }
@@ -1007,19 +1048,18 @@ function hmwRenderCrisisMessage() {
     const box = document.createElement("div");
     box.className = "crisis-box";
     box.innerHTML = `
-        <h3>Are you in immediate danger?</h3>
-        <p>One of your responses indicates thoughts of self-harm. Please reach out for immediate support.</p>
+        <h3>Immediate support available</h3>
+        <p>One of your responses noted thoughts of self-harm. Please reach out right away for compassionate assistance.</p>
         <div class="crisis-actions">
             <a class="crisis-button" href="tel:988">
-                <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                <svg style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
                 Call 988
             </a>
             <a class="crisis-button" href="sms:988">
-                <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                <svg style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                 Text 988
             </a>
         </div>
-        <p style="margin-top:13px;font-size:12px;">If you are in immediate physical danger, call 911.</p>
     `;
     container.appendChild(box);
 }

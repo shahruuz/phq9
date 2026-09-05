@@ -13,6 +13,8 @@
         ====================================================================
         VERSION HISTORY & CHANGELOG:
         
+        v2.0.9: Added a secure PDF/Text results download option to the final results screen, letting clients easily save their scores and reflections for personal records without disrupting the primary Headway conversion flow.
+        
         v2.0.8: Added an editable initials display chip on the selector screen allowing users to easily modify their initials before or after taking an assessment, while keeping it hidden during active questioning.
         
         v2.0.7: Preserved saved initials across resets so users aren't re-prompted, and dynamically hid the bottom disclaimer during active assessment questions.
@@ -158,11 +160,12 @@
                     <p style="color: #4A5D52; font-size: 0.95em; margin-bottom: 12px;">Schedule your confidential consultation seamlessly online through Headway.</p>
                     <div class="hmw-action-group" id="hmw-action-container"></div>
                 </div>
+                <button type="button" class="hmw-btn hmw-btn-secondary hmw-btn-full" onclick="hmwDownloadResults()">📥 Download Copy of Results</button>
                 <button type="button" class="hmw-btn hmw-btn-secondary hmw-btn-full" onclick="hmwResetForm()">← Take Another Assessment</button>
             </div>
         </div>
         <div class="hmw-disclaimer" id="footer-disclaimer">
-            <p><strong>Her Mind & Wellness™ v2.0.8</strong> • © 2026</p>
+            <p><strong>Her Mind & Wellness™ v2.0.9</strong> • © 2026</p>
             <p><strong>Disclaimer:</strong> Data sharing is completely voluntary. Submissions not tied to a scheduled appointment are non-binding. This assessment needs to be filled out today, and please note you will be asked to complete it again on the actual day of your appointment. For emergencies, call 911 or 988.</p>
         </div>
     </div>
@@ -204,7 +207,7 @@
             }
         };
 
-        let currentAssessmentKey = null, currentQuestionIndex = 0, userAnswers = {}, persistentInitials = "";
+        let currentAssessmentKey = null, currentQuestionIndex = 0, userAnswers = {}, persistentInitials = "", lastScore = 0;
 
         function hmwHandleInitialsKey(event) {
             if (event.key === "Enter") {
@@ -233,7 +236,6 @@
             currentAssessmentKey = select.value;
             if (!currentAssessmentKey) { document.getElementById("hmw-quiz-form").classList.add("hidden"); return; }
             
-            // If they typed initials but didn't press enter, grab it
             const initialsField = document.getElementById("initials-field");
             if (initialsField.value.trim().length > 0) {
                 persistentInitials = initialsField.value.trim();
@@ -262,7 +264,6 @@
             html += `</div></div>`;
             container.innerHTML = html;
             
-            // Back button handles returning to main screen if on Q1, or previous question otherwise
             const prevBtn = document.getElementById("prev-btn");
             prevBtn.style.display = "inline-flex";
             prevBtn.onclick = currentQuestionIndex === 0 ? hmwReturnToSelector : hmwPrevQuestion;
@@ -305,6 +306,7 @@
 
         function hmwShowResults() {
             let totalScore = Object.values(userAnswers).reduce((a, b) => a + b, 0);
+            lastScore = totalScore;
             const assessment = hmwData[currentAssessmentKey];
 
             if (persistentInitials) {
@@ -327,8 +329,41 @@
             document.getElementById("hmw-action-container").innerHTML = actionHtml;
         }
 
+        function hmwDownloadResults() {
+            const assessment = hmwData[currentAssessmentKey];
+            const dateStr = new Date().toLocaleDateString();
+            let reportContent = `HER MIND & WELLNESS - CLIENT ASSESSMENT SUMMARY\n`;
+            reportContent += `==============================================\n`;
+            reportContent += `Date: ${dateStr}\n`;
+            reportContent += `Client Initials: ${persistentInitials || 'N/A'}\n`;
+            reportContent += `Assessment: ${assessment.title}\n`;
+            reportContent += `Total Score: ${lastScore}\n`;
+            reportContent += `Interpretation: ${assessment.interpret(lastScore)}\n\n`;
+            reportContent += `Responses:\n`;
+            
+            assessment.questions.forEach((q, idx) => {
+                const ansVal = userAnswers[idx];
+                const optObj = assessment.options.find(o => o.value === ansVal);
+                const ansText = optObj ? optObj.text : 'N/A';
+                reportContent += `${idx + 1}. ${q}\n   -> Answer: ${ansText} (Score: ${ansVal})\n\n`;
+            });
+
+            reportContent += `----------------------------------------------\n`;
+            reportContent += `Her Mind & Wellness • https://hermindandwellness.com\n`;
+
+            const blob = new Blob([reportContent], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `HMW_${currentAssessmentKey.toUpperCase()}_Summary_${persistentInitials || 'Client'}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
         function hmwResetForm() {
-            currentAssessmentKey = null; currentQuestionIndex = 0; userAnswers = {};
+            currentAssessmentKey = null; currentQuestionIndex = 0; userAnswers = {}; lastScore = 0;
             document.getElementById("hmw-results-view").classList.remove("active");
             document.getElementById("selector-wrapper").classList.remove("hidden");
             document.getElementById("footer-disclaimer").classList.remove("hidden");

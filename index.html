@@ -804,7 +804,7 @@
             <h1 id="questionText" class="question-text" tabindex="-1">Loading...</h1>
             <div id="answerList" class="answer-list"></div>
             
-            <!-- BACK BUTTON PLACED DIRECTLY INSIDE QUESTION CARD -->
+            <!-- BACK BUTTON -->
             <div class="quiz-navigation">
                 <button id="backButton" type="button" class="nav-button" onclick="hmwGoBack()">
                     <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
@@ -813,7 +813,7 @@
             </div>
         </div>
 
-        <div class="quiz-help">Select the option that best reflects your experience over the past two weeks.</div>
+        <div class="quiz-help">Select the option that best reflects your experience.</div>
 
         <!-- PERMANENT IN-TEST EMERGENCY ACCESS -->
         <div class="test-crisis-box">
@@ -894,14 +894,14 @@ const HMW_ASSESSMENTS = {
         maxScore: 27,
         questions: [
             "Over the last 2 weeks, how often have you had little interest or pleasure in doing things?",
-            "Over the last 2 weeks, how often have you felt down, depressed, or hopeless?",
-            "Over the last 2 weeks, have you had trouble falling or staying asleep, or sleeping too much?",
-            "Over the last 2 weeks, have you felt tired or had little energy?",
-            "Over the last 2 weeks, have you experienced poor appetite or overeating?",
-            "Over the last 2 weeks, have you felt bad about yourself — or that you are a failure or have let yourself or your family down?",
-            "Over the last 2 weeks, have you had trouble concentrating on things, such as reading the newspaper or watching television?",
-            "Over the last 2 weeks, have you been moving or speaking so slowly that other people could have noticed? Or the opposite — being so fidgety or restless that you have been moving around a lot more than usual?",
-            "Over the last 2 weeks, have you had thoughts that you would be better off dead or of hurting yourself in some way?"
+            "Felt down, depressed, or hopeless?",
+            "Had trouble falling or staying asleep, or sleeping too much?",
+            "Felt tired or had little energy?",
+            "Experienced poor appetite or overeating?",
+            "Felt bad about yourself — or that you are a failure or have let yourself or your family down?",
+            "Had trouble concentrating on things, such as reading the newspaper or watching television?",
+            "Been moving or speaking so slowly that other people could have noticed? Or the opposite — being so fidgety or restless that you have been moving around a lot more than usual?",
+            "Had thoughts that you would be better off dead or of hurting yourself in some way?"
         ],
         answers: ["Not at all", "Several days", "More than half the days", "Nearly every day"],
         severity: function(score) {
@@ -917,12 +917,12 @@ const HMW_ASSESSMENTS = {
         maxScore: 21,
         questions: [
             "Over the last 2 weeks, how often have you been feeling nervous, anxious, or on edge?",
-            "Over the last 2 weeks, have you experienced not being able to stop or control worrying?",
-            "Over the last 2 weeks, have you been worrying too much about different things?",
-            "Over the last 2 weeks, have you experienced trouble relaxing?",
-            "Over the last 2 weeks, have you been so restless that it is hard to sit still?",
-            "Over the last 2 weeks, have you become easily annoyed or irritable?",
-            "Over the last 2 weeks, have you felt afraid as if something awful might happen?"
+            "Experienced not being able to stop or control worrying?",
+            "Been worrying too much about different things?",
+            "Experienced trouble relaxing?",
+            "Been so restless that it is hard to sit still?",
+            "Become easily annoyed or irritable?",
+            "Felt afraid as if something awful might happen?"
         ],
         answers: ["Not at all", "Several days", "More than half the days", "Nearly every day"],
         severity: function(score) {

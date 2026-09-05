@@ -181,7 +181,6 @@
             color: var(--text-color);
         }
 
-        /* Results Screen Styles */
         .score-display {
             font-size: 2rem;
             font-weight: bold;
@@ -266,9 +265,7 @@
             <div class="question-card">
                 <div id="progress-indicator" style="font-size: 0.85rem; color: #777; margin-bottom: 8px;">Question 1 of 9</div>
                 <div class="question-text" id="question-title">Loading question...</div>
-                <div class="options-list" id="options-container">
-                    <!-- Options populated via JS -->
-                </div>
+                <div class="options-list" id="options-container"></div>
                 <div class="nav-buttons">
                     <button class="btn btn-secondary" id="prev-btn" onclick="prevQuestion()">Back</button>
                     <button class="btn" id="next-btn" onclick="nextQuestion()">Next</button>
@@ -278,7 +275,6 @@
 
         <!-- RESULTS VIEW -->
         <div id="result-view" class="hidden">
-            <!-- Booking / Consultation Card -->
             <div class="result-card" style="text-align: center;">
                 <h3 style="margin-top: 0; color: var(--primary-color);">Support is available when you are ready.</h3>
                 <p style="font-size: 0.95rem; color: #555; margin-bottom: 20px;">If your results or daily well-being indicate a need for professional guidance, connecting with a specialist can help you move forward.</p>
@@ -286,14 +282,13 @@
                 <div style="font-size: 0.8rem; color: #777; margin-top: 8px;">Secure booking handled safely via Headway.</div>
             </div>
 
-            <!-- Score Breakdown & Crisis Support Card -->
             <div class="result-card" style="text-align: center;">
                 <div style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: #777;">Total Score</div>
                 <div class="score-display" id="score-text">0</div>
                 <div id="severity-badge" style="display: inline-block; background: #f0ebe1; padding: 4px 12px; border-radius: 12px; font-size: 0.85rem; font-weight: 600; color: var(--primary-color); margin-bottom: 12px;">Score Details</div>
                 <div class="result-description" id="result-desc">Processing results...</div>
 
-                <!-- Conditional Crisis Box -->
+                <!-- Crisis Box: Visible for ANY score >= 10 on either test, or Q9 self-harm flag -->
                 <div id="crisis-container" class="crisis-box hidden">
                     <h4>Support is Available Right Now</h4>
                     <p>Because you indicated feeling overwhelmed or distressed, please remember you don't have to carry this alone. Free, confidential support is available 24/7:</p>
@@ -369,11 +364,11 @@
             const container = document.getElementById('options-container');
             container.innerHTML = '';
 
-            choices.forEach((choice, index) => {
+            choices.forEach((choice) => {
                 const btn = document.createElement('button');
                 btn.className = 'option-btn';
                 if (userAnswers[currentIndex] === choice.value) {
-                    btn.classList.et ? btn.classList.add('selected') : btn.classList.add('selected');
+                    btn.classList.add('selected');
                 }
                 btn.innerText = choice.label;
                 btn.onclick = () => selectOption(choice.value);
@@ -427,43 +422,43 @@
             let severityText = "";
             let showCrisis = false;
 
-            // Universal threshold: Any moderate/severe score (10+) triggers support box for both GAD-7 and PHQ-9
+            // Force crisis box open for any moderate/severe score (10+) on GAD-7 or PHQ-9
             if (totalScore >= 10) {
                 showCrisis = true;
             }
 
             if (currentType === 'phq9') {
                 if (userAnswers[8] > 0) {
-                    showCrisis = true; // Safety flag if Q9 has any positive score
+                    showCrisis = true;
                 }
 
                 if (totalScore <= 4) {
                     severityText = "Minimal";
-                    description = "Your responses suggest minimal or no depressive symptoms recently. Continuing regular self-care practices is a great way to maintain this balance.";
+                    description = "Your responses suggest minimal or no depressive symptoms recently.";
                 } else if (totalScore <= 9) {
                     severityText = "Mild";
-                    description = "Your responses suggest mild depressive symptoms. Monitoring how you feel and speaking with a supportive professional can help keep things from escalating.";
+                    description = "Your responses suggest mild depressive symptoms.";
                 } else if (totalScore <= 14) {
                     severityText = "Moderate";
-                    description = "Your responses suggest moderate depressive symptoms that may be impacting your daily life and energy. Support and guidance can make a meaningful difference.";
+                    description = "Your responses suggest moderate depressive symptoms that may be impacting your daily life.";
                 } else {
                     severityText = "Severe";
-                    description = "Your responses suggest moderately severe to severe depressive symptoms. Professional guidance and care are strongly recommended to help support you through this.";
+                    description = "Your responses suggest severe depressive symptoms. Professional support is strongly recommended.";
                 }
             } else {
                 // GAD-7 Anxiety Check
                 if (totalScore <= 4) {
                     severityText = "Minimal";
-                    description = "Your responses suggest minimal anxiety levels. Maintaining your current wellness routines can help support ongoing calm.";
+                    description = "Your responses suggest minimal anxiety levels.";
                 } else if (totalScore <= 9) {
                     severityText = "Mild";
-                    description = "Your responses suggest mild anxiety. Practicing mindfulness and exploring supportive strategies can help manage everyday stressors.";
+                    description = "Your responses suggest mild anxiety.";
                 } else if (totalScore <= 14) {
                     severityText = "Moderate";
-                    description = "Your responses suggest moderate anxiety that may feel persistent or overwhelming at times. Speaking with a clinician can offer relief and effective tools.";
+                    description = "Your responses suggest moderate anxiety that may feel persistent or overwhelming at times.";
                 } else {
                     severityText = "Severe";
-                    description = "Your responses suggest severe anxiety symptoms. Reaching out for professional psychiatric care can provide structured, compassionate support.";
+                    description = "Your responses suggest severe anxiety symptoms. Reaching out for professional support can provide structured relief.";
                 }
             }
 

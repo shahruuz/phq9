@@ -9,6 +9,7 @@
   - v1.05: Added embedded changelog structure in code comments.
   - v1.06: Complete mobile UI redesign into a modern, full-screen native app layout.
   - v1.07: Fixed mobile container clipping and drastically increased text scale/readability.
+  - v1.08: Fixed Headway Booking Link
   ====================================================================
 -->
 <div id="hmw-assessment-container">
@@ -494,7 +495,7 @@
             document.getElementById("hmw-score-interpretation").innerText = assessment.interpret(totalScore);
 
             const actionContainer = document.getElementById("hmw-action-container");
-            let actionHtml = `<a href="https://www.headway.com" target="_blank" class="hmw-btn">Schedule Your Session via Headway</a>`;
+            let actionHtml = `<a href="https://care.headway.co/providers/elizabeth-ghadimi?utm_source=pem&utm_medium=direct_link&utm_campaign=207711" target="_blank" class="hmw-btn">Schedule Your Session via Headway</a>`;
 
             const selfHarmScore = userAnswers[8] || 0;
             if (totalScore >= 15 || selfHarmScore > 0) {

@@ -373,7 +373,7 @@
                 const btn = document.createElement('button');
                 btn.className = 'option-btn';
                 if (userAnswers[currentIndex] === choice.value) {
-                    btn.classList.add('selected');
+                    btn.classList.et ? btn.classList.add('selected') : btn.classList.add('selected');
                 }
                 btn.innerText = choice.label;
                 btn.onclick = () => selectOption(choice.value);
@@ -427,9 +427,14 @@
             let severityText = "";
             let showCrisis = false;
 
+            // Universal threshold: Any moderate/severe score (10+) triggers support box for both GAD-7 and PHQ-9
+            if (totalScore >= 10) {
+                showCrisis = true;
+            }
+
             if (currentType === 'phq9') {
-                if (userAnswers[8] > 0 || totalScore >= 10) {
-                    showCrisis = true; // Triggers for moderate (10+) or self-harm mention
+                if (userAnswers[8] > 0) {
+                    showCrisis = true; // Safety flag if Q9 has any positive score
                 }
 
                 if (totalScore <= 4) {
@@ -447,10 +452,6 @@
                 }
             } else {
                 // GAD-7 Anxiety Check
-                if (totalScore >= 10) {
-                    showCrisis = true; // Triggers for any moderate (10-14) or severe (15+) anxiety score
-                }
-
                 if (totalScore <= 4) {
                     severityText = "Minimal";
                     description = "Your responses suggest minimal anxiety levels. Maintaining your current wellness routines can help support ongoing calm.";

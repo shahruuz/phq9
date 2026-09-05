@@ -1,0 +1,394 @@
+<div id="hmw-assessment-container">
+    <style>
+        #hmw-assessment-container {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: #2D3748;
+            max-width: 700px;
+            margin: 40px auto;
+            background: #FDFBF7;
+            border: 1px solid #E2D9CE;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+            box-sizing: border-box;
+        }
+        #hmw-assessment-container * {
+            box-sizing: border-box;
+        }
+        #hmw-assessment-container h2 {
+            font-size: 24px;
+            font-weight: 500;
+            color: #3A4A42;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+        #hmw-assessment-container p.subtitle {
+            text-align: center;
+            color: #6B7C72;
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+        .hmw-select-wrapper {
+            margin-bottom: 20px;
+        }
+        .hmw-select-wrapper label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #3A4A42;
+        }
+        .hmw-select-wrapper select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #CBD5E1;
+            border-radius: 8px;
+            background: #FFFFFF;
+            font-size: 15px;
+            color: #2D3748;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .hmw-select-wrapper select:focus {
+            border-color: #6B7C72;
+        }
+        .hmw-question-card {
+            display: none;
+            animation: hmwFadeIn 0.3s ease-in-out;
+        }
+        .hmw-question-card.active {
+            display: block;
+        }
+        @keyframes hmwFadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .hmw-question-text {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+        .hmw-options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+        .hmw-option-label {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        .hmw-option-label:hover {
+            background: #F1F5F9;
+            border-color: #CBD5E1;
+        }
+        .hmw-option-label input {
+            margin-right: 12px;
+            accent-color: #5A6E62;
+        }
+        .hmw-nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #E2D9CE;
+            padding-top: 20px;
+        }
+        .hmw-btn {
+            background: #4A5D52;
+            color: #FFFFFF;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+        .hmw-btn:hover {
+            background: #3A4A42;
+        }
+        .hmw-btn-secondary {
+            background: transparent;
+            color: #4A5D52;
+            border: 1px solid #4A5D52;
+        }
+        .hmw-btn-secondary:hover {
+            background: #F1F5F9;
+        }
+        .hmw-btn-crisis {
+            background: #993333;
+            color: #FFFFFF;
+            margin-top: 10px;
+        }
+        .hmw-btn-crisis:hover {
+            background: #7A2828;
+        }
+        .hmw-progress {
+            font-size: 13px;
+            color: #6B7C72;
+        }
+        .hmw-results-card {
+            display: none;
+            text-align: center;
+        }
+        .hmw-results-card.active {
+            display: block;
+        }
+        .hmw-score-box {
+            background: #FFFFFF;
+            border: 1px solid #E2D9CE;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .hmw-score-number {
+            font-size: 28px;
+            font-weight: 600;
+            color: #3A4A42;
+            margin-bottom: 5px;
+        }
+        .hmw-action-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .hmw-disclaimer {
+            font-size: 11px;
+            color: #8C9C92;
+            margin-top: 25px;
+            line-height: 1.4;
+        }
+    </style>
+
+    <h2>Client Self-Assessment Tool</h2>
+    <p class="subtitle">Her Mind & Wellness • Safe, confidential check-ins</p>
+
+    <!-- Assessment Selector -->
+    <div class="hmw-select-wrapper" id="selector-wrapper">
+        <label for="assessment-type">Choose an assessment to begin:</label>
+        <select id="assessment-type" onchange="hmwLoadAssessment()">
+            <option value="">-- Select Assessment --</option>
+            <option value="phq9">PHQ-9 (Depression Screening)</option>
+            <option value="gad7">GAD-7 (Anxiety Screening)</option>
+        </select>
+    </div>
+
+    <!-- Dynamic Questionnaire Form -->
+    <div id="hmw-quiz-form" style="display:none;">
+        <div id="hmw-questions-container"></div>
+        
+        <div class="hmw-nav-buttons">
+            <button type="button" class="hmw-btn hmw-btn-secondary" id="prev-btn" onclick="hmwPrevQuestion()" style="display:none;">Back</button>
+            <span class="hmw-progress" id="hmw-progress-indicator">Question 1 of 9</span>
+            <button type="button" class="hmw-btn" id="next-btn" onclick="hmwNextQuestion()">Next</button>
+        </div>
+    </div>
+
+    <!-- Results View -->
+    <div class="hmw-results-card" id="hmw-results-view">
+        <h3>Assessment Complete</h3>
+        <div class="hmw-score-box">
+            <div class="hmw-score-number" id="hmw-final-score">Score: 0</div>
+            <p id="hmw-score-interpretation" style="font-size: 14px; color: #4A5D52; line-height: 1.5;"></p>
+        </div>
+        <p style="font-size: 14px; margin-bottom: 10px;">This score helps guide our conversation during your session. Take the next step in your care:</p>
+        
+        <div class="hmw-action-group" id="hmw-action-container">
+            <!-- Dynamic Buttons injected here based on severity -->
+        </div>
+
+        <br>
+        <button type="button" class="hmw-btn hmw-btn-secondary" onclick="hmwResetForm()">Start Over</button>
+    </div>
+
+    <div class="hmw-disclaimer">
+        <strong>Disclaimer:</strong> This interactive tool is for informational and self-reflection purposes only and does not constitute a formal medical diagnosis. If you are experiencing a mental health emergency, please call 911 or contact the 988 Suicide & Crisis Lifeline immediately.
+    </div>
+
+    <script>
+        const hmwData = {
+            phq9: {
+                title: "PHQ-9 Depression Screening",
+                options: [
+                    { text: "Not at all", value: 0 },
+                    { text: "Several days", value: 1 },
+                    { text: "More than half the days", value: 2 },
+                    { text: "Nearly every day", value: 3 }
+                ],
+                questions: [
+                    "Little interest or pleasure in doing things",
+                    "Feeling down, depressed, or hopeless",
+                    "Trouble falling or staying asleep, or sleeping too much",
+                    "Feeling tired or having little energy",
+                    "Poor appetite or overeating",
+                    "Feeling bad about yourself — or that you are a failure or have let yourself or your family down",
+                    "Trouble concentrating on things, such as reading the newspaper or watching television",
+                    "Moving or speaking so slowly that other people could have noticed? Or the opposite — being so fidgety or restless that you have been moving around a lot more than usual",
+                    "Thoughts that you would be better off dead or of hurting yourself in some way"
+                ],
+                interpret(score) {
+                    if (score <= 4) return "Minimal or no depression symptoms.";
+                    if (score <= 9) return "Mild depression symptoms.";
+                    if (score <= 14) return "Moderate depression symptoms.";
+                    if (score <= 19) return "Moderately severe depression symptoms.";
+                    return "Severe depression symptoms.";
+                }
+            },
+            gad7: {
+                title: "GAD-7 Anxiety Screening",
+                options: [
+                    { text: "Not at all", value: 0 },
+                    { text: "Several days", value: 1 },
+                    { text: "More than half the days", value: 2 },
+                    { text: "Nearly every day", value: 3 }
+                ],
+                questions: [
+                    "Feeling nervous, anxious, or on edge",
+                    "Not being able to stop or control worrying",
+                    "Worrying too much about different things",
+                    "Trouble relaxing",
+                    "Being so restless that it is hard to sit still",
+                    "Becoming easily annoyed or irritable",
+                    "Feeling afraid, as if something awful might happen"
+                ],
+                interpret(score) {
+                    if (score <= 4) return "Minimal anxiety.";
+                    if (score <= 9) return "Mild anxiety.";
+                    if (score <= 14) return "Moderate anxiety.";
+                    return "Severe anxiety.";
+                }
+            }
+        };
+
+        let currentAssessmentKey = null;
+        let currentQuestionIndex = 0;
+        let userAnswers = {};
+
+        function hmwLoadAssessment() {
+            const select = document.getElementById("assessment-type");
+            currentAssessmentKey = select.value;
+            
+            if (!currentAssessmentKey) {
+                document.getElementById("hmw-quiz-form").style.display = "none";
+                return;
+            }
+
+            currentQuestionIndex = 0;
+            userAnswers = {};
+            document.getElementById("selector-wrapper").style.display = "none";
+            document.getElementById("hmw-quiz-form").style.display = "block";
+            hmwRenderQuestion();
+        }
+
+        function hmwRenderQuestion() {
+            const assessment = hmwData[currentAssessmentKey];
+            const container = document.getElementById("hmw-questions-container");
+            
+            const qText = assessment.questions[currentQuestionIndex];
+            const options = assessment.options;
+            const savedAnswer = userAnswers[currentQuestionIndex];
+
+            let html = `
+                <div class="hmw-question-card active">
+                    <div class="hmw-question-text"><strong>${currentQuestionIndex + 1}.</strong> Over the last 2 weeks, how often have you been bothered by: <em>${qText}</em>?</div>
+                    <div class="hmw-options-list">
+            `;
+
+            options.forEach((opt) => {
+                const checked = savedAnswer === opt.value ? "checked" : "";
+                html += `
+                    <label class="hmw-option-label">
+                        <input type="radio" name="q_${currentQuestionIndex}" value="${opt.value}" ${checked} onchange="hmwSaveAnswer(${opt.value})">
+                        ${opt.text}
+                    </label>
+                `;
+            });
+
+            html += `</div></div>`;
+            container.innerHTML = html;
+
+            document.getElementById("prev-btn").style.display = currentQuestionIndex > 0 ? "inline-block" : "none";
+            document.getElementById("hmw-progress-indicator").innerText = `Question ${currentQuestionIndex + 1} of ${assessment.questions.length}`;
+            
+            const nextBtn = document.getElementById("next-btn");
+            if (currentQuestionIndex === assessment.questions.length - 1) {
+                nextBtn.innerText = "See Results";
+            } else {
+                nextBtn.innerText = "Next";
+            }
+        }
+
+        function hmwSaveAnswer(val) {
+            userAnswers[currentQuestionIndex] = val;
+        }
+
+        function hmwNextQuestion() {
+            if (userAnswers[currentQuestionIndex] === undefined) {
+                alert("Please select an option before proceeding.");
+                return;
+            }
+
+            const assessment = hmwData[currentAssessmentKey];
+            if (currentQuestionIndex < assessment.questions.length - 1) {
+                currentQuestionIndex++;
+                hmwRenderQuestion();
+            } else {
+                hmwShowResults();
+            }
+        }
+
+        function hmwPrevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                hmwRenderQuestion();
+            }
+        }
+
+        function hmwShowResults() {
+            let totalScore = Object.values(userAnswers).reduce((a, b) => a + b, 0);
+            const assessment = hmwData[currentAssessmentKey];
+            
+            document.getElementById("hmw-quiz-form").style.display = "none";
+            document.getElementById("hmw-results-view").classList.add("active");
+            
+            document.getElementById("hmw-final-score").innerText = `Total Score: ${totalScore}`;
+            document.getElementById("hmw-score-interpretation").innerText = assessment.interpret(totalScore);
+
+            // Dynamic Action Buttons based on severity or safety concerns
+            const actionContainer = document.getElementById("hmw-action-container");
+            let actionHtml = `<a href="https://www.headway.com" target="_blank" class="hmw-btn">Schedule Consultation via Headway</a>`;
+
+            // Check if PHQ-9 question 9 (index 8) has a score > 0 or total score is high
+            const selfHarmScore = userAnswers[8] || 0;
+            if (totalScore >= 15 || selfHarmScore > 0) {
+                actionHtml += `
+                    <a href="tel:988" class="hmw-btn hmw-btn-crisis">Call or Text 988 Suicide & Crisis Lifeline</a>
+                `;
+            }
+
+            actionContainer.innerHTML = actionHtml;
+        }
+
+        function hmwResetForm() {
+            currentAssessmentKey = null;
+            currentQuestionIndex = 0;
+            userAnswers = {};
+            document.getElementById("hmw-results-view").classList.remove("active");
+            document.getElementById("selector-wrapper").style.display = "block";
+            document.getElementById("assessment-type").value = "";
+        }
+    </script>
+</div>

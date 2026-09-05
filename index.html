@@ -99,7 +99,6 @@
             line-height: 1.4;
         }
 
-        /* Assessment Question View Styles */
         .hidden {
             display: none !important;
         }
@@ -110,6 +109,7 @@
             border-radius: 12px;
             padding: 30px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            margin-bottom: 16px;
         }
 
         .question-text {
@@ -183,17 +183,17 @@
 
         /* Results Screen Styles */
         .score-display {
-            font-size: 1.5rem;
+            font-size: 2rem;
             font-weight: bold;
             color: var(--primary-color);
-            margin-bottom: 12px;
+            margin: 8px 0;
         }
 
         .result-description {
             font-size: 1rem;
             line-height: 1.6;
             color: #444;
-            margin-bottom: 20px;
+            margin-top: 12px;
         }
 
         .crisis-box {
@@ -202,7 +202,6 @@
             padding: 16px;
             border-radius: 6px;
             margin-top: 20px;
-            margin-bottom: 20px;
             text-align: left;
         }
 
@@ -230,7 +229,6 @@
             border-radius: 6px;
             text-decoration: none;
             font-weight: 500;
-            margin-top: 10px;
         }
 
         .action-cta:hover {
@@ -280,12 +278,22 @@
 
         <!-- RESULTS VIEW -->
         <div id="result-view" class="hidden">
+            <!-- Booking / Consultation Card -->
             <div class="result-card" style="text-align: center;">
-                <h2 id="result-heading">Your Check-In Results</h2>
-                <div class="score-display" id="score-text">Score: 0</div>
+                <h3 style="margin-top: 0; color: var(--primary-color);">Support is available when you are ready.</h3>
+                <p style="font-size: 0.95rem; color: #555; margin-bottom: 20px;">If your results or daily well-being indicate a need for professional guidance, connecting with a specialist can help you move forward.</p>
+                <a href="https://hermindandwellness.com" target="_blank" rel="noopener noreferrer" class="action-cta">Schedule a Confidential Consultation</a>
+                <div style="font-size: 0.8rem; color: #777; margin-top: 8px;">Secure booking handled safely via Headway.</div>
+            </div>
+
+            <!-- Score Breakdown & Crisis Support Card -->
+            <div class="result-card" style="text-align: center;">
+                <div style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: #777;">Total Score</div>
+                <div class="score-display" id="score-text">0</div>
+                <div id="severity-badge" style="display: inline-block; background: #f0ebe1; padding: 4px 12px; border-radius: 12px; font-size: 0.85rem; font-weight: 600; color: var(--primary-color); margin-bottom: 12px;">Score Details</div>
                 <div class="result-description" id="result-desc">Processing results...</div>
 
-                <!-- Conditional Crisis Box -->
+                <!-- Conditional Crisis Box (Shows for high scores on both PHQ-9 and GAD-7) -->
                 <div id="crisis-container" class="crisis-box hidden">
                     <h4>Support is Available Right Now</h4>
                     <p>Because you indicated feeling overwhelmed or distressed, please remember you don't have to carry this alone. Free, confidential support is available 24/7:</p>
@@ -295,13 +303,10 @@
                         <li><strong>Call 911</strong> or visit your nearest emergency room if you are in immediate danger.</li>
                     </ul>
                 </div>
+            </div>
 
-                <div style="margin-top: 24px;">
-                    <a href="https://hermindandwellness.com" target="_blank" rel="noopener noreferrer" class="action-cta">Schedule a Confidential Consultation</a>
-                </div>
-                <div style="margin-top: 16px;">
-                    <button class="btn btn-secondary" onclick="resetToHome()">Take Another Check-In</button>
-                </div>
+            <div style="text-align: center; margin-top: 20px;">
+                <button class="btn btn-secondary" onclick="resetToHome()">Return to Main Menu</button>
             </div>
         </div>
     </div>
@@ -416,42 +421,53 @@
             document.getElementById('result-view').classList.remove('hidden');
 
             const totalScore = userAnswers.reduce((a, b) => a + b, 0);
-            document.getElementById('score-text').innerText = `Total Score: ${totalScore}`;
+            document.getElementById('score-text').innerText = totalScore;
 
             let description = "";
+            let severityText = "";
             let showCrisis = false;
 
             if (currentType === 'phq9') {
                 if (userAnswers[8] > 0) {
-                    showCrisis = true;
+                    showCrisis = true; // Q9 self-harm safety flag
                 }
 
                 if (totalScore <= 4) {
+                    severityText = "Minimal";
                     description = "Your responses suggest minimal or no depressive symptoms recently. Continuing regular self-care practices is a great way to maintain this balance.";
                 } else if (totalScore <= 9) {
+                    severityText = "Mild";
                     description = "Your responses suggest mild depressive symptoms. Monitoring how you feel and speaking with a supportive professional can help keep things from escalating.";
                 } else if (totalScore <= 14) {
+                    severityText = "Moderate";
                     description = "Your responses suggest moderate depressive symptoms that may be impacting your daily life and energy. Support and guidance can make a meaningful difference.";
-                    showCrisis = true;
+                    showCrisis = true; // Trigger crisis box for moderate/severe scores
                 } else {
+                    severityText = "Severe";
                     description = "Your responses suggest moderately severe to severe depressive symptoms. Professional guidance and care are strongly recommended to help support you through this.";
-                    showCrisis = true;
+                    showCrisis = true; // Trigger crisis box for moderate/severe scores
                 }
             } else {
                 // GAD-7 Anxiety Check
                 if (totalScore <= 4) {
+                    severityText = "Minimal";
                     description = "Your responses suggest minimal anxiety levels. Maintaining your current wellness routines can help support ongoing calm.";
                 } else if (totalScore <= 9) {
+                    severityText = "Mild";
                     description = "Your responses suggest mild anxiety. Practicing mindfulness and exploring supportive strategies can help manage everyday stressors.";
                 } else if (totalScore <= 14) {
+                    severityText = "Moderate";
+                    severityText = "Moderate";
                     description = "Your responses suggest moderate anxiety that may feel persistent or overwhelming at times. Speaking with a clinician can offer relief and effective tools.";
-                    showCrisis = true;
+                    showCrisis = true; // Trigger crisis box for moderate anxiety
                 } else {
+                    severityText = "Severe";
                     description = "Your responses suggest severe anxiety symptoms. Reaching out for professional psychiatric care can provide structured, compassionate support.";
-                    showCrisis = true;
+                    showCrisis = true; // Trigger crisis box for severe anxiety (like your score of 21)
                 }
             }
 
+            document.getElementById('severity-badge').innerText = severityText;
             document.getElementById('result-desc').innerText = description;
 
             const crisisContainer = document.getElementById('crisis-container');

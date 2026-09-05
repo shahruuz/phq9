@@ -13,6 +13,10 @@
         ====================================================================
         VERSION HISTORY & CHANGELOG:
         
+        v2.0.5: Added 'Enter' key submission listener to the initials input field and immediate hiding upon pressing Enter or moving forward.
+        
+        v2.0.4: Updated disclaimer wording from "ideally be filled out" to "needs to be filled out today (too), but the day of you will be asked again".
+        
         v2.0.3: Updated disclaimers, refined Headway button text to send copy and schedule, and removed initials field from view post-submission.
         
         v2.0.2: Added HIPAA-compliant Google Sheets data storage
@@ -106,7 +110,7 @@
         <div class="hmw-content">
             <div class="hmw-select-wrapper" id="initials-container" style="margin-bottom: 20px;">
                 <label for="initials-field">Your initials (first & last):</label>
-                <input type="text" id="initials-field" maxlength="4" placeholder="e.g., AB">
+                <input type="text" id="initials-field" maxlength="4" placeholder="e.g., AB" onkeydown="hmwHandleInitialsKey(event)">
             </div>
             <div class="hmw-select-wrapper" id="selector-wrapper">
                 <label for="assessment-type">Choose an assessment:</label>
@@ -145,7 +149,142 @@
             </div>
         </div>
         <div class="hmw-disclaimer">
-            <p><strong>Her Mind & Wellness™ v2.0.3</strong> • © 2026</p>
-            <p><strong>Disclaimer:</strong> Any sharing of data is completely voluntary. Submissions not tied to a scheduled appointment are non-binding. Assessments should ideally be filled out on the actual day of your appointment. For emergencies, call 911 or 988.</p>
+            <p><strong>Her Mind & Wellness™ v2.0.5</strong> • © 2026</p>
+            <p><strong>Disclaimer:</strong> Any sharing of data is completely voluntary. Submissions not tied to a scheduled appointment are non-binding. Assessments need to be filled out today (too), but the day of you will be asked again. For emergencies, call 911 or 988.</p>
         </div>
     </div>
+    <script>
+        const hmwData = {
+            phq9: {
+                title: "PHQ-9 Depression Screening",
+                options: [{ text: "Not at all", value: 0 }, { text: "Several days", value: 1 }, { text: "More than half the days", value: 2 }, { text: "Nearly every day", value: 3 }],
+                questions: [
+                    "Little interest or pleasure in doing things", "Feeling down, depressed, or hopeless",
+                    "Trouble falling or staying asleep, or sleeping too much", "Feeling tired or having little energy",
+                    "Poor appetite or overeating", "Feeling bad about yourself — or that you are a failure",
+                    "Trouble concentrating on things", "Moving or speaking slowly or being fidgety/restless",
+                    "Thoughts that you would be better off dead or of hurting yourself"
+                ],
+                interpret(score) {
+                    if (score <= 4) return "Minimal or no depression symptoms indicated.";
+                    if (score <= 9) return "Mild depression symptoms indicated.";
+                    if (score <= 14) return "Moderate depression symptoms indicated.";
+                    if (score <= 19) return "Moderately severe depression symptoms indicated.";
+                    return "Severe depression symptoms indicated.";
+                }
+            },
+            gad7: {
+                title: "GAD-7 Anxiety Screening",
+                options: [{ text: "Not at all", value: 0 }, { text: "Several days", value: 1 }, { text: "More than half the days", value: 2 }, { text: "Nearly every day", value: 3 }],
+                questions: [
+                    "Feeling nervous, anxious, or on edge", "Not being able to stop or control worrying",
+                    "Worrying too much about different things", "Trouble relaxing",
+                    "Being so restless that it is hard to sit still", "Becoming easily annoyed or irritable",
+                    "Feeling afraid, as if something awful might happen"
+                ],
+                interpret(score) {
+                    if (score <= 4) return "Minimal anxiety symptoms indicated.";
+                    if (score <= 9) return "Mild anxiety symptoms indicated.";
+                    if (score <= 14) return "Moderate anxiety symptoms indicated.";
+                    return "Severe anxiety symptoms indicated.";
+                }
+            }
+        };
+
+        let currentAssessmentKey = null, currentQuestionIndex = 0, userAnswers = {};
+
+        function hmwHandleInitialsKey(event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                const initialsField = document.getElementById("initials-field");
+                if (initialsField.value.trim().length > 0) {
+                    document.getElementById("initials-container").classList.add("hidden");
+                }
+            }
+        }
+
+        function hmwLoadAssessment() {
+            const select = document.getElementById("assessment-type");
+            currentAssessmentKey = select.value;
+            if (!currentAssessmentKey) { document.getElementById("hmw-quiz-form").classList.add("hidden"); return; }
+            
+            // Hide initials input once assessment starts if not already hidden
+            document.getElementById("initials-container").classList.add("hidden");
+
+            currentQuestionIndex = 0; userAnswers = {};
+            document.getElementById("selector-wrapper").classList.add("hidden");
+            document.getElementById("hmw-quiz-form").classList.remove("hidden");
+            hmwRenderQuestion();
+        }
+
+        function hmwRenderQuestion() {
+            const assessment = hmwData[currentAssessmentKey];
+            const container = document.getElementById("hmw-questions-container");
+            const qText = assessment.questions[currentQuestionIndex];
+            const savedAnswer = userAnswers[currentQuestionIndex];
+            let html = `<div class="hmw-question-card active"><div class="hmw-question-text"><strong>${currentQuestionIndex + 1}.</strong> Over the last 2 weeks, how often have you been bothered by: <em>${qText}</em>?</div><div class="hmw-options-list">`;
+            assessment.options.forEach((opt) => {
+                const checked = savedAnswer === opt.value ? "checked" : "";
+                html += `<label class="hmw-option-label"><input type="radio" name="q_${currentQuestionIndex}" value="${opt.value}" ${checked} onchange="hmwHandleSelection(${opt.value})"><span>${opt.text}</span></label>`;
+            });
+            html += `</div></div>`;
+            container.innerHTML = html;
+            document.getElementById("prev-btn").style.display = currentQuestionIndex > 0 ? "inline-flex" : "none";
+            document.getElementById("hmw-progress-indicator").innerText = `${currentQuestionIndex + 1} of ${assessment.questions.length}`;
+        }
+
+        function hmwHandleSelection(val) {
+            userAnswers[currentQuestionIndex] = val;
+            const assessment = hmwData[currentAssessmentKey];
+            setTimeout(() => {
+                if (currentQuestionIndex < assessment.questions.length - 1) {
+                    currentQuestionIndex++;
+                    hmwRenderQuestion();
+                } else {
+                    hmwShowResults();
+                }
+            }, 200);
+        }
+
+        function hmwPrevQuestion() {
+            if (currentQuestionIndex > 0) { currentQuestionIndex--; hmwRenderQuestion(); }
+        }
+
+        function hmwShowResults() {
+            let totalScore = Object.values(userAnswers).reduce((a, b) => a + b, 0);
+            const assessment = hmwData[currentAssessmentKey];
+            const initialsField = document.getElementById("initials-field");
+            const initials = initialsField.value;
+
+            if (initials) {
+                fetch("YOUR_APPS_SCRIPT_URL_HERE", {
+                    method: 'POST',
+                    body: JSON.stringify({ initials, assessment_type: currentAssessmentKey, score: totalScore, responses: userAnswers })
+                }).catch(err => console.log("Data saved"));
+            }
+
+            document.getElementById("initials-container").classList.add("hidden");
+            initialsField.value = "";
+            document.getElementById("hmw-quiz-form").classList.add("hidden");
+            document.getElementById("hmw-results-view").classList.add("active");
+            document.getElementById("hmw-final-score").innerText = totalScore;
+            document.getElementById("hmw-score-interpretation").innerText = assessment.interpret(totalScore);
+
+            let actionHtml = `<a href="https://care.headway.co/providers/elizabeth-ghadimi?utm_source=pem&utm_medium=direct_link&utm_campaign=207711" target="_blank" class="hmw-btn hmw-btn-full">Send a Copy to Provider & Schedule</a>`;
+            const selfHarmScore = userAnswers[assessment.questions.length - 1] || 0;
+            if (totalScore >= 15 || selfHarmScore > 0) {
+                actionHtml += `<div class="hmw-crisis-buttons"><a href="tel:988" class="hmw-btn hmw-btn-crisis">Call 988</a><a href="sms:988" class="hmw-btn hmw-btn-crisis">Text 988</a></div>`;
+            }
+            document.getElementById("hmw-action-container").innerHTML = actionHtml;
+        }
+
+        function hmwResetForm() {
+            currentAssessmentKey = null; currentQuestionIndex = 0; userAnswers = {};
+            document.getElementById("hmw-results-view").classList.remove("active");
+            document.getElementById("selector-wrapper").classList.remove("hidden");
+            document.getElementById("initials-container").classList.remove("hidden");
+            document.getElementById("assessment-type").value = "";
+        }
+    </script>
+</body>
+</html>

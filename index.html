@@ -141,11 +141,18 @@
             font-size: 15px;
         }
 
+        .badge-row {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 16px;
+        }
+
         .privacy-badge {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            margin-top: 16px;
             padding: 6px 14px;
             background: var(--accent-light);
             color: var(--accent-dark);
@@ -690,9 +697,15 @@
                 These brief questionnaires help you understand how you've been feeling recently 
                 and whether professional support may be helpful.
             </p>
-            <div class="privacy-badge">
-                <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                <span>Confidential browser screening</span>
+            <div class="badge-row">
+                <div class="privacy-badge">
+                    <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    <span>Confidential browser screening</span>
+                </div>
+                <div class="privacy-badge" style="background: var(--primary-light); color: var(--primary-dark);">
+                    <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    <span>Free to use for everyone</span>
+                </div>
             </div>
         </div>
 
@@ -816,7 +829,7 @@
 
 <footer>
     <div>Created by <a href="https://hermindandwellness.com" target="_blank" rel="noopener noreferrer">Her Mind and Wellness</a></div>
-    <div style="margin-top:4px;">Texas Telehealth Psychiatric Care</div>
+    <div style="margin-top:4px;">Texas Telehealth Psychiatric Care • Free self-assessment tool</div>
 </footer>
 
 <script>

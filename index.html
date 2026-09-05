@@ -1,4 +1,14 @@
-<!-- Her Mind & Wellness Client Self-Assessment Widget | Trademark © 2026 | Version 1.03 -->
+<!-- 
+  Her Mind & Wellness Client Self-Assessment Widget | Trademark © 2026 
+  ====================================================================
+  VERSION HISTORY & CHANGELOG:
+  - v1.01: Initial widget layout with PHQ-9 and GAD-7 screening tools.
+  - v1.02: Added manual display size switchers and formal trademark notice.
+  - v1.03: Removed manual switcher; introduced automatic screen detection.
+  - v1.04: Configured strict 100vw/100vh mobile viewports to prevent dead space.
+  - v1.05: Finalized full-screen app-like mobile flow with edge-to-edge layout.
+  ====================================================================
+-->
 <div id="hmw-assessment-container">
     <style>
         /* Base Container & Default Desktop Sizing */
@@ -217,22 +227,35 @@
             padding-top: 14px;
         }
 
-        /* Responsive App-Like Mobile Overrides (Screens under 600px) */
-        @media screen and (max-width: 600px) {
+        /* True Full-Screen App-Like Mobile Overrides (Screens under 768px) */
+        @media screen and (max-width: 768px) {
+            body {
+                margin: 0 !important;
+                padding: 0 !important;
+            }
             #hmw-assessment-container {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                height: 100dvh;
                 margin: 0;
-                width: 100%;
-                max-width: 100%;
-                min-height: 100vh;
+                max-width: none;
                 border: none;
                 border-radius: 0;
-                padding: 20px 16px;
+                padding: 24px 20px;
                 box-shadow: none;
                 font-size: 18px;
+                overflow-y: auto;
+                z-index: 99999;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
             }
             .hmw-option-label {
                 padding: 20px 18px;
-                font-size: 1.1em;
+                font-size: 1.12em;
             }
             .hmw-select-wrapper select {
                 padding: 18px;
@@ -242,61 +265,67 @@
                 padding: 18px;
                 font-size: 1.1em;
             }
+            .hmw-disclaimer {
+                margin-top: auto;
+                padding-top: 20px;
+            }
         }
     </style>
 
-    <h2>Client Self-Assessment Tool</h2>
-    <p class="subtitle">Her Mind & Wellness • Safe, confidential check-ins</p>
+    <div>
+        <h2>Client Self-Assessment Tool</h2>
+        <p class="subtitle">Her Mind & Wellness • Safe, confidential check-ins</p>
 
-    <!-- Assessment Selector -->
-    <div class="hmw-select-wrapper" id="selector-wrapper">
-        <label for="assessment-type">Choose an assessment to begin:</label>
-        <select id="assessment-type" onchange="hmwLoadAssessment()">
-            <option value="">-- Select Assessment --</option>
-            <option value="phq9">PHQ-9 (Depression Screening)</option>
-            <option value="gad7">GAD-7 (Anxiety Screening)</option>
-        </select>
-    </div>
-
-    <!-- Dynamic Questionnaire Form -->
-    <div id="hmw-quiz-form" style="display:none;">
-        <div id="hmw-questions-container"></div>
-        
-        <div class="hmw-nav-buttons">
-            <button type="button" class="hmw-btn hmw-btn-secondary" id="prev-btn" onclick="hmwPrevQuestion()" style="display:none;">← Back</button>
-            <span class="hmw-progress" id="hmw-progress-indicator">Step 1 of 9</span>
-            <div></div>
+        <!-- Assessment Selector -->
+        <div class="hmw-select-wrapper" id="selector-wrapper">
+            <label for="assessment-type">Choose an assessment to begin:</label>
+            <select id="assessment-type" onchange="hmwLoadAssessment()">
+                <option value="">-- Select Assessment --</option>
+                <option value="phq9">PHQ-9 (Depression Screening)</option>
+                <option value="gad7">GAD-7 (Anxiety Screening)</option>
+            </select>
         </div>
-    </div>
 
-    <!-- Results View -->
-    <div class="hmw-results-card" id="hmw-results-view">
-        <h3>Assessment Complete</h3>
-        <p style="font-size: 0.95em; color: #6B7C72; margin-top: 4px;">Thank you for taking a moment to reflect on your well-being.</p>
-        
-        <div class="hmw-score-box">
-            <div class="hmw-score-header">
-                <span style="font-size: 0.95em; color: #6B7C72; font-weight: 500;">Your Summary Result</span>
-                <div class="hmw-score-number" id="hmw-final-score">Score: 0</div>
-            </div>
-            <p id="hmw-score-interpretation" style="font-size: 1.05em; color: #2D3748; line-height: 1.5; font-weight: 500;"></p>
-            <p style="font-size: 0.9em; color: #6B7C72; margin-top: 8px;">Bringing these insights to a session can help us tailor a supportive, personalized plan moving forward.</p>
-        </div>
-        
-        <div class="hmw-conversion-box">
-            <h4>Ready to take the next step?</h4>
-            <p>Schedule your confidential consultation seamlessly online through Headway. We're here to support your path forward.</p>
-            <div class="hmw-action-group" id="hmw-action-container">
-                <!-- Dynamic Buttons injected here -->
+        <!-- Dynamic Questionnaire Form -->
+        <div id="hmw-quiz-form" style="display:none;">
+            <div id="hmw-questions-container"></div>
+            
+            <div class="hmw-nav-buttons">
+                <button type="button" class="hmw-btn hmw-btn-secondary" id="prev-btn" onclick="hmwPrevQuestion()" style="display:none;">← Back</button>
+                <span class="hmw-progress" id="hmw-progress-indicator">Step 1 of 9</span>
+                <div></div>
             </div>
         </div>
 
-        <br>
-        <button type="button" class="hmw-btn hmw-btn-secondary" onclick="hmwResetForm()">Take Another Assessment</button>
+        <!-- Results View -->
+        <div class="hmw-results-card" id="hmw-results-view">
+            <h3>Assessment Complete</h3>
+            <p style="font-size: 0.95em; color: #6B7C72; margin-top: 4px;">Thank you for taking a moment to reflect on your well-being.</p>
+            
+            <div class="hmw-score-box">
+                <div class="hmw-score-header">
+                    <span style="font-size: 0.95em; color: #6B7C72; font-weight: 500;">Your Summary Result</span>
+                    <div class="hmw-score-number" id="hmw-final-score">Score: 0</div>
+                </div>
+                <p id="hmw-score-interpretation" style="font-size: 1.05em; color: #2D3748; line-height: 1.5; font-weight: 500;"></p>
+                <p style="font-size: 0.9em; color: #6B7C72; margin-top: 8px;">Bringing these insights to a session can help us tailor a supportive, personalized plan moving forward.</p>
+            </div>
+            
+            <div class="hmw-conversion-box">
+                <h4>Ready to take the next step?</h4>
+                <p>Schedule your confidential consultation seamlessly online through Headway. We're here to support your path forward.</p>
+                <div class="hmw-action-group" id="hmw-action-container">
+                    <!-- Dynamic Buttons injected here -->
+                </div>
+            </div>
+
+            <br>
+            <button type="button" class="hmw-btn hmw-btn-secondary" onclick="hmwResetForm()">Take Another Assessment</button>
+        </div>
     </div>
 
     <div class="hmw-disclaimer">
-        <p style="margin: 0 0 6px 0;"><strong>Her Mind & Wellness™ v1.03</strong> • Developed by Her Mind & Wellness, PLLC © 2026. All rights reserved.</p>
+        <p style="margin: 0 0 6px 0;"><strong>Her Mind & Wellness™ v1.05</strong> • Developed by Her Mind & Wellness, PLLC © 2026. All rights reserved.</p>
         <strong>Disclaimer:</strong> This interactive tool is for informational and self-reflection purposes only and does not constitute a formal medical diagnosis. If you are experiencing a mental health emergency, please call 911 or contact the 988 Suicide & Crisis Lifeline immediately.
     </div>
 

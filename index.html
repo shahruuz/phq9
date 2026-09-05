@@ -1,869 +1,2807 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!--
-        Her Mind & Wellness Client Self-Assessment Tool
-        ==============================================
-        VERSION HISTORY & CHANGELOG:
+<meta charset="UTF-8">
 
-        v2.0.10: Softened disclaimer language
-        v2.0.9: Added a secure PDF/Text report download option
-        v2.0.8: Added an editable initials feature with persistence
-        v2.0.7: Preserved saved initials across reset and selection flows
-        v2.0.6: Polished disclaimer text for clarity and mobile layout
-        v2.0.5: Added 'Enter' key submission handlers for initialization
-        v2.0.4: Updated disclaimer wording and support contact links
-        v2.0.3: Updated disclaimers, refined styling, and added PWA banner
-        v2.0.2: Added HIPAA-compliant Google Apps Script logging integration
-                - Integrated Apps Script endpoint for encrypted scores
-                - Added initials field for user verification tracking
-                - Maintains audit trail for clinical follow-ups
-    -->
-    <meta charset="UTF-8">
-    <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="HMW Assessment">
-    <meta name="theme-color" content="#F4EFE6">
-    <title>Client Self-Assessment Tool • Her Mind & Wellness</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-canvas: #F8F6F0;
-            --bg-card: #FFFFFF;
-            --primary: #2C4A3E;
-            --primary-hover: #1E332B;
-            --primary-light: #E8F0EC;
-            --accent: #D4A373;
-            --text-main: #2D3732;
-            --text-muted: #6B7C73;
-            --border: #E3EDE7;
-            --border-focus: #2C4A3E;
-            --danger: #A33333;
-            --radius-sm: 10px;
-            --radius-md: 16px;
-            --radius-lg: 24px;
-            --shadow-subtle: 0 4px 24px rgba(44, 74, 62, 0.05);
-            --shadow-card: 0 12px 36px rgba(44, 74, 62, 0.07);
-            --transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        }
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0,
+               viewport-fit=cover">
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        html, body {
-            width: 100%;
-            height: 100%;
-            height: 100vh;
-            height: 100dvh;
-            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-            background-color: var(--bg-canvas);
-            color: var(--text-main);
-            font-size: 16px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
+<meta name="theme-color" content="#F7F4EE">
 
-        #hmw-assessment-container {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            background: radial-gradient(circle at top right, #FAF8F5 0%, var(--bg-canvas) 100%);
-            overflow: hidden;
-            position: relative;
-        }
+<title>Wellness Check-In | Her Mind & Wellness</title>
 
-        .hmw-app-header {
-            flex-shrink: 0;
-            padding: max(20px, env(safe-area-inset-top, 20px)) 24px 18px;
-            text-align: center;
-            background: rgba(248, 246, 240, 0.9);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 6px;
-            z-index: 10;
-        }
+<!-- PDF GENERATION -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-        .hmw-brand-badge {
-            font-size: 0.75rem;
-            font-weight: 700;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            color: var(--primary);
-            background: var(--primary-light);
-            padding: 5px 12px;
-            border-radius: 20px;
-        }
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-        #hmw-assessment-container h2 {
-            font-size: clamp(1.3rem, 4vw, 1.6rem);
-            font-weight: 700;
-            color: var(--primary);
-            letter-spacing: -0.02em;
-        }
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet">
 
-        #hmw-assessment-container p.subtitle {
-            color: var(--text-muted);
-            font-size: clamp(0.85rem, 2.5vw, 0.95rem);
-            font-weight: 500;
-        }
+<style>
 
-        .hmw-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
-            overflow-x: hidden;
-            -webkit-overflow-scrolling: touch;
-            padding: 24px;
-            max-width: 680px;
-            width: 100%;
-            margin: 0 auto;
-            gap: 24px;
-        }
+:root {
+    --bg: #F7F4EE;
+    --surface: #FFFFFF;
+    --surface-soft: #F4F8F5;
 
-        .hmw-card-box {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            padding: 28px;
-            box-shadow: var(--shadow-card);
-            transition: var(--transition);
-        }
+    --primary: #2C4A3E;
+    --primary-dark: #20372E;
+    --primary-light: #E8F0EC;
 
-        .hmw-select-wrapper {
-            display: flex;
-            flex-direction: column;
-            gap: 18px;
-        }
+    --accent: #C99A6B;
 
-        .hmw-select-wrapper label {
-            font-weight: 600;
-            font-size: 1rem;
-            color: var(--primary);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+    --text: #29342F;
+    --muted: #718078;
 
-        .hmw-input-group {
-            display: flex;
-            gap: 12px;
-        }
+    --border: #E1E9E4;
 
-        .hmw-select-wrapper select, 
-        .hmw-select-wrapper input {
-            width: 100%;
-            padding: 16px 20px;
-            border: 2px solid var(--border);
-            border-radius: var(--radius-md);
-            background: #FAFAFC;
-            font-family: inherit;
-            font-size: 1rem;
-            color: var(--text-main);
-            font-weight: 500;
-            outline: none;
-            transition: var(--transition);
-        }
+    --danger: #A33A3A;
+    --danger-light: #FAEEEE;
 
-        .hmw-select-wrapper select:focus, 
-        .hmw-select-wrapper input:focus {
-            border-color: var(--border-focus);
-            background: var(--bg-card);
-            box-shadow: 0 0 0 4px rgba(44, 74, 62, 0.08);
-        }
+    --radius: 20px;
 
-        .hmw-initials-display-card {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 16px 22px;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-md);
-            box-shadow: var(--shadow-subtle);
-        }
+    --shadow:
+        0 10px 35px rgba(44,74,62,.07);
 
-        .hmw-initials-display-card span {
-            font-weight: 500;
-            color: var(--text-muted);
-            font-size: 0.95rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+    --transition:
+        all .25s cubic-bezier(.16,1,.3,1);
+}
 
-        .hmw-initials-display-card strong {
-            color: var(--primary);
-            background: var(--primary-light);
-            padding: 4px 12px;
-            border-radius: var(--radius-sm);
-            font-family: monospace;
-            font-size: 1.05rem;
-        }
+* {
+    box-sizing: border-box;
+}
 
-        .hmw-text-btn {
-            background: none;
-            border: none;
-            color: var(--primary);
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 0.9rem;
-            padding: 6px 12px;
-            border-radius: 8px;
-            transition: var(--transition);
-        }
+html,
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100%;
+}
 
-        .hmw-text-btn:hover {
-            background: var(--primary-light);
-        }
+body {
+    font-family:
+        'Plus Jakarta Sans',
+        -apple-system,
+        BlinkMacSystemFont,
+        sans-serif;
 
-        #hmw-quiz-form {
-            display: flex;
-            flex-direction: column;
-            flex: 1;
-            justify-content: space-between;
-            gap: 20px;
-            min-height: 100%;
-        }
+    background:
+        radial-gradient(
+            circle at top right,
+            #FCFAF6 0,
+            var(--bg) 45%
+        );
 
-        .hmw-questions-container {
-            display: flex;
-            flex-direction: column;
-        }
+    color: var(--text);
+}
 
-        .hmw-question-card {
-            display: none;
-            flex-direction: column;
-            gap: 24px;
-            animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
+button,
+select,
+input {
+    font: inherit;
+}
 
-        .hmw-question-card.active {
-            display: flex;
-        }
+button,
+a {
+    -webkit-tap-highlight-color: transparent;
+}
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+/* --------------------------------------------------
+   APP
+-------------------------------------------------- */
 
-        .hmw-question-text {
-            font-size: clamp(1.15rem, 3.8vw, 1.35rem);
-            font-weight: 600;
-            line-height: 1.5;
-            color: var(--text-main);
-        }
+#hmw-app {
+    min-height: 100vh;
+    min-height: 100dvh;
 
-        .hmw-options-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
+    display: flex;
+    flex-direction: column;
+}
 
-        .hmw-option-label {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            padding: 18px 22px;
-            background: var(--bg-card);
-            border: 2px solid var(--border);
-            border-radius: var(--radius-md);
-            cursor: pointer;
-            font-size: 1.05rem;
-            font-weight: 500;
-            color: var(--text-main);
-            transition: var(--transition);
-            box-shadow: var(--shadow-subtle);
-        }
+/* --------------------------------------------------
+   HEADER
+-------------------------------------------------- */
 
-        .hmw-option-label:hover {
-            border-color: #CBDCE3;
-            background: #FCFDFD;
-            transform: translateY(-1px);
-        }
+.hmw-header {
+    text-align: center;
 
-        .hmw-option-label input[type="radio"] {
-            appearance: none;
-            -webkit-appearance: none;
-            width: 24px;
-            height: 24px;
-            border: 2px solid #CBD5E1;
-            border-radius: 50%;
-            outline: none;
-            transition: var(--transition);
-            position: relative;
-            display: grid;
-            place-content: center;
-            flex-shrink: 0;
-        }
+    padding:
+        max(24px, env(safe-area-inset-top))
+        20px
+        18px;
 
-        .hmw-option-label input[type="radio"]::before {
-            content: "";
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            transform: scale(0);
-            transition: 120ms transform ease-in-out;
-            background: #FFFFFF;
-        }
+    border-bottom: 1px solid var(--border);
 
-        .hmw-option-label input[type="radio"]:checked {
-            background-color: var(--primary);
-            border-color: var(--primary);
-        }
+    background:
+        rgba(247,244,238,.92);
 
-        .hmw-option-label input[type="radio"]:checked::before {
-            transform: scale(1);
-        }
+    backdrop-filter: blur(15px);
 
-        .hmw-option-label:has(input[type="radio"]:checked) {
-            border-color: var(--primary);
-            background: var(--primary-light);
-            color: var(--primary);
-            font-weight: 600;
-            box-shadow: 0 4px 16px rgba(44, 74, 62, 0.08);
-        }
+    position: sticky;
+    top: 0;
 
-        .hmw-nav-buttons {
-            flex-shrink: 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 0 10px;
-            margin-top: auto;
-            border-top: 1px solid var(--border);
-            gap: 12px;
-        }
+    z-index: 20;
+}
 
-        .hmw-left-nav-group {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            width: 100%;
-        }
+.hmw-brand {
+    display: inline-flex;
+    align-items: center;
 
-        .hmw-q-badge-inline {
-            font-size: 0.8rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1.1px;
-            color: var(--primary);
-            background: var(--primary-light);
-            padding: 14px 16px;
-            border-radius: var(--radius-md);
-            border: 1px solid #D1E2D9;
-            white-space: nowrap;
-        }
+    padding: 6px 12px;
 
-        .hmw-btn {
-            background: var(--primary);
-            color: #FFFFFF;
-            border: none;
-            padding: 16px 28px;
-            border-radius: var(--radius-md);
-            font-family: inherit;
-            font-weight: 600;
-            font-size: 1rem;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            transition: var(--transition);
-            box-shadow: 0 6px 16px rgba(44, 74, 62, 0.15);
-        }
+    background: var(--primary-light);
 
-        .hmw-btn:hover {
-            background: var(--primary-hover);
-            transform: translateY(-1px);
-            box-shadow: 0 8px 20px rgba(44, 74, 62, 0.22);
-        }
+    color: var(--primary);
 
-        .hmw-btn-secondary {
-            background: transparent;
-            color: var(--primary);
-            border: 2px solid var(--border);
-            box-shadow: none;
-        }
+    border-radius: 999px;
 
-        .hmw-btn-secondary:hover {
-            background: var(--primary-light);
-            border-color: var(--primary);
-            color: var(--primary-hover);
-        }
+    font-size: 11px;
+    font-weight: 700;
 
-        .hmw-btn-full {
-            width: 100%;
-        }
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+}
 
-        .hmw-btn-crisis {
-            background: var(--danger);
-            box-shadow: 0 6px 16px rgba(163, 51, 51, 0.2);
-        }
+.hmw-header h1 {
+    margin: 9px 0 4px;
 
-        .hmw-btn-crisis:hover {
-            background: #8A2B2B;
-        }
+    color: var(--primary);
 
-        .hmw-results-card {
-            display: none;
-            flex-direction: column;
-            gap: 20px;
-            flex: 1;
-            overflow-y: auto;
-            animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
+    font-size:
+        clamp(1.35rem, 4vw, 1.7rem);
 
-        .hmw-results-card.active {
-            display: flex;
-        }
+    line-height: 1.2;
 
-        .hmw-results-header {
-            text-align: center;
-            margin-bottom: 4px;
-        }
+    letter-spacing: -.03em;
+}
 
-        .hmw-results-header h3 {
-            font-size: 1.65rem;
-            color: var(--primary);
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
+.hmw-header p {
+    margin: 0;
 
-        .hmw-results-header p {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-        }
+    color: var(--muted);
 
-        .hmw-score-box, .hmw-conversion-box, .hmw-pwa-banner {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            padding: 24px;
-            box-shadow: var(--shadow-subtle);
-        }
+    font-size: .88rem;
+}
 
-        .hmw-conversion-box {
-            border-color: #D1E2D9;
-            background: linear-gradient(135deg, #FFFFFF 0%, #F4F8F6 100%);
-        }
+/* --------------------------------------------------
+   MAIN
+-------------------------------------------------- */
 
-        .hmw-pwa-banner {
-            background: var(--primary-light);
-            border-color: #C6DCD1;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            align-items: flex-start;
-        }
+.hmw-main {
+    width: 100%;
+    max-width: 680px;
 
-        .hmw-score-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-            font-weight: 600;
-            color: var(--text-muted);
-            font-size: 0.95rem;
-        }
+    margin: 0 auto;
 
-        .hmw-score-number {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--primary);
-        }
+    padding:
+        24px
+        20px
+        40px;
+}
 
-        .hmw-action-group {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            width: 100%;
-            margin-top: 16px;
-        }
+/* --------------------------------------------------
+   SCREEN
+-------------------------------------------------- */
 
-        .hmw-crisis-buttons {
-            display: flex;
-            gap: 12px;
-            width: 100%;
-        }
+.hmw-screen {
+    display: none;
+}
 
-        .hmw-crisis-buttons .hmw-btn {
-            flex: 1;
-        }
+.hmw-screen.active {
+    display: block;
 
-        .hmw-disclaimer {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            padding: 16px 24px;
-            background: rgba(255, 255, 255, 0.6);
-            border-top: 1px solid var(--border);
-            line-height: 1.6;
-            text-align: center;
-        }
+    animation:
+        hmwFadeIn .35s ease;
+}
 
-        .hidden { display: none !important; }
-    </style>
+@keyframes hmwFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* --------------------------------------------------
+   HERO
+-------------------------------------------------- */
+
+.hmw-intro {
+    text-align: center;
+
+    padding:
+        18px
+        4px
+        26px;
+}
+
+.hmw-intro h2 {
+    margin: 0 0 10px;
+
+    color: var(--primary);
+
+    font-size:
+        clamp(1.5rem, 5vw, 2rem);
+
+    line-height: 1.2;
+
+    letter-spacing: -.035em;
+}
+
+.hmw-intro p {
+    margin: 0 auto;
+
+    max-width: 530px;
+
+    color: var(--muted);
+
+    line-height: 1.65;
+
+    font-size: .95rem;
+}
+
+/* --------------------------------------------------
+   ASSESSMENT CARDS
+-------------------------------------------------- */
+
+.hmw-assessment-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 14px;
+}
+
+.hmw-assessment-card {
+    position: relative;
+
+    border: 2px solid var(--border);
+
+    background: var(--surface);
+
+    border-radius: var(--radius);
+
+    padding: 22px 18px;
+
+    cursor: pointer;
+
+    transition: var(--transition);
+
+    box-shadow: var(--shadow);
+}
+
+.hmw-assessment-card:hover {
+    transform: translateY(-2px);
+
+    border-color: #BFD2C7;
+}
+
+.hmw-assessment-card:active {
+    transform: scale(.98);
+}
+
+.hmw-assessment-icon {
+    width: 42px;
+    height: 42px;
+
+    display: grid;
+    place-items: center;
+
+    margin-bottom: 14px;
+
+    border-radius: 13px;
+
+    background: var(--primary-light);
+
+    font-size: 20px;
+}
+
+.hmw-assessment-card h3 {
+    margin: 0 0 6px;
+
+    color: var(--primary);
+
+    font-size: 1rem;
+}
+
+.hmw-assessment-card p {
+    margin: 0;
+
+    color: var(--muted);
+
+    font-size: .78rem;
+
+    line-height: 1.5;
+}
+
+.hmw-card-footer {
+    margin-top: 20px;
+
+    padding-top: 18px;
+
+    border-top: 1px solid var(--border);
+
+    text-align: center;
+
+    color: var(--muted);
+
+    font-size: .76rem;
+
+    line-height: 1.55;
+}
+
+/* --------------------------------------------------
+   ASSESSMENT SCREEN
+-------------------------------------------------- */
+
+.hmw-progress-area {
+    margin-bottom: 22px;
+}
+
+.hmw-progress-top {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-bottom: 8px;
+}
+
+.hmw-progress-label {
+    color: var(--primary);
+
+    font-size: .76rem;
+
+    font-weight: 700;
+
+    letter-spacing: .8px;
+
+    text-transform: uppercase;
+}
+
+.hmw-progress-count {
+    color: var(--muted);
+
+    font-size: .78rem;
+
+    font-weight: 600;
+}
+
+.hmw-progress-track {
+    width: 100%;
+    height: 6px;
+
+    background: #E5ECE8;
+
+    border-radius: 99px;
+
+    overflow: hidden;
+}
+
+.hmw-progress-bar {
+    height: 100%;
+
+    width: 0%;
+
+    background: var(--primary);
+
+    border-radius: inherit;
+
+    transition:
+        width .35s ease;
+}
+
+/* --------------------------------------------------
+   QUESTION
+-------------------------------------------------- */
+
+.hmw-question-card {
+    background: var(--surface);
+
+    border: 1px solid var(--border);
+
+    border-radius: 24px;
+
+    padding:
+        28px
+        22px;
+
+    box-shadow: var(--shadow);
+}
+
+.hmw-question-number {
+    color: var(--accent);
+
+    font-size: .76rem;
+
+    font-weight: 700;
+
+    text-transform: uppercase;
+
+    letter-spacing: 1px;
+
+    margin-bottom: 13px;
+}
+
+.hmw-question {
+    color: var(--text);
+
+    font-size:
+        clamp(1.15rem, 4vw, 1.35rem);
+
+    line-height: 1.45;
+
+    font-weight: 600;
+
+    margin-bottom: 24px;
+}
+
+.hmw-question em {
+    color: var(--primary);
+
+    font-style: normal;
+}
+
+/* --------------------------------------------------
+   ANSWERS
+-------------------------------------------------- */
+
+.hmw-options {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 10px;
+}
+
+.hmw-option {
+    position: relative;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+
+    min-height: 58px;
+
+    padding:
+        14px
+        16px;
+
+    border:
+        2px solid var(--border);
+
+    border-radius: 15px;
+
+    background: #FCFDFC;
+
+    cursor: pointer;
+
+    transition: var(--transition);
+
+    font-size: .94rem;
+
+    font-weight: 500;
+}
+
+.hmw-option:hover {
+    border-color: #BFD2C7;
+}
+
+.hmw-option.selected {
+    border-color: var(--primary);
+
+    background: var(--primary-light);
+
+    color: var(--primary);
+
+    font-weight: 600;
+}
+
+.hmw-radio {
+    width: 22px;
+    height: 22px;
+
+    border:
+        2px solid #C8D4CE;
+
+    border-radius: 50%;
+
+    flex-shrink: 0;
+
+    display: grid;
+    place-items: center;
+}
+
+.hmw-option.selected
+.hmw-radio {
+    border-color: var(--primary);
+
+    background: var(--primary);
+}
+
+.hmw-option.selected
+.hmw-radio::after {
+    content: "";
+
+    width: 8px;
+    height: 8px;
+
+    border-radius: 50%;
+
+    background: white;
+}
+
+/* --------------------------------------------------
+   NAV
+-------------------------------------------------- */
+
+.hmw-navigation {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 12px;
+
+    margin-top: 16px;
+}
+
+.hmw-back {
+    border: none;
+
+    background: transparent;
+
+    color: var(--muted);
+
+    font-weight: 600;
+
+    padding: 12px 8px;
+
+    cursor: pointer;
+}
+
+.hmw-back:hover {
+    color: var(--primary);
+}
+
+/* --------------------------------------------------
+   BUTTONS
+-------------------------------------------------- */
+
+.hmw-btn {
+    min-height: 54px;
+
+    border: none;
+
+    border-radius: 15px;
+
+    padding:
+        14px
+        20px;
+
+    background: var(--primary);
+
+    color: white;
+
+    font-weight: 700;
+
+    font-size: .94rem;
+
+    text-decoration: none;
+
+    display: inline-flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    cursor: pointer;
+
+    transition: var(--transition);
+
+    box-shadow:
+        0 8px 20px rgba(44,74,62,.16);
+}
+
+.hmw-btn:hover {
+    background: var(--primary-dark);
+
+    transform: translateY(-1px);
+}
+
+.hmw-btn:active {
+    transform: scale(.98);
+}
+
+.hmw-btn-full {
+    width: 100%;
+}
+
+.hmw-btn-secondary {
+    background: white;
+
+    color: var(--primary);
+
+    border:
+        2px solid var(--border);
+
+    box-shadow: none;
+}
+
+.hmw-btn-secondary:hover {
+    background: var(--primary-light);
+
+    border-color: var(--primary);
+}
+
+/* --------------------------------------------------
+   RESULTS
+-------------------------------------------------- */
+
+.hmw-result-intro {
+    text-align: center;
+
+    margin-bottom: 18px;
+}
+
+.hmw-result-check {
+    width: 52px;
+    height: 52px;
+
+    margin: 0 auto 13px;
+
+    border-radius: 50%;
+
+    background: var(--primary-light);
+
+    color: var(--primary);
+
+    display: grid;
+    place-items: center;
+
+    font-size: 23px;
+}
+
+.hmw-result-intro h2 {
+    margin: 0 0 7px;
+
+    color: var(--primary);
+
+    font-size: 1.65rem;
+
+    letter-spacing: -.03em;
+}
+
+.hmw-result-intro p {
+    margin: 0;
+
+    color: var(--muted);
+
+    font-size: .9rem;
+
+    line-height: 1.55;
+}
+
+/* --------------------------------------------------
+   SCORE
+-------------------------------------------------- */
+
+.hmw-score-card {
+    background: var(--surface);
+
+    border:
+        1px solid var(--border);
+
+    border-radius: 22px;
+
+    padding: 24px;
+
+    text-align: center;
+
+    box-shadow: var(--shadow);
+
+    margin-bottom: 14px;
+}
+
+.hmw-score-label {
+    color: var(--muted);
+
+    font-size: .78rem;
+
+    font-weight: 700;
+
+    text-transform: uppercase;
+
+    letter-spacing: .8px;
+}
+
+.hmw-score {
+    margin: 8px 0;
+
+    color: var(--primary);
+
+    font-size: 3.4rem;
+
+    line-height: 1;
+
+    font-weight: 700;
+
+    letter-spacing: -.06em;
+}
+
+.hmw-result-level {
+    display: inline-block;
+
+    padding:
+        7px
+        12px;
+
+    background: var(--primary-light);
+
+    color: var(--primary);
+
+    border-radius: 999px;
+
+    font-size: .78rem;
+
+    font-weight: 700;
+}
+
+.hmw-result-description {
+    margin:
+        16px
+        0
+        0;
+
+    color: var(--muted);
+
+    line-height: 1.6;
+
+    font-size: .88rem;
+}
+
+/* --------------------------------------------------
+   CTA
+-------------------------------------------------- */
+
+.hmw-cta {
+    background:
+        linear-gradient(
+            135deg,
+            #F4F8F5,
+            #FFFFFF
+        );
+
+    border:
+        1px solid #D4E2DA;
+
+    border-radius: 22px;
+
+    padding: 24px;
+
+    margin-bottom: 14px;
+}
+
+.hmw-cta h3 {
+    margin: 0 0 8px;
+
+    color: var(--primary);
+
+    font-size: 1.12rem;
+}
+
+.hmw-cta p {
+    margin: 0 0 17px;
+
+    color: var(--muted);
+
+    font-size: .88rem;
+
+    line-height: 1.6;
+}
+
+.hmw-cta-note {
+    margin-top: 10px;
+
+    text-align: center;
+
+    color: var(--muted);
+
+    font-size: .72rem;
+
+    line-height: 1.45;
+}
+
+/* --------------------------------------------------
+   CRISIS
+-------------------------------------------------- */
+
+.hmw-crisis {
+    display: none;
+
+    background: var(--danger-light);
+
+    border:
+        1px solid #E7C7C7;
+
+    border-radius: 18px;
+
+    padding: 18px;
+
+    margin-bottom: 14px;
+}
+
+.hmw-crisis.active {
+    display: block;
+}
+
+.hmw-crisis h3 {
+    margin: 0 0 7px;
+
+    color: var(--danger);
+
+    font-size: .98rem;
+}
+
+.hmw-crisis p {
+    margin: 0 0 13px;
+
+    color: #704646;
+
+    font-size: .8rem;
+
+    line-height: 1.55;
+}
+
+.hmw-crisis-buttons {
+    display: grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    gap: 9px;
+}
+
+.hmw-crisis .hmw-btn {
+    background: var(--danger);
+
+    box-shadow: none;
+
+    min-height: 46px;
+
+    font-size: .83rem;
+}
+
+/* --------------------------------------------------
+   RESULTS ACTIONS
+-------------------------------------------------- */
+
+.hmw-result-actions {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 10px;
+
+    margin-top: 16px;
+}
+
+/* --------------------------------------------------
+   PRIVACY
+-------------------------------------------------- */
+
+.hmw-privacy-note {
+    text-align: center;
+
+    margin-top: 16px;
+
+    color: var(--muted);
+
+    font-size: .7rem;
+
+    line-height: 1.55;
+}
+
+/* --------------------------------------------------
+   FOOTER
+-------------------------------------------------- */
+
+.hmw-footer {
+    max-width: 680px;
+
+    margin: 0 auto;
+
+    padding:
+        0
+        20px
+        30px;
+
+    text-align: center;
+
+    color: var(--muted);
+
+    font-size: .7rem;
+
+    line-height: 1.55;
+}
+
+.hmw-footer strong {
+    color: var(--primary);
+}
+
+/* --------------------------------------------------
+   INITIALS
+-------------------------------------------------- */
+
+.hmw-initials {
+    margin-top: 18px;
+}
+
+.hmw-initials label {
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: var(--primary);
+
+    font-size: .8rem;
+
+    font-weight: 700;
+}
+
+.hmw-initials input {
+    width: 100%;
+
+    height: 48px;
+
+    border:
+        1px solid var(--border);
+
+    border-radius: 12px;
+
+    padding:
+        0
+        14px;
+
+    background: white;
+
+    outline: none;
+
+    color: var(--text);
+}
+
+.hmw-initials input:focus {
+    border-color: var(--primary);
+
+    box-shadow:
+        0 0 0 3px
+        rgba(44,74,62,.08);
+}
+
+.hmw-initials small {
+    display: block;
+
+    margin-top: 6px;
+
+    color: var(--muted);
+
+    font-size: .68rem;
+}
+
+/* --------------------------------------------------
+   MOBILE
+-------------------------------------------------- */
+
+@media(max-width: 520px) {
+
+    .hmw-main {
+        padding:
+            20px
+            15px
+            35px;
+    }
+
+    .hmw-assessment-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .hmw-assessment-card {
+        padding: 18px;
+    }
+
+    .hmw-question-card {
+        padding: 23px 17px;
+    }
+
+    .hmw-option {
+        min-height: 55px;
+
+        padding:
+            13px
+            13px;
+    }
+
+    .hmw-navigation {
+        margin-top: 12px;
+    }
+
+}
+
+/* --------------------------------------------------
+   ACCESSIBILITY
+-------------------------------------------------- */
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible {
+    outline:
+        3px solid
+        rgba(44,74,62,.25);
+
+    outline-offset: 3px;
+}
+
+/* --------------------------------------------------
+   PRINT
+-------------------------------------------------- */
+
+@media print {
+
+    body {
+        background: white;
+    }
+
+    .hmw-header,
+    .hmw-footer,
+    .hmw-result-actions,
+    .hmw-privacy-note {
+        display: none !important;
+    }
+
+}
+
+</style>
 </head>
+
 <body>
-    <div id="hmw-assessment-container">
-        <div class="hmw-app-header">
-            <div class="hmw-brand-badge">Her Mind & Wellness</div>
-            <h2>Client Self-Assessment</h2>
-            <p class="subtitle">Safe, confidential check-ins & clinical insights</p>
-        </div>
-        
-        <div class="hmw-content">
-            <!-- Initial Entry Container -->
-            <div class="hmw-card-box hmw-select-wrapper" id="initials-container">
-                <label for="initials-field">
-                    <span>Enter your initials (first & last)</span>
-                    <span style="font-size: 0.8rem; font-weight: 400; color: var(--text-muted);">Required for tracking</span>
-                </label>
-                <div class="hmw-input-group">
-                    <input type="text" id="initials-field" maxlength="4" placeholder="e.g., AB" onkeydown="hmwHandleInitialsKey(event)">
-                    <button type="button" class="hmw-btn" onclick="hmwSubmitInitialsManual()" style="padding: 0 24px;">Start</button>
-                </div>
-            </div>
 
-            <!-- Submitted Initials Display Card -->
-            <div class="hmw-initials-display-card hidden" id="initials-display-card">
-                <span>Client Initials: <strong id="displayed-initials"></strong></span>
-                <button type="button" class="hmw-text-btn" onclick="hmwEditInitials()">Edit</button>
-            </div>
+<div id="hmw-app">
 
-            <!-- Assessment Selector Container -->
-            <div class="hmw-card-box hmw-select-wrapper" id="selector-wrapper">
-                <label for="assessment-type">Select screening questionnaire:</label>
-                <select id="assessment-type" onchange="hmwLoadAssessment()">
-                    <option value="">-- Choose Assessment Type --</option>
-                    <option value="phq9">PHQ-9 (Depression Screening)</option>
-                    <option value="gad7">GAD-7 (Anxiety Screening)</option>
-                </select>
-            </div>
+<header class="hmw-header">
 
-            <!-- Add to Home Screen Banner -->
-            <div class="hmw-pwa-banner" id="pwa-install-banner">
-                <h4 style="font-size: 1.05rem; color: var(--primary); font-weight: 700;">📱 Add App to Your Home Screen</h4>
-                <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.5;">Access this check-in tool instantly anytime. Tap your browser menu (or Share button on iOS) and select <strong>"Add to Home Screen"</strong>.</p>
-                <button type="button" class="hmw-btn hmw-btn-secondary" id="install-btn" style="display: none; padding: 10px 18px; font-size: 0.9rem;" onclick="hmwPromptInstall()">Install App Now</button>
-            </div>
-
-            <!-- Quiz Form Container -->
-            <div id="hmw-quiz-form" class="hidden">
-                <div class="hmw-card-box hmw-questions-container" id="hmw-questions-container"></div>
-                <div class="hmw-nav-buttons">
-                    <div class="hmw-left-nav-group">
-                        <button type="button" class="hmw-btn hmw-btn-secondary" id="prev-btn" onclick="hmwPrevQuestion()">← Back</button>
-                        <span class="hmw-q-badge-inline" id="hmw-progress-badge">Question 1 of 9</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Results View -->
-            <div class="hmw-results-card" id="hmw-results-view">
-                <div class="hmw-results-header">
-                    <h3>Assessment Complete</h3>
-                    <p>Thank you for taking a moment to reflect on your well-being today.</p>
-                </div>
-                <div class="hmw-score-box">
-                    <div class="hmw-score-header">
-                        <span>Your Summary Result Score</span>
-                        <div class="hmw-score-number" id="hmw-final-score">0</div>
-                    </div>
-                    <p id="hmw-score-interpretation" style="font-weight: 500; color: var(--primary); line-height: 1.5;"></p>
-                </div>
-                <div class="hmw-conversion-box">
-                    <h4 style="font-size: 1.1rem; color: var(--primary); margin-bottom: 6px;">Ready to take the next step?</h4>
-                    <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 4px;">Schedule your confidential consultation seamlessly online through Headway.</p>
-                    <div class="hmw-action-group" id="hmw-action-container"></div>
-                </div>
-                <button type="button" class="hmw-btn hmw-btn-secondary hmw-btn-full" onclick="hmwDownloadResults()">📥 Download Elegant Report</button>
-                <button type="button" class="hmw-btn hmw-btn-secondary hmw-btn-full" onclick="hmwResetForm()">← Take Another Assessment</button>
-            </div>
-        </div>
-
-        <div class="hmw-disclaimer" id="footer-disclaimer">
-            <p><strong>Her Mind & Wellness™</strong> • Designed for personal reflection and collaborative clinical care.</p>
-            <p style="margin-top: 4px;">If you are experiencing an immediate crisis or emotional distress, support is available 24/7. Call or text <strong>988</strong> to reach the Suicide & Crisis Lifeline, or contact emergency services.</p>
-        </div>
+    <div class="hmw-brand">
+        Her Mind & Wellness
     </div>
 
-    <script>
-        const hmwData = {
-            phq9: {
-                title: "PHQ-9 Depression Screening",
-                options: [{ text: "Not at all", value: 0 }, { text: "Several days", value: 1 }, { text: "More than half the days", value: 2 }, { text: "Nearly every day", value: 3 }],
-                questions: [
-                    "Little interest or pleasure in doing things", "Feeling down, depressed, or hopeless",
-                    "Trouble falling or staying asleep, or sleeping too much", "Feeling tired or having little energy",
-                    "Poor appetite or overeating", "Feeling bad about yourself — or that you are a failure",
-                    "Trouble concentrating on things", "Moving or speaking slowly or being fidgety/restless",
-                    "Thoughts that you would be better off dead or of hurting yourself"
-                ],
-                interpret(score) {
-                    if (score <= 4) return "Minimal or no depression symptoms indicated.";
-                    if (score <= 9) return "Mild depression symptoms indicated.";
-                    if (score <= 14) return "Moderate depression symptoms indicated.";
-                    if (score <= 19) return "Moderately severe depression symptoms indicated.";
-                    return "Severe depression symptoms indicated.";
-                }
+    <h1>Private Wellness Check-In</h1>
+
+    <p>
+        A brief screening to help you reflect on how you've been feeling.
+    </p>
+
+</header>
+
+
+<main class="hmw-main">
+
+<!-- ==================================================
+     STEP 1 — CHOOSE ASSESSMENT
+================================================== -->
+
+<section
+    id="screen-start"
+    class="hmw-screen active"
+>
+
+    <div class="hmw-intro">
+
+        <h2>
+            What would you like to check in about?
+        </h2>
+
+        <p>
+            Choose the screening that best matches what you've
+            been experiencing. It takes about 2 minutes.
+        </p>
+
+    </div>
+
+
+    <div class="hmw-assessment-grid">
+
+        <button
+            type="button"
+            class="hmw-assessment-card"
+            onclick="hmwStartAssessment('phq9')"
+        >
+
+            <div class="hmw-assessment-icon">
+                🌿
+            </div>
+
+            <h3>
+                Mood & Depression
+            </h3>
+
+            <p>
+                Check in on mood, energy, sleep,
+                concentration, and interest in daily life.
+            </p>
+
+        </button>
+
+
+        <button
+            type="button"
+            class="hmw-assessment-card"
+            onclick="hmwStartAssessment('gad7')"
+        >
+
+            <div class="hmw-assessment-icon">
+                ☁️
+            </div>
+
+            <h3>
+                Anxiety & Worry
+            </h3>
+
+            <p>
+                Check in on worry, nervousness,
+                restlessness, and difficulty relaxing.
+            </p>
+
+        </button>
+
+    </div>
+
+
+    <div class="hmw-card-footer">
+
+        Your responses are intended for screening and
+        discussion with a qualified healthcare professional.
+        They are not a diagnosis.
+
+    </div>
+
+</section>
+
+
+<!-- ==================================================
+     STEP 2 — QUESTIONS
+================================================== -->
+
+<section
+    id="screen-quiz"
+    class="hmw-screen"
+>
+
+    <div class="hmw-progress-area">
+
+        <div class="hmw-progress-top">
+
+            <span
+                class="hmw-progress-label"
+                id="progress-title"
+            >
+                Mood Screening
+            </span>
+
+            <span
+                class="hmw-progress-count"
+                id="progress-count"
+            >
+                1 of 9
+            </span>
+
+        </div>
+
+        <div class="hmw-progress-track">
+
+            <div
+                class="hmw-progress-bar"
+                id="progress-bar"
+            ></div>
+
+        </div>
+
+    </div>
+
+
+    <div
+        id="question-container"
+        class="hmw-question-card"
+    >
+    </div>
+
+
+    <div class="hmw-navigation">
+
+        <button
+            type="button"
+            class="hmw-back"
+            onclick="hmwPreviousQuestion()"
+        >
+            ← Back
+        </button>
+
+        <div></div>
+
+    </div>
+
+</section>
+
+
+<!-- ==================================================
+     STEP 3 — RESULTS
+================================================== -->
+
+<section
+    id="screen-results"
+    class="hmw-screen"
+>
+
+    <div class="hmw-result-intro">
+
+        <div class="hmw-result-check">
+            ✓
+        </div>
+
+        <h2>
+            Your check-in is complete
+        </h2>
+
+        <p>
+            Thank you for taking a moment to check in
+            with yourself.
+        </p>
+
+    </div>
+
+
+    <div class="hmw-score-card">
+
+        <div class="hmw-score-label">
+            Screening score
+        </div>
+
+        <div
+            class="hmw-score"
+            id="final-score"
+        >
+            0
+        </div>
+
+        <div
+            class="hmw-result-level"
+            id="result-level"
+        >
+            Result
+        </div>
+
+        <p
+            class="hmw-result-description"
+            id="result-description"
+        ></p>
+
+    </div>
+
+
+    <!-- CRISIS MESSAGE -->
+
+    <div
+        id="crisis-box"
+        class="hmw-crisis"
+    >
+
+        <h3>
+            If you need immediate support
+        </h3>
+
+        <p>
+            If you are in immediate danger, feel unable to
+            keep yourself safe, or are experiencing a crisis,
+            call or text 988 for the Suicide & Crisis Lifeline,
+            or call 911 for emergency assistance.
+        </p>
+
+        <div class="hmw-crisis-buttons">
+
+            <a
+                href="tel:988"
+                class="hmw-btn"
+            >
+                Call 988
+            </a>
+
+            <a
+                href="sms:988"
+                class="hmw-btn"
+            >
+                Text 988
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- PRIMARY CONVERSION CTA -->
+
+    <div class="hmw-cta">
+
+        <h3>
+            Want to talk through your results?
+        </h3>
+
+        <p>
+            A screening score is only one part of the picture.
+            A conversation with a mental health professional
+            can help put your symptoms, goals, and next steps
+            into context.
+        </p>
+
+        <a
+            id="schedule-button"
+            href="https://care.headway.co/providers/elizabeth-ghadimi?utm_source=assessment&utm_medium=direct_link&utm_campaign=207711"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="hmw-btn hmw-btn-full"
+        >
+            Schedule a Confidential Consultation
+        </a>
+
+        <div class="hmw-cta-note">
+            You'll continue to scheduling through Headway.
+        </div>
+
+    </div>
+
+
+    <!-- OPTIONAL IDENTIFIER -->
+
+    <div class="hmw-initials">
+
+        <label for="initials">
+            Add your initials to your PDF (optional)
+        </label>
+
+        <input
+            id="initials"
+            type="text"
+            maxlength="4"
+            autocomplete="off"
+            placeholder="e.g. AB"
+        >
+
+        <small>
+            We recommend leaving this blank if you don't
+            need an identifier on your personal copy.
+        </small>
+
+    </div>
+
+
+    <!-- ACTIONS -->
+
+    <div class="hmw-result-actions">
+
+        <button
+            type="button"
+            class="hmw-btn hmw-btn-secondary hmw-btn-full"
+            onclick="hmwDownloadPDF()"
+        >
+            ↓ Download My Results as PDF
+        </button>
+
+        <button
+            type="button"
+            class="hmw-btn hmw-btn-secondary hmw-btn-full"
+            onclick="hmwStartOver()"
+        >
+            Take Another Check-In
+        </button>
+
+    </div>
+
+
+    <div class="hmw-privacy-note">
+
+        This screening is not a diagnosis and does not replace
+        evaluation by a qualified healthcare professional.
+
+    </div>
+
+</section>
+
+</main>
+
+
+<footer class="hmw-footer">
+
+    <strong>Her Mind & Wellness™</strong>
+
+    <br>
+
+    Designed to support personal reflection and
+    conversations about mental wellness.
+
+    <br><br>
+
+    If you are experiencing an immediate crisis,
+    call or text <strong>988</strong>, or call 911
+    for emergency assistance.
+
+</footer>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   CONFIGURATION
+========================================================= */
+
+const HMW_CONFIG = {
+
+    providerUrl:
+        "https://care.headway.co/providers/elizabeth-ghadimi?utm_source=assessment&utm_medium=direct_link&utm_campaign=207711",
+
+    /*
+        Optional Google Apps Script endpoint.
+
+        IMPORTANT:
+        Do not assume a client-side endpoint makes PHI
+        collection HIPAA compliant. If you collect/store
+        identifiable health information, use an appropriate
+        HIPAA-compliant architecture and agreements.
+    */
+
+    appsScriptUrl:
+        "",
+
+};
+
+
+/* =========================================================
+   ASSESSMENT DATA
+========================================================= */
+
+const hmwData = {
+
+    phq9: {
+
+        shortTitle:
+            "Mood Screening",
+
+        title:
+            "PHQ-9 Depression Screening",
+
+        questions: [
+
+            "Little interest or pleasure in doing things",
+
+            "Feeling down, depressed, or hopeless",
+
+            "Trouble falling or staying asleep, or sleeping too much",
+
+            "Feeling tired or having little energy",
+
+            "Poor appetite or overeating",
+
+            "Feeling bad about yourself — or that you are a failure or have let yourself or your family down",
+
+            "Trouble concentrating on things, such as reading the newspaper or watching television",
+
+            "Moving or speaking so slowly that other people could have noticed? Or the opposite — being so fidgety or restless that you have been moving around a lot more than usual",
+
+            "Thoughts that you would be better off dead or of hurting yourself"
+
+        ],
+
+        options: [
+
+            {
+                text: "Not at all",
+                value: 0
             },
-            gad7: {
-                title: "GAD-7 Anxiety Screening",
-                options: [{ text: "Not at all", value: 0 }, { text: "Several days", value: 1 }, { text: "More than half the days", value: 2 }, { text: "Nearly every day", value: 3 }],
-                questions: [
-                    "Feeling nervous, anxious, or on edge", "Not being able to stop or control worrying",
-                    "Worrying too much about different things", "Trouble relaxing",
-                    "Being so restless that it is hard to sit still", "Becoming easily annoyed or irritable",
-                    "Feeling afraid, as if something awful might happen"
-                ],
-                interpret(score) {
-                    if (score <= 4) return "Minimal anxiety symptoms indicated.";
-                    if (score <= 9) return "Mild anxiety symptoms indicated.";
-                    if (score <= 14) return "Moderate anxiety symptoms indicated.";
-                    return "Severe anxiety symptoms indicated.";
-                }
+
+            {
+                text: "Several days",
+                value: 1
+            },
+
+            {
+                text: "More than half the days",
+                value: 2
+            },
+
+            {
+                text: "Nearly every day",
+                value: 3
             }
-        };
 
-        let currentAssessmentKey = null, currentQuestionIndex = 0, userAnswers = {}, persistentInitials = "", lastScore = 0, submissionTimestamp = "", deferredPrompt = null;
+        ],
 
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            const installBtn = document.getElementById("install-btn");
-            if (installBtn) installBtn.style.display = "inline-flex";
+        interpret(score) {
+
+            if (score <= 4) {
+
+                return {
+                    level: "Minimal symptoms",
+                    description:
+                        "Your responses indicate few or no depressive symptoms on this screening."
+                };
+
+            }
+
+            if (score <= 9) {
+
+                return {
+                    level: "Mild symptoms",
+                    description:
+                        "Your responses indicate some depressive symptoms. If these symptoms are affecting your daily life, discussing them with a professional may be helpful."
+                };
+
+            }
+
+            if (score <= 14) {
+
+                return {
+                    level: "Moderate symptoms",
+                    description:
+                        "Your responses indicate a moderate level of depressive symptoms. A conversation with a mental health professional may be helpful."
+                };
+
+            }
+
+            if (score <= 19) {
+
+                return {
+                    level: "Moderately severe symptoms",
+                    description:
+                        "Your responses indicate a higher level of depressive symptoms. Consider discussing these symptoms with a mental health professional."
+                };
+
+            }
+
+            return {
+                level: "Severe symptoms",
+                description:
+                    "Your responses indicate a high level of depressive symptoms. We recommend discussing your symptoms with a mental health professional."
+            };
+
+        }
+
+    },
+
+
+    gad7: {
+
+        shortTitle:
+            "Anxiety Screening",
+
+        title:
+            "GAD-7 Anxiety Screening",
+
+        questions: [
+
+            "Feeling nervous, anxious, or on edge",
+
+            "Not being able to stop or control worrying",
+
+            "Worrying too much about different things",
+
+            "Trouble relaxing",
+
+            "Being so restless that it is hard to sit still",
+
+            "Becoming easily annoyed or irritable",
+
+            "Feeling afraid, as if something awful might happen"
+
+        ],
+
+        options: [
+
+            {
+                text: "Not at all",
+                value: 0
+            },
+
+            {
+                text: "Several days",
+                value: 1
+            },
+
+            {
+                text: "More than half the days",
+                value: 2
+            },
+
+            {
+                text: "Nearly every day",
+                value: 3
+            }
+
+        ],
+
+        interpret(score) {
+
+            if (score <= 4) {
+
+                return {
+                    level: "Minimal symptoms",
+                    description:
+                        "Your responses indicate few or no anxiety symptoms on this screening."
+                };
+
+            }
+
+            if (score <= 9) {
+
+                return {
+                    level: "Mild symptoms",
+                    description:
+                        "Your responses indicate some anxiety symptoms. If they are affecting your daily life, discussing them with a professional may be helpful."
+                };
+
+            }
+
+            if (score <= 14) {
+
+                return {
+                    level: "Moderate symptoms",
+                    description:
+                        "Your responses indicate a moderate level of anxiety symptoms. A conversation with a mental health professional may be helpful."
+                };
+
+            }
+
+            return {
+                level: "Severe symptoms",
+                description:
+                    "Your responses indicate a high level of anxiety symptoms. We recommend discussing your symptoms with a mental health professional."
+            };
+
+        }
+
+    }
+
+};
+
+
+/* =========================================================
+   STATE
+========================================================= */
+
+let currentAssessmentKey = null;
+
+let currentQuestionIndex = 0;
+
+let userAnswers = {};
+
+let finalScore = 0;
+
+let completionTimestamp = null;
+
+
+/* =========================================================
+   DOM HELPERS
+========================================================= */
+
+function hmwShowScreen(id) {
+
+    document
+        .querySelectorAll(".hmw-screen")
+        .forEach(screen => {
+
+            screen.classList.remove("active");
+
         });
 
-        function hmwPromptInstall() {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                deferredPrompt.userChoice.then((choiceResult) => {
-                    if (choiceResult.outcome === 'accepted') {
-                        document.getElementById("pwa-install-banner").style.display = "none";
-                    }
-                    deferredPrompt = null;
-                });
-            }
-        }
+    document
+        .getElementById(id)
+        .classList.add("active");
 
-        function hmwHandleInitialsKey(event) {
-            if (event.key === "Enter") {
-                event.preventDefault();
-                hmwSubmitInitialsManual();
-            }
-        }
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+}
 
-        function hmwSubmitInitialsManual() {
-            const initialsField = document.getElementById("initials-field");
-            const val = initialsField.value.trim();
-            if (val.length > 0) {
-                persistentInitials = val;
-                document.getElementById("initials-container").classList.add("hidden");
-                document.getElementById("displayed-initials").innerText = persistentInitials;
-                document.getElementById("initials-display-card").classList.remove("hidden");
-            } else {
-                initialsField.focus();
-                initialsField.style.borderColor = "var(--danger)";
-                setTimeout(() => initialsField.style.borderColor = "var(--border)", 1500);
-            }
-        }
 
-        function hmwEditInitials() {
-            document.getElementById("initials-display-card").classList.add("hidden");
-            const initialsField = document.getElementById("initials-field");
-            initialsField.value = persistentInitials;
-            document.getElementById("initials-container").classList.remove("hidden");
-            initialsField.focus();
-        }
+/* =========================================================
+   START
+========================================================= */
 
-        function hmwLoadAssessment() {
-            const initialsField = document.getElementById("initials-field");
-            if (!persistentInitials && initialsField.value.trim().length > 0) {
-                persistentInitials = initialsField.value.trim();
-            }
+function hmwStartAssessment(key) {
 
-            if (!persistentInitials) {
-                alert("Please enter your initials first.");
-                document.getElementById("assessment-type").value = "";
-                initialsField.focus();
-                return;
-            }
+    if (!hmwData[key]) {
+        return;
+    }
 
-            const select = document.getElementById("assessment-type");
-            currentAssessmentKey = select.value;
-            if (!currentAssessmentKey) { document.getElementById("hmw-quiz-form").classList.add("hidden"); return; }
+    currentAssessmentKey = key;
 
-            document.getElementById("initials-container").classList.add("hidden");
-            document.getElementById("initials-display-card").classList.add("hidden");
-            document.getElementById("selector-wrapper").classList.add("hidden");
-            document.getElementById("pwa-install-banner").classList.add("hidden");
-            document.getElementById("footer-disclaimer").classList.add("hidden");
+    currentQuestionIndex = 0;
 
-            currentQuestionIndex = 0; userAnswers = {};
-            document.getElementById("hmw-quiz-form").classList.remove("hidden");
+    userAnswers = {};
+
+    finalScore = 0;
+
+    completionTimestamp = null;
+
+    document.getElementById("progress-title")
+        .textContent =
+        hmwData[key].shortTitle;
+
+    hmwShowScreen("screen-quiz");
+
+    hmwRenderQuestion();
+
+}
+
+
+/* =========================================================
+   RENDER QUESTION
+========================================================= */
+
+function hmwRenderQuestion() {
+
+    const assessment =
+        hmwData[currentAssessmentKey];
+
+    const total =
+        assessment.questions.length;
+
+    const question =
+        assessment.questions[currentQuestionIndex];
+
+    const savedAnswer =
+        userAnswers[currentQuestionIndex];
+
+    const progress =
+        ((currentQuestionIndex + 1) / total) * 100;
+
+    document.getElementById("progress-count")
+        .textContent =
+        `${currentQuestionIndex + 1} of ${total}`;
+
+    document.getElementById("progress-bar")
+        .style.width =
+        `${progress}%`;
+
+
+    let html = `
+
+        <div class="hmw-question-number">
+
+            Question ${currentQuestionIndex + 1}
+
+        </div>
+
+        <div class="hmw-question">
+
+            Over the last 2 weeks, how often have you been bothered by:
+
+            <em>${question}</em>?
+
+        </div>
+
+        <div class="hmw-options">
+
+    `;
+
+
+    assessment.options.forEach(option => {
+
+        const selected =
+            savedAnswer === option.value
+                ? "selected"
+                : "";
+
+        html += `
+
+            <button
+                type="button"
+                class="hmw-option ${selected}"
+                onclick="hmwSelectAnswer(${option.value})"
+            >
+
+                <span class="hmw-radio"></span>
+
+                <span>
+                    ${option.text}
+                </span>
+
+            </button>
+
+        `;
+
+    });
+
+
+    html += `</div>`;
+
+
+    document.getElementById("question-container")
+        .innerHTML = html;
+
+}
+
+
+/* =========================================================
+   SELECT ANSWER
+========================================================= */
+
+function hmwSelectAnswer(value) {
+
+    userAnswers[currentQuestionIndex] = value;
+
+    const assessment =
+        hmwData[currentAssessmentKey];
+
+
+    /*
+        Short delay creates a feeling of completion
+        without making the experience feel sluggish.
+    */
+
+    setTimeout(() => {
+
+        if (
+            currentQuestionIndex <
+            assessment.questions.length - 1
+        ) {
+
+            currentQuestionIndex++;
+
             hmwRenderQuestion();
+
+        } else {
+
+            hmwCompleteAssessment();
+
         }
 
-        function hmwRenderQuestion() {
-            const assessment = hmwData[currentAssessmentKey];
-            const container = document.getElementById("hmw-questions-container");
-            const qText = assessment.questions[currentQuestionIndex];
-            const savedAnswer = userAnswers[currentQuestionIndex];
-            
-            let html = `
-                <div class="hmw-question-card active">
-                    <div class="hmw-question-text">Over the last 2 weeks, how often have you been bothered by: <em>${qText}</em>?</div>
-                    <div class="hmw-options-list">`;
-            
-            assessment.options.forEach((opt) => {
-                const checked = savedAnswer === opt.value ? "checked" : "";
-                html += `
-                    <label class="hmw-option-label">
-                        <input type="radio" name="q_${currentQuestionIndex}" value="${opt.value}" ${checked} onchange="hmwHandleSelection(${opt.value})">
-                        <span>${opt.text}</span>
-                    </label>`;
-            });
-            
-            html += `</div></div>`;
-            
-            container.innerHTML = html;
-            
-            const prevBtn = document.getElementById("prev-btn");
-            prevBtn.style.display = "inline-flex";
-            prevBtn.onclick = currentQuestionIndex === 0 ? hmwReturnToSelector : hmwPrevQuestion;
+    }, 180);
 
-            document.getElementById("hmw-progress-badge").innerText = `Question ${currentQuestionIndex + 1} of ${assessment.questions.length}`;
+}
+
+
+/* =========================================================
+   BACK
+========================================================= */
+
+function hmwPreviousQuestion() {
+
+    if (currentQuestionIndex > 0) {
+
+        currentQuestionIndex--;
+
+        hmwRenderQuestion();
+
+    } else {
+
+        hmwShowScreen("screen-start");
+
+    }
+
+}
+
+
+/* =========================================================
+   COMPLETE
+========================================================= */
+
+function hmwCompleteAssessment() {
+
+    const assessment =
+        hmwData[currentAssessmentKey];
+
+
+    finalScore =
+        Object.values(userAnswers)
+        .reduce(
+            (total, value) =>
+                total + Number(value),
+            0
+        );
+
+
+    completionTimestamp =
+        new Date();
+
+
+    const result =
+        assessment.interpret(finalScore);
+
+
+    document.getElementById("final-score")
+        .textContent =
+        finalScore;
+
+
+    document.getElementById("result-level")
+        .textContent =
+        result.level;
+
+
+    document.getElementById("result-description")
+        .textContent =
+        result.description;
+
+
+    /*
+        PHQ-9 item 9:
+        Any response above "Not at all"
+        should trigger crisis information.
+    */
+
+    const crisisBox =
+        document.getElementById("crisis-box");
+
+
+    if (
+        currentAssessmentKey === "phq9" &&
+        Number(userAnswers[8] || 0) > 0
+    ) {
+
+        crisisBox.classList.add("active");
+
+    } else {
+
+        crisisBox.classList.remove("active");
+
+    }
+
+
+    /*
+        Update scheduling destination.
+    */
+
+    document.getElementById("schedule-button")
+        .href =
+        HMW_CONFIG.providerUrl;
+
+
+    /*
+        Optional logging.
+
+        Disabled unless an endpoint is explicitly supplied.
+    */
+
+    hmwSendAnonymousAudit();
+
+
+    hmwShowScreen("screen-results");
+
+}
+
+
+/* =========================================================
+   OPTIONAL AUDIT LOGGING
+========================================================= */
+
+function hmwSendAnonymousAudit() {
+
+    if (!HMW_CONFIG.appsScriptUrl) {
+        return;
+    }
+
+
+    /*
+        IMPORTANT:
+
+        Do not send identifiable health information to a
+        normal Google Apps Script endpoint and assume it is
+        HIPAA compliant.
+
+        This example intentionally sends only limited
+        assessment metadata.
+
+        Have your privacy/security architecture reviewed
+        before collecting PHI.
+    */
+
+    const payload = {
+
+        timestamp:
+            completionTimestamp
+                ? completionTimestamp.toISOString()
+                : new Date().toISOString(),
+
+        assessment:
+            currentAssessmentKey,
+
+        score:
+            finalScore
+
+    };
+
+
+    fetch(
+        HMW_CONFIG.appsScriptUrl,
+        {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type":
+                    "application/json"
+            },
+
+            body:
+                JSON.stringify(payload)
+
         }
+    )
+    .catch(() => {
 
-        function hmwHandleSelection(val) {
-            userAnswers[currentQuestionIndex] = val;
-            const assessment = hmwData[currentAssessmentKey];
-            setTimeout(() => {
-                if (currentQuestionIndex < assessment.questions.length - 1) {
-                    currentQuestionIndex++;
-                    hmwRenderQuestion();
-                } else {
-                    hmwShowResults();
+        /*
+            Never interrupt the patient's experience
+            because analytics/logging failed.
+        */
+
+    });
+
+}
+
+
+/* =========================================================
+   PDF
+========================================================= */
+
+function hmwDownloadPDF() {
+
+    const assessment =
+        hmwData[currentAssessmentKey];
+
+
+    if (
+        !window.jspdf ||
+        !window.jspdf.jsPDF
+    ) {
+
+        /*
+            Fallback if jsPDF doesn't load.
+        */
+
+        window.print();
+
+        return;
+
+    }
+
+
+    const {
+        jsPDF
+    } = window.jspdf;
+
+
+    const doc =
+        new jsPDF({
+
+            orientation: "portrait",
+
+            unit: "mm",
+
+            format: "letter"
+
+        });
+
+
+    const pageWidth =
+        doc.internal.pageSize.getWidth();
+
+    const pageHeight =
+        doc.internal.pageSize.getHeight();
+
+
+    const margin = 18;
+
+    const contentWidth =
+        pageWidth - margin * 2;
+
+
+    let y = 20;
+
+
+    /* -----------------------------------------------------
+       COLORS
+    ----------------------------------------------------- */
+
+    const primary =
+        [44, 74, 62];
+
+    const lightGreen =
+        [232, 240, 236];
+
+    const text =
+        [45, 55, 50];
+
+    const muted =
+        [105, 120, 112];
+
+    const border =
+        [222, 231, 225];
+
+
+    /* -----------------------------------------------------
+       HEADER
+    ----------------------------------------------------- */
+
+    doc.setFillColor(
+        ...primary
+    );
+
+    doc.rect(
+        0,
+        0,
+        pageWidth,
+        15,
+        "F"
+    );
+
+
+    doc.setFont(
+        "helvetica",
+        "bold"
+    );
+
+    doc.setFontSize(17);
+
+    doc.setTextColor(
+        ...primary
+    );
+
+    doc.text(
+        "Her Mind & Wellness",
+        margin,
+        y + 3
+    );
+
+
+    y += 11;
+
+
+    doc.setFont(
+        "helvetica",
+        "normal"
+    );
+
+    doc.setFontSize(9);
+
+    doc.setTextColor(
+        ...muted
+    );
+
+    doc.text(
+        "Private Wellness Screening Summary",
+        margin,
+        y
+    );
+
+
+    y += 13;
+
+
+    /* -----------------------------------------------------
+       SUMMARY CARD
+    ----------------------------------------------------- */
+
+    doc.setFillColor(
+        ...lightGreen
+    );
+
+    doc.roundedRect(
+        margin,
+        y,
+        contentWidth,
+        45,
+        5,
+        5,
+        "F"
+    );
+
+
+    doc.setFont(
+        "helvetica",
+        "bold"
+    );
+
+    doc.setFontSize(10);
+
+    doc.setTextColor(
+        ...primary
+    );
+
+    doc.text(
+        assessment.title,
+        margin + 7,
+        y + 9
+    );
+
+
+    doc.setFontSize(8);
+
+    doc.setTextColor(
+        ...muted
+    );
+
+    doc.text(
+        "Screening date",
+        margin + 7,
+        y + 18
+    );
+
+    doc.text(
+        completionTimestamp
+            ? completionTimestamp.toLocaleString()
+            : new Date().toLocaleString(),
+        margin + 7,
+        y + 24
+    );
+
+
+    const initials =
+        document.getElementById("initials")
+            .value
+            .trim();
+
+
+    if (initials) {
+
+        doc.text(
+            "Client initials",
+            margin + 7,
+            y + 33
+        );
+
+        doc.text(
+            initials.toUpperCase(),
+            margin + 7,
+            y + 39
+        );
+
+    }
+
+
+    /*
+        SCORE
+    */
+
+    doc.setFont(
+        "helvetica",
+        "bold"
+    );
+
+    doc.setFontSize(26);
+
+    doc.setTextColor(
+        ...primary
+    );
+
+    doc.text(
+        String(finalScore),
+        pageWidth - margin - 10,
+        y + 23,
+        {
+            align: "right"
+        }
+    );
+
+
+    doc.setFontSize(7);
+
+    doc.setTextColor(
+        ...muted
+    );
+
+    doc.text(
+        "SCREENING SCORE",
+        pageWidth - margin - 7,
+        y + 32,
+        {
+            align: "right"
+        }
+    );
+
+
+    y += 55;
+
+
+    /* -----------------------------------------------------
+       RESULT
+    ----------------------------------------------------- */
+
+    const result =
+        assessment.interpret(finalScore);
+
+
+    doc.setFont(
+        "helvetica",
+        "bold"
+    );
+
+    doc.setFontSize(12);
+
+    doc.setTextColor(
+        ...primary
+    );
+
+    doc.text(
+        result.level,
+        margin,
+        y
+    );
+
+
+    y += 7;
+
+
+    doc.setFont(
+        "helvetica",
+        "normal"
+    );
+
+    doc.setFontSize(9);
+
+    doc.setTextColor(
+        ...text
+    );
+
+
+    const descriptionLines =
+        doc.splitTextToSize(
+            result.description,
+            contentWidth
+        );
+
+
+    doc.text(
+        descriptionLines,
+        margin,
+        y
+    );
+
+
+    y +=
+        descriptionLines.length * 4.8
+        + 9;
+
+
+    /* -----------------------------------------------------
+       RESPONSES
+    ----------------------------------------------------- */
+
+    doc.setFont(
+        "helvetica",
+        "bold"
+    );
+
+    doc.setFontSize(11);
+
+    doc.setTextColor(
+        ...primary
+    );
+
+    doc.text(
+        "Response Summary",
+        margin,
+        y
+    );
+
+
+    y += 7;
+
+
+    assessment.questions.forEach(
+        (question, index) => {
+
+            const value =
+                userAnswers[index];
+
+            const option =
+                assessment.options.find(
+                    item =>
+                        item.value === value
+                );
+
+
+            const answerText =
+                option
+                    ? option.text
+                    : "Not answered";
+
+
+            /*
+                Page break
+            */
+
+            if (y > pageHeight - 35) {
+
+                doc.addPage();
+
+                y = 20;
+
+                doc.setFont(
+                    "helvetica",
+                    "bold"
+                );
+
+                doc.setFontSize(11);
+
+                doc.setTextColor(
+                    ...primary
+                );
+
+                doc.text(
+                    "Response Summary",
+                    margin,
+                    y
+                );
+
+                y += 8;
+
+            }
+
+
+            /*
+                Question number
+            */
+
+            doc.setFillColor(
+                ...lightGreen
+            );
+
+            doc.roundedRect(
+                margin,
+                y - 4,
+                9,
+                7,
+                2,
+                2,
+                "F"
+            );
+
+
+            doc.setFont(
+                "helvetica",
+                "bold"
+            );
+
+            doc.setFontSize(7);
+
+            doc.setTextColor(
+                ...primary
+            );
+
+            doc.text(
+                String(index + 1),
+                margin + 4.5,
+                y + 1,
+                {
+                    align: "center"
                 }
-            }, 250);
-        }
+            );
 
-        function hmwPrevQuestion() {
-            if (currentQuestionIndex > 0) { currentQuestionIndex--; hmwRenderQuestion(); }
-        }
 
-        function hmwReturnToSelector() {
-            document.getElementById("hmw-quiz-form").classList.add("hidden");
-            document.getElementById("selector-wrapper").classList.remove("hidden");
-            document.getElementById("pwa-install-banner").classList.remove("hidden");
-            document.getElementById("footer-disclaimer").classList.remove("hidden");
-            if (persistentInitials) {
-                document.getElementById("displayed-initials").innerText = persistentInitials;
-                document.getElementById("initials-display-card").classList.remove("hidden");
-            } else {
-                document.getElementById("initials-container").classList.remove("hidden");
+            /*
+                Question
+            */
+
+            doc.setFont(
+                "helvetica",
+                "normal"
+            );
+
+            doc.setFontSize(8.5);
+
+            doc.setTextColor(
+                ...text
+            );
+
+
+            const questionLines =
+                doc.splitTextToSize(
+                    question,
+                    contentWidth - 15
+                );
+
+
+            doc.text(
+                questionLines,
+                margin + 13,
+                y
+            );
+
+
+            y +=
+                questionLines.length * 4;
+
+
+            /*
+                Answer
+            */
+
+            doc.setFont(
+                "helvetica",
+                "bold"
+            );
+
+            doc.setFontSize(8);
+
+            doc.setTextColor(
+                ...primary
+            );
+
+            doc.text(
+                `Response: ${answerText}`,
+                margin + 13,
+                y + 2
+            );
+
+
+            y += 9;
+
+
+            /*
+                Divider
+            */
+
+            doc.setDrawColor(
+                ...border
+            );
+
+            doc.line(
+                margin,
+                y,
+                pageWidth - margin,
+                y
+            );
+
+
+            y += 7;
+
+        }
+    );
+
+
+    /* -----------------------------------------------------
+       IMPORTANT NOTE
+    ----------------------------------------------------- */
+
+    if (y > pageHeight - 55) {
+
+        doc.addPage();
+
+        y = 20;
+
+    }
+
+
+    doc.setFillColor(
+        248,
+        247,
+        243
+    );
+
+
+    doc.roundedRect(
+        margin,
+        y,
+        contentWidth,
+        30,
+        4,
+        4,
+        "F"
+    );
+
+
+    y += 7;
+
+
+    doc.setFont(
+        "helvetica",
+        "bold"
+    );
+
+    doc.setFontSize(8);
+
+    doc.setTextColor(
+        ...primary
+    );
+
+    doc.text(
+        "Important",
+        margin + 6,
+        y
+    );
+
+
+    y += 5;
+
+
+    doc.setFont(
+        "helvetica",
+        "normal"
+    );
+
+    doc.setFontSize(7.5);
+
+    doc.setTextColor(
+        ...muted
+    );
+
+
+    const disclaimer =
+        "This questionnaire is a screening tool and is not a diagnosis. " +
+        "Results should be interpreted in the context of a complete clinical evaluation. " +
+        "This report does not replace professional medical or mental health advice.";
+
+
+    const disclaimerLines =
+        doc.splitTextToSize(
+            disclaimer,
+            contentWidth - 12
+        );
+
+
+    doc.text(
+        disclaimerLines,
+        margin + 6,
+        y
+    );
+
+
+    /* -----------------------------------------------------
+       FOOTER
+    ----------------------------------------------------- */
+
+    const footerY =
+        pageHeight - 10;
+
+
+    doc.setFont(
+        "helvetica",
+        "normal"
+    );
+
+    doc.setFontSize(6.5);
+
+    doc.setTextColor(
+        ...muted
+    );
+
+
+    doc.text(
+        "Her Mind & Wellness™",
+        margin,
+        footerY
+    );
+
+
+    doc.text(
+        "If you are in crisis, call or text 988.",
+        pageWidth - margin,
+        footerY,
+        {
+            align: "right"
+        }
+    );
+
+
+    /* -----------------------------------------------------
+       DOWNLOAD
+    ----------------------------------------------------- */
+
+    const safeInitials =
+        (initials || "Client")
+            .replace(
+                /[^a-zA-Z0-9]/g,
+                ""
+            );
+
+
+    const date =
+        new Date()
+            .toISOString()
+            .slice(0, 10);
+
+
+    const filename =
+        `Her-Mind-Wellness-${currentAssessmentKey.toUpperCase()}-${safeInitials}-${date}.pdf`;
+
+
+    doc.save(filename);
+
+}
+
+
+/* =========================================================
+   START OVER
+========================================================= */
+
+function hmwStartOver() {
+
+    currentAssessmentKey = null;
+
+    currentQuestionIndex = 0;
+
+    userAnswers = {};
+
+    finalScore = 0;
+
+    completionTimestamp = null;
+
+
+    document.getElementById("initials")
+        .value = "";
+
+
+    hmwShowScreen("screen-start");
+
+}
+
+
+/* =========================================================
+   KEYBOARD SUPPORT
+========================================================= */
+
+document.addEventListener(
+    "keydown",
+    function(event) {
+
+        /*
+            Number keys 1-4 can select answers.
+        */
+
+        if (
+            event.key >= "1" &&
+            event.key <= "4" &&
+            document
+                .getElementById("screen-quiz")
+                .classList
+                .contains("active")
+        ) {
+
+            const index =
+                Number(event.key) - 1;
+
+            const assessment =
+                hmwData[currentAssessmentKey];
+
+            if (
+                assessment &&
+                assessment.options[index]
+            ) {
+
+                hmwSelectAnswer(
+                    assessment.options[index].value
+                );
+
             }
-            document.getElementById("assessment-type").value = "";
-            currentAssessmentKey = null;
-            currentQuestionIndex = 0;
-            userAnswers = {};
+
         }
 
-        function hmwShowResults() {
-            let totalScore = Object.values(userAnswers).reduce((a, b) => a + b, 0);
-            lastScore = totalScore;
-            submissionTimestamp = new Date().toLocaleString();
-            const assessment = hmwData[currentAssessmentKey];
+    }
+);
 
-            if (persistentInitials) {
-                fetch("YOUR_APPS_SCRIPT_URL_HERE", {
-                    method: 'POST',
-                    body: JSON.stringify({ 
-                        initials: persistentInitials, 
-                        timestamp: submissionTimestamp, 
-                        assessment_type: currentAssessmentKey, 
-                        score: totalScore, 
-                        responses: userAnswers 
-                    })
-                }).catch(err => console.log("Data saved audit trail updated"));
-            }
+</script>
 
-            document.getElementById("hmw-quiz-form").classList.add("hidden");
-            document.getElementById("hmw-results-view").classList.add("active");
-            document.getElementById("hmw-final-score").innerText = totalScore;
-            document.getElementById("hmw-score-interpretation").innerText = assessment.interpret(totalScore);
-
-            let actionHtml = `<a href="https://care.headway.co/providers/elizabeth-ghadimi?utm_source=pem&utm_medium=direct_link&utm_campaign=207711" target="_blank" class="hmw-btn hmw-btn-full">Send a Copy to Provider & Schedule</a>`;
-            const selfHarmScore = userAnswers[assessment.questions.length - 1] || 0;
-            if (totalScore >= 15 || selfHarmScore > 0) {
-                actionHtml += `<div class="hmw-crisis-buttons"><a href="tel:988" class="hmw-btn hmw-btn-crisis">Call 988</a><a href="sms:988" class="hmw-btn hmw-btn-crisis">Text 988</a></div>`;
-            }
-            document.getElementById("hmw-action-container").innerHTML = actionHtml;
-        }
-
-        function hmwDownloadResults() {
-            const assessment = hmwData[currentAssessmentKey];
-            
-            let reportContent = `╔════════════════════════════════════════════════════════════╗\n`;
-            reportContent += `║             HER MIND & WELLNESS • CLINICAL SUMMARY         ║\n`;
-            reportContent += `╚════════════════════════════════════════════════════════════╝\n\n`;
-            reportContent += `  • Date & Time:   ${submissionTimestamp || new Date().toLocaleString()}\n`;
-            reportContent += `  • Client Initials: ${persistentInitials || 'N/A'}\n`;
-            reportContent += `  • Assessment Type: ${assessment.title}\n`;
-            reportContent += `  • Total Score:     ${lastScore}\n`;
-            reportContent += `  • Clinical Status: ${assessment.interpret(lastScore)}\n\n`;
-            reportContent += `────────────────────────────────────────────────────────────\n`;
-            reportContent += ` DETAILED ITEM RESPONSES:\n`;
-            reportContent += `────────────────────────────────────────────────────────────\n\n`;
-            
-            assessment.questions.forEach((q, idx) => {
-                const ansVal = userAnswers[idx];
-                const optObj = assessment.options.find(o => o.value === ansVal);
-                const ansText = optObj ? optObj.text : 'N/A';
-                reportContent += `[Q${idx + 1}] ${q}\n`;
-                reportContent += `      Response: ${ansText} (Value: ${ansVal})\n\n`;
-            });
-
-            reportContent += `────────────────────────────────────────────────────────────\n`;
-            reportContent += ` Verified & Secure Record • Her Mind & Wellness\n`;
-            reportContent += ` https://hermindandwellness.com\n`;
-
-            const blob = new Blob([reportContent], { type: 'text/plain;charset=utf-8' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `HMW_${currentAssessmentKey.toUpperCase()}_Report_${persistentInitials || 'Client'}.txt`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        }
-
-        function hmwResetForm() {
-            currentAssessmentKey = null; currentQuestionIndex = 0; userAnswers = {}; lastScore = 0; submissionTimestamp = "";
-            document.getElementById("hmw-results-view").classList.remove("active");
-            document.getElementById("selector-wrapper").classList.remove("hidden");
-            document.getElementById("pwa-install-banner").classList.remove("hidden");
-            document.getElementById("footer-disclaimer").classList.remove("hidden");
-            
-            if (persistentInitials) {
-                document.getElementById("displayed-initials").innerText = persistentInitials;
-                document.getElementById("initials-display-card").classList.remove("hidden");
-            } else {
-                document.getElementById("initials-container").classList.remove("hidden");
-            }
-            document.getElementById("assessment-type").value = "";
-        }
-    </script>
 </body>
 </html>

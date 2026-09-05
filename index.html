@@ -13,6 +13,16 @@
         ====================================================================
         VERSION HISTORY & CHANGELOG:
         
+        v2.0.1: Improved color contrast throughout the app
+              - Darkened option label text from #2D3748 to #1A2E22 for better readability
+              - Updated subtitle color from #5A6C62 to #4A5D52 for enhanced header contrast
+              - Increased progress indicator darkness for improved visibility
+              - Darkened results header text, score labels, and score notes for clarity
+              - Strengthened conversion box paragraph text contrast
+              - Enhanced disclaimer text colors for improved legibility
+              - Ensured WCAG AA compliance across all text elements
+              - Maintained design consistency while improving readability on various displays
+        
         v2.0: Complete structural rewrite for true fullscreen app experience
               - Converted from nested div wrapper to proper HTML5 document structure
               - Implemented native flexbox fullscreen layout (100vh/100dvh) with no margin/padding waste
@@ -92,7 +102,7 @@
 
         #hmw-assessment-container p.subtitle {
             margin: 0;
-            color: #5A6C62;
+            color: #4A5D52;
             font-size: clamp(0.85em, 3vw, 0.95em);
             line-height: 1.3;
         }
@@ -214,7 +224,7 @@
             cursor: pointer;
             font-size: clamp(1.05em, 4vw, 1.2em);
             font-weight: 500;
-            color: #2D3748;
+            color: #1A2E22;
             transition: all 0.2s ease;
             flex-wrap: wrap;
         }
@@ -248,7 +258,7 @@
 
         .hmw-progress {
             font-size: clamp(0.9em, 2vw, 1.05em);
-            color: #5A6C62;
+            color: #4A5D52;
             font-weight: 600;
             text-align: center;
             white-space: nowrap;
@@ -326,7 +336,7 @@
 
         .hmw-results-header p {
             font-size: clamp(0.95em, 3vw, 1.05em);
-            color: #5A6C62;
+            color: #4A5D52;
             line-height: 1.4;
         }
 
@@ -350,7 +360,7 @@
 
         .hmw-score-label {
             font-size: clamp(0.9em, 2vw, 0.95em);
-            color: #5A6C62;
+            color: #4A5D52;
             font-weight: 600;
         }
 
@@ -371,7 +381,7 @@
 
         .hmw-score-note {
             font-size: clamp(0.9em, 3vw, 0.95em);
-            color: #5A6C62;
+            color: #4A5D52;
             line-height: 1.4;
         }
 
@@ -391,7 +401,7 @@
         }
 
         .hmw-conversion-box p {
-            color: #5A6C62;
+            color: #4A5D52;
             font-size: clamp(0.95em, 3vw, 1.05em);
             margin-bottom: 12px;
             line-height: 1.5;
@@ -410,7 +420,7 @@
 
         .hmw-disclaimer {
             font-size: clamp(0.75em, 2vw, 0.85em);
-            color: #6C7C72;
+            color: #5A6C62;
             line-height: 1.5;
             padding: 12px;
             border-top: 1px dashed #E2D9CE;
@@ -424,7 +434,7 @@
 
         .hmw-disclaimer strong {
             font-weight: 600;
-            color: #5A6C62;
+            color: #4A5D52;
         }
 
         /* Utility classes */
@@ -511,7 +521,7 @@
         </div>
 
         <div class="hmw-disclaimer">
-            <p><strong>Her Mind & Wellness™ v2.0</strong> (Fullscreen App) • Developed by Her Mind & Wellness, PLLC © 2026. All rights reserved.</p>
+            <p><strong>Her Mind & Wellness™ v2.0.1</strong> (Fullscreen App • Contrast Optimized) • Developed by Her Mind & Wellness, PLLC © 2026. All rights reserved.</p>
             <p><strong>Disclaimer:</strong> This tool is for informational purposes only and does not constitute medical diagnosis. If experiencing a mental health emergency, call 911 or contact 988 Suicide & Crisis Lifeline immediately.</p>
         </div>
     </div>

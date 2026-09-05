@@ -13,6 +13,8 @@
         ====================================================================
         VERSION HISTORY & CHANGELOG:
         
+        v2.0.7: Preserved saved initials across resets so users aren't re-prompted, and dynamically hid the bottom disclaimer during active assessment questions.
+        
         v2.0.6: Polished disclaimer text for absolute clarity regarding same-day completion requirements.
         
         v2.0.5: Added 'Enter' key submission listener to the initials input field and immediate hiding upon pressing Enter or moving forward.
@@ -145,8 +147,8 @@
                 <button type="button" class="hmw-btn hmw-btn-secondary hmw-btn-full" onclick="hmwResetForm()">← Take Another Assessment</button>
             </div>
         </div>
-        <div class="hmw-disclaimer">
-            <p><strong>Her Mind & Wellness™ v2.0.6</strong> • © 2026</p>
+        <div class="hmw-disclaimer" id="footer-disclaimer">
+            <p><strong>Her Mind & Wellness™ v2.0.7</strong> • © 2026</p>
             <p><strong>Disclaimer:</strong> Data sharing is completely voluntary. Submissions not tied to a scheduled appointment are non-binding. This assessment needs to be filled out today, and please note you will be asked to complete it again on the actual day of your appointment. For emergencies, call 911 or 988.</p>
         </div>
     </div>
@@ -188,13 +190,15 @@
             }
         };
 
-        let currentAssessmentKey = null, currentQuestionIndex = 0, userAnswers = {};
+        let currentAssessmentKey = null, currentQuestionIndex = 0, userAnswers = {}, persistentInitials = "";
 
         function hmwHandleInitialsKey(event) {
             if (event.key === "Enter") {
                 event.preventDefault();
                 const initialsField = document.getElementById("initials-field");
-                if (initialsField.value.trim().length > 0) {
+                const val = initialsField.value.trim();
+                if (val.length > 0) {
+                    persistentInitials = val;
                     document.getElementById("initials-container").classList.add("hidden");
                 }
             }
@@ -205,8 +209,14 @@
             currentAssessmentKey = select.value;
             if (!currentAssessmentKey) { document.getElementById("hmw-quiz-form").classList.add("hidden"); return; }
             
-            // Hide initials input once assessment starts if not already hidden
+            // Capture initials if typed but Enter wasn't pressed before selecting assessment
+            const initialsField = document.getElementById("initials-field");
+            if (initialsField.value.trim().length > 0) {
+                persistentInitials = initialsField.value.trim();
+            }
+
             document.getElementById("initials-container").classList.add("hidden");
+            document.getElementById("footer-disclaimer").classList.add("hidden");
 
             currentQuestionIndex = 0; userAnswers = {};
             document.getElementById("selector-wrapper").classList.add("hidden");
@@ -250,18 +260,14 @@
         function hmwShowResults() {
             let totalScore = Object.values(userAnswers).reduce((a, b) => a + b, 0);
             const assessment = hmwData[currentAssessmentKey];
-            const initialsField = document.getElementById("initials-field");
-            const initials = initialsField.value;
 
-            if (initials) {
+            if (persistentInitials) {
                 fetch("YOUR_APPS_SCRIPT_URL_HERE", {
                     method: 'POST',
-                    body: JSON.stringify({ initials, assessment_type: currentAssessmentKey, score: totalScore, responses: userAnswers })
+                    body: JSON.stringify({ initials: persistentInitials, assessment_type: currentAssessmentKey, score: totalScore, responses: userAnswers })
                 }).catch(err => console.log("Data saved"));
             }
 
-            document.getElementById("initials-container").classList.add("hidden");
-            initialsField.value = "";
             document.getElementById("hmw-quiz-form").classList.add("hidden");
             document.getElementById("hmw-results-view").classList.add("active");
             document.getElementById("hmw-final-score").innerText = totalScore;
@@ -279,7 +285,10 @@
             currentAssessmentKey = null; currentQuestionIndex = 0; userAnswers = {};
             document.getElementById("hmw-results-view").classList.remove("active");
             document.getElementById("selector-wrapper").classList.remove("hidden");
-            document.getElementById("initials-container").classList.remove("hidden");
+            document.getElementById("footer-disclaimer").classList.remove("hidden");
+            
+            // Keep initials hidden and stored so the user is not prompted again
+            document.getElementById("initials-container").classList.add("hidden");
             document.getElementById("assessment-type").value = "";
         }
     </script>

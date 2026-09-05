@@ -422,12 +422,11 @@
             let description = "";
             let showCrisis = false;
 
-            // Check if Q9 on PHQ-9 is answered with > 0 (distress indicator)
-            if (currentType === 'phq9' && userAnswers[8] > 0) {
-                showCrisis = true;
-            }
-
             if (currentType === 'phq9') {
+                if (userAnswers[8] > 0) {
+                    showCrisis = true;
+                }
+
                 if (totalScore <= 4) {
                     description = "Your responses suggest minimal or no depressive symptoms recently. Continuing regular self-care practices is a great way to maintain this balance.";
                 } else if (totalScore <= 9) {
@@ -440,6 +439,7 @@
                     showCrisis = true;
                 }
             } else {
+                // GAD-7 Anxiety Check
                 if (totalScore <= 4) {
                     description = "Your responses suggest minimal anxiety levels. Maintaining your current wellness routines can help support ongoing calm.";
                 } else if (totalScore <= 9) {
@@ -456,10 +456,12 @@
             document.getElementById('result-desc').innerText = description;
 
             const crisisContainer = document.getElementById('crisis-container');
-            if (showCrisis) {
-                crisisContainer.classList.remove('hidden');
-            } else {
-                crisisContainer.classList.add('hidden');
+            if (crisisContainer) {
+                if (showCrisis) {
+                    crisisContainer.classList.remove('hidden');
+                } else {
+                    crisisContainer.classList.add('hidden');
+                }
             }
         }
 

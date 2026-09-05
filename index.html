@@ -27,9 +27,9 @@
             --radius-sm: 10px;
             --radius-md: 16px;
             --radius-lg: 24px;
-            --shadow-subtle: 0 4px 20px rgba(44, 74, 62, 0.04);
-            --shadow-card: 0 10px 30px rgba(44, 74, 62, 0.06);
-            --transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            --shadow-subtle: 0 4px 24px rgba(44, 74, 62, 0.05);
+            --shadow-card: 0 12px 36px rgba(44, 74, 62, 0.07);
+            --transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -62,14 +62,14 @@
             flex-shrink: 0;
             padding: max(20px, env(safe-area-inset-top, 20px)) 24px 18px;
             text-align: center;
-            background: rgba(248, 246, 240, 0.85);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            background: rgba(248, 246, 240, 0.9);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             border-bottom: 1px solid var(--border);
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 4px;
+            gap: 6px;
             z-index: 10;
         }
 
@@ -80,13 +80,12 @@
             text-transform: uppercase;
             color: var(--primary);
             background: var(--primary-light);
-            padding: 4px 10px;
+            padding: 5px 12px;
             border-radius: 20px;
-            margin-bottom: 2px;
         }
 
         #hmw-assessment-container h2 {
-            font-size: clamp(1.25rem, 4vw, 1.5rem);
+            font-size: clamp(1.3rem, 4vw, 1.6rem);
             font-weight: 700;
             color: var(--primary);
             letter-spacing: -0.02em;
@@ -94,7 +93,7 @@
 
         #hmw-assessment-container p.subtitle {
             color: var(--text-muted);
-            font-size: clamp(0.8rem, 2.5vw, 0.9rem);
+            font-size: clamp(0.85rem, 2.5vw, 0.95rem);
             font-weight: 500;
         }
 
@@ -106,30 +105,30 @@
             overflow-x: hidden;
             -webkit-overflow-scrolling: touch;
             padding: 24px;
-            max-width: 640px;
+            max-width: 680px;
             width: 100%;
             margin: 0 auto;
-            gap: 20px;
+            gap: 24px;
         }
 
         .hmw-card-box {
             background: var(--bg-card);
             border: 1px solid var(--border);
             border-radius: var(--radius-lg);
-            padding: 24px;
-            box-shadow: var(--shadow-subtle);
+            padding: 28px;
+            box-shadow: var(--shadow-card);
             transition: var(--transition);
         }
 
         .hmw-select-wrapper {
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 18px;
         }
 
         .hmw-select-wrapper label {
             font-weight: 600;
-            font-size: 0.95rem;
+            font-size: 1rem;
             color: var(--primary);
             display: flex;
             justify-content: space-between;
@@ -138,13 +137,13 @@
 
         .hmw-input-group {
             display: flex;
-            gap: 10px;
+            gap: 12px;
         }
 
         .hmw-select-wrapper select, 
         .hmw-select-wrapper input {
             width: 100%;
-            padding: 16px 18px;
+            padding: 16px 20px;
             border: 2px solid var(--border);
             border-radius: var(--radius-md);
             background: #FAFAFC;
@@ -167,7 +166,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 14px 20px;
+            padding: 16px 22px;
             background: var(--bg-card);
             border: 1px solid var(--border);
             border-radius: var(--radius-md);
@@ -177,19 +176,19 @@
         .hmw-initials-display-card span {
             font-weight: 500;
             color: var(--text-muted);
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
 
         .hmw-initials-display-card strong {
             color: var(--primary);
             background: var(--primary-light);
-            padding: 4px 10px;
+            padding: 4px 12px;
             border-radius: var(--radius-sm);
             font-family: monospace;
-            font-size: 1rem;
+            font-size: 1.05rem;
         }
 
         .hmw-text-btn {
@@ -198,9 +197,9 @@
             color: var(--primary);
             font-weight: 600;
             cursor: pointer;
-            font-size: 0.85rem;
-            padding: 4px 8px;
-            border-radius: 6px;
+            font-size: 0.9rem;
+            padding: 6px 12px;
+            border-radius: 8px;
             transition: var(--transition);
         }
 
@@ -212,11 +211,12 @@
             display: flex;
             flex-direction: column;
             flex: 1;
+            justify-content: space-between;
             gap: 20px;
+            min-height: 100%;
         }
 
         .hmw-questions-container {
-            flex: 1;
             display: flex;
             flex-direction: column;
         }
@@ -224,8 +224,8 @@
         .hmw-question-card {
             display: none;
             flex-direction: column;
-            gap: 20px;
-            animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            gap: 24px;
+            animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
         .hmw-question-card.active {
@@ -233,7 +233,7 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(8px); }
+            from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
@@ -241,43 +241,42 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 4px;
         }
 
         .hmw-q-badge {
             font-size: 0.75rem;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--text-muted);
-            background: var(--border);
-            padding: 4px 10px;
+            letter-spacing: 1.2px;
+            color: var(--primary);
+            background: var(--primary-light);
+            padding: 6px 14px;
             border-radius: 20px;
         }
 
         .hmw-question-text {
-            font-size: clamp(1.1rem, 3.5vw, 1.25rem);
+            font-size: clamp(1.15rem, 3.8vw, 1.35rem);
             font-weight: 600;
-            line-height: 1.45;
+            line-height: 1.5;
             color: var(--text-main);
         }
 
         .hmw-options-list {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
         }
 
         .hmw-option-label {
             display: flex;
             align-items: center;
-            gap: 14px;
-            padding: 16px 20px;
+            gap: 16px;
+            padding: 18px 22px;
             background: var(--bg-card);
             border: 2px solid var(--border);
             border-radius: var(--radius-md);
             cursor: pointer;
-            font-size: 1rem;
+            font-size: 1.05rem;
             font-weight: 500;
             color: var(--text-main);
             transition: var(--transition);
@@ -293,8 +292,8 @@
         .hmw-option-label input[type="radio"] {
             appearance: none;
             -webkit-appearance: none;
-            width: 22px;
-            height: 22px;
+            width: 24px;
+            height: 24px;
             border: 2px solid #CBD5E1;
             border-radius: 50%;
             outline: none;
@@ -329,6 +328,7 @@
             background: var(--primary-light);
             color: var(--primary);
             font-weight: 600;
+            box-shadow: 0 4px 16px rgba(44, 74, 62, 0.08);
         }
 
         .hmw-nav-buttons {
@@ -336,26 +336,30 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding-top: 16px;
+            padding: 20px 0 10px;
             margin-top: auto;
             border-top: 1px solid var(--border);
         }
 
         .hmw-progress {
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             font-weight: 600;
             color: var(--text-muted);
+            background: #FFFFFF;
+            padding: 6px 14px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
         }
 
         .hmw-btn {
             background: var(--primary);
             color: #FFFFFF;
             border: none;
-            padding: 16px 24px;
+            padding: 16px 28px;
             border-radius: var(--radius-md);
             font-family: inherit;
             font-weight: 600;
-            font-size: 0.95rem;
+            font-size: 1rem;
             cursor: pointer;
             text-decoration: none;
             display: inline-flex;
@@ -363,13 +367,13 @@
             justify-content: center;
             text-align: center;
             transition: var(--transition);
-            box-shadow: 0 4px 12px rgba(44, 74, 62, 0.15);
+            box-shadow: 0 6px 16px rgba(44, 74, 62, 0.15);
         }
 
         .hmw-btn:hover {
             background: var(--primary-hover);
             transform: translateY(-1px);
-            box-shadow: 0 6px 16px rgba(44, 74, 62, 0.2);
+            box-shadow: 0 8px 20px rgba(44, 74, 62, 0.22);
         }
 
         .hmw-btn-secondary {
@@ -391,7 +395,7 @@
 
         .hmw-btn-crisis {
             background: var(--danger);
-            box-shadow: 0 4px 12px rgba(163, 51, 51, 0.2);
+            box-shadow: 0 6px 16px rgba(163, 51, 51, 0.2);
         }
 
         .hmw-btn-crisis:hover {
@@ -401,7 +405,7 @@
         .hmw-results-card {
             display: none;
             flex-direction: column;
-            gap: 16px;
+            gap: 20px;
             flex: 1;
             overflow-y: auto;
             animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -417,22 +421,22 @@
         }
 
         .hmw-results-header h3 {
-            font-size: 1.5rem;
+            font-size: 1.65rem;
             color: var(--primary);
             font-weight: 700;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
         }
 
         .hmw-results-header p {
             color: var(--text-muted);
-            font-size: 0.9rem;
+            font-size: 0.95rem;
         }
 
-        .hmw-score-box, .hmw-conversion-box {
+        .hmw-score-box, .hmw-conversion-box, .hmw-pwa-banner {
             background: var(--bg-card);
             border: 1px solid var(--border);
             border-radius: var(--radius-lg);
-            padding: 20px 24px;
+            padding: 24px;
             box-shadow: var(--shadow-subtle);
         }
 
@@ -441,18 +445,27 @@
             background: linear-gradient(135deg, #FFFFFF 0%, #F4F8F6 100%);
         }
 
+        .hmw-pwa-banner {
+            background: var(--primary-light);
+            border-color: #C6DCD1;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
         .hmw-score-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             font-weight: 600;
             color: var(--text-muted);
-            font-size: 0.9rem;
+            font-size: 0.95rem;
         }
 
         .hmw-score-number {
-            font-size: 1.75rem;
+            font-size: 2rem;
             font-weight: 700;
             color: var(--primary);
         }
@@ -460,14 +473,14 @@
         .hmw-action-group {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
             width: 100%;
-            margin-top: 12px;
+            margin-top: 16px;
         }
 
         .hmw-crisis-buttons {
             display: flex;
-            gap: 10px;
+            gap: 12px;
             width: 100%;
         }
 
@@ -476,12 +489,12 @@
         }
 
         .hmw-disclaimer {
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             color: var(--text-muted);
             padding: 16px 24px;
-            background: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.6);
             border-top: 1px solid var(--border);
-            line-height: 1.5;
+            line-height: 1.6;
             text-align: center;
         }
 
@@ -501,11 +514,11 @@
             <div class="hmw-card-box hmw-select-wrapper" id="initials-container">
                 <label for="initials-field">
                     <span>Enter your initials (first & last)</span>
-                    <span style="font-size: 0.75rem; font-weight: 400; color: var(--text-muted);">Required for tracking</span>
+                    <span style="font-size: 0.8rem; font-weight: 400; color: var(--text-muted);">Required for tracking</span>
                 </label>
                 <div class="hmw-input-group">
                     <input type="text" id="initials-field" maxlength="4" placeholder="e.g., AB" onkeydown="hmwHandleInitialsKey(event)">
-                    <button type="button" class="hmw-btn" onclick="hmwSubmitInitialsManual()" style="padding: 0 20px;">Start</button>
+                    <button type="button" class="hmw-btn" onclick="hmwSubmitInitialsManual()" style="padding: 0 24px;">Start</button>
                 </div>
             </div>
 
@@ -525,13 +538,20 @@
                 </select>
             </div>
 
+            <!-- Add to Home Screen Banner (Placed at the end of the selector view for easy discoverability) -->
+            <div class="hmw-pwa-banner" id="pwa-install-banner">
+                <h4 style="font-size: 1.05rem; color: var(--primary); font-weight: 700;">📱 Add App to Your Home Screen</h4>
+                <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.5;">Access this check-in tool instantly anytime. Tap your browser menu (or Share button on iOS) and select <strong>"Add to Home Screen"</strong>.</p>
+                <button type="button" class="hmw-btn hmw-btn-secondary" id="install-btn" style="display: none; padding: 10px 18px; font-size: 0.9rem;" onclick="hmwPromptInstall()">Install App Now</button>
+            </div>
+
             <!-- Quiz Form Container -->
             <div id="hmw-quiz-form" class="hidden">
                 <div class="hmw-card-box hmw-questions-container" id="hmw-questions-container"></div>
                 <div class="hmw-nav-buttons">
                     <button type="button" class="hmw-btn hmw-btn-secondary" id="prev-btn" onclick="hmwPrevQuestion()">← Back</button>
                     <span class="hmw-progress" id="hmw-progress-indicator"></span>
-                    <div style="width: 80px;"></div>
+                    <div style="width: 90px;"></div>
                 </div>
             </div>
 
@@ -546,11 +566,11 @@
                         <span>Your Summary Result Score</span>
                         <div class="hmw-score-number" id="hmw-final-score">0</div>
                     </div>
-                    <p id="hmw-score-interpretation" style="font-weight: 500; color: var(--primary); line-height: 1.4;"></p>
+                    <p id="hmw-score-interpretation" style="font-weight: 500; color: var(--primary); line-height: 1.5;"></p>
                 </div>
                 <div class="hmw-conversion-box">
-                    <h4 style="font-size: 1.05rem; color: var(--primary); margin-bottom: 6px;">Ready to take the next step?</h4>
-                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 4px;">Schedule your confidential consultation seamlessly online through Headway.</p>
+                    <h4 style="font-size: 1.1rem; color: var(--primary); margin-bottom: 6px;">Ready to take the next step?</h4>
+                    <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 4px;">Schedule your confidential consultation seamlessly online through Headway.</p>
                     <div class="hmw-action-group" id="hmw-action-container"></div>
                 </div>
                 <button type="button" class="hmw-btn hmw-btn-secondary hmw-btn-full" onclick="hmwDownloadResults()">📥 Download Elegant Report</button>
@@ -559,8 +579,8 @@
         </div>
 
         <div class="hmw-disclaimer" id="footer-disclaimer">
-            <p><strong>Her Mind & Wellness™ v2.1</strong> • © 2026</p>
-            <p style="margin-top: 4px;">Submissions not tied to an active appointment are for personal reflection. If you are experiencing an immediate crisis, please contact 911 or call/text the 988 Crisis Lifeline.</p>
+            <p><strong>Her Mind & Wellness™</strong> • Designed for personal reflection and collaborative clinical care.</p>
+            <p style="margin-top: 4px;">If you are experiencing an immediate crisis or emotional distress, support is available 24/7. Call or text <strong>988</strong> to reach the Suicide & Crisis Lifeline, or contact emergency services.</p>
         </div>
     </div>
 
@@ -602,7 +622,26 @@
             }
         };
 
-        let currentAssessmentKey = null, currentQuestionIndex = 0, userAnswers = {}, persistentInitials = "", lastScore = 0, submissionTimestamp = "";
+        let currentAssessmentKey = null, currentQuestionIndex = 0, userAnswers = {}, persistentInitials = "", lastScore = 0, submissionTimestamp = "", deferredPrompt = null;
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            const installBtn = document.getElementById("install-btn");
+            if (installBtn) installBtn.style.display = "inline-flex";
+        });
+
+        function hmwPromptInstall() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        document.getElementById("pwa-install-banner").style.display = "none";
+                    }
+                    deferredPrompt = null;
+                });
+            }
+        }
 
         function hmwHandleInitialsKey(event) {
             if (event.key === "Enter") {
@@ -654,6 +693,7 @@
             document.getElementById("initials-container").classList.add("hidden");
             document.getElementById("initials-display-card").classList.add("hidden");
             document.getElementById("selector-wrapper").classList.add("hidden");
+            document.getElementById("pwa-install-banner").classList.add("hidden");
             document.getElementById("footer-disclaimer").classList.add("hidden");
 
             currentQuestionIndex = 0; userAnswers = {};
@@ -714,6 +754,7 @@
         function hmwReturnToSelector() {
             document.getElementById("hmw-quiz-form").classList.add("hidden");
             document.getElementById("selector-wrapper").classList.remove("hidden");
+            document.getElementById("pwa-install-banner").classList.remove("hidden");
             document.getElementById("footer-disclaimer").classList.remove("hidden");
             if (persistentInitials) {
                 document.getElementById("displayed-initials").innerText = persistentInitials;
@@ -762,7 +803,6 @@
         function hmwDownloadResults() {
             const assessment = hmwData[currentAssessmentKey];
             
-            // Styled, elegant plain-text layout suitable for clean note storage or printing
             let reportContent = `╔════════════════════════════════════════════════════════════╗\n`;
             reportContent += `║             HER MIND & WELLNESS • CLINICAL SUMMARY         ║\n`;
             reportContent += `╚════════════════════════════════════════════════════════════╝\n\n`;
@@ -802,6 +842,7 @@
             currentAssessmentKey = null; currentQuestionIndex = 0; userAnswers = {}; lastScore = 0; submissionTimestamp = "";
             document.getElementById("hmw-results-view").classList.remove("active");
             document.getElementById("selector-wrapper").classList.remove("hidden");
+            document.getElementById("pwa-install-banner").classList.remove("hidden");
             document.getElementById("footer-disclaimer").classList.remove("hidden");
             
             if (persistentInitials) {

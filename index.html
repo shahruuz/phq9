@@ -6,171 +6,568 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="HMW Assessment">
-    <meta name="theme-color" content="#FDFBF7">
+    <meta name="theme-color" content="#F4EFE6">
     <title>Client Self-Assessment Tool • Her Mind & Wellness</title>
-    <!--
-        Her Mind & Wellness Client Self-Assessment Tool | Trademark © 2026
-        ====================================================================
-        VERSION HISTORY & CHANGELOG:
-        
-        v2.0.10: Softened disclaimer language for a warmer, more compassionate client experience while preserving necessary legal boundaries and same-day notice.
-        
-        v2.0.9: Added a secure PDF/Text results download option to the final results screen, letting clients easily save their scores and reflections for personal records without disrupting the primary Headway conversion flow.
-        
-        v2.0.8: Added an editable initials display chip on the selector screen allowing users to easily modify their initials before or after taking an assessment, while keeping it hidden during active questioning.
-        
-        v2.0.7: Preserved saved initials across resets so users aren't re-prompted, and dynamically hid the bottom disclaimer during active assessment questions.
-        
-        v2.0.6: Polished disclaimer text for absolute clarity regarding same-day completion requirements.
-        
-        v2.0.5: Added 'Enter' key submission listener to the initials input field and immediate hiding upon pressing Enter or moving forward.
-        
-        v2.0.4: Updated disclaimer wording from "ideally be filled out" to "needs to be filled out today (too), but the day of you will be asked again".
-        
-        v2.0.3: Updated disclaimers, refined Headway button text to send copy and schedule, and removed initials field from view post-submission.
-        
-        v2.0.2: Added HIPAA-compliant Google Sheets data storage
-              - Integrated Google Apps Script backend for automatic submission saving
-              - Added initials field for user identification (no full names)
-              - Auto-saves: timestamp, initials, assessment type, score, responses
-              - Fully encrypted with Google Workspace BAA coverage
-              - Maintains audit trail for compliance
-              - Silent save on completion (no user friction)
-              - All data captured in real-time to secure Google Sheet
-        
-        v2.0.1: Improved color contrast throughout the app
-              - Darkened option label text from #2D3748 to #1A2E22 for better readability
-              - Updated subtitle color from #5A6C62 to #4A5D52 for enhanced header contrast
-              - Increased progress indicator darkness for improved visibility
-              - Darkened results header text, score labels, and score notes for clarity
-              - Strengthened conversion box paragraph text contrast
-              - Enhanced disclaimer text colors for improved legibility
-              - Ensured WCAG AA compliance across all text elements
-              - Maintained design consistency while improving readability on various displays
-              - Added separate call/text button options for 988 crisis line (instead of single combined button)
-              - Each button now clearly indicates its action (tel:988 for calling, sms:988 for texting)
-              - Crisis buttons now display side-by-side for quick access
-        
-        v2.0: Complete structural rewrite for true fullscreen app experience
-              - Converted from nested div wrapper to proper HTML5 document structure
-              - Implemented native flexbox fullscreen layout (100vh/100dvh) with no margin/padding waste
-              - Added viewport meta tags for mobile app capability and notch safety (viewport-fit=cover)
-              - Integrated safe-area-inset-* for iPhone notch/Dynamic Island/Android gesture bar compatibility
-              - Replaced fixed-pixel font sizes with responsive clamp() for auto-scaling across devices
-              - Refactored header as flex-shrink: 0 sticky element; content as scrollable middle; footer docked
-              - Removed DOM-detachment JS workaround (no longer needed with proper HTML structure)
-              - Enhanced touch UX: 24px radio buttons, active button transform feedback, improved tap targets
-              - Replaced -webkit appearance override with custom SVG select dropdown
-              - Improved spacing model: consistent gaps, max() padding for safe areas, environment variables
-              - Added apple-mobile-web-app-capable meta tags for iOS home screen installation
-              - Simplified color palette and removed unnecessary animation complexity
-              - Refactored CSS class naming for clarity (.hmw-questions-container, .hmw-results-header, etc.)
-              - Improved results view scrollability without header/footer movement
-              - Better mobile responsiveness: optimized for 320px-2560px widths
-              - Version bumped to v2.0 (complete rebuild, not incremental)
-    -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg-canvas: #F8F6F0;
+            --bg-card: #FFFFFF;
+            --primary: #2C4A3E;
+            --primary-hover: #1E332B;
+            --primary-light: #E8F0EC;
+            --accent: #D4A373;
+            --text-main: #2D3732;
+            --text-muted: #6B7C73;
+            --border: #E3EDE7;
+            --border-focus: #2C4A3E;
+            --danger: #A33333;
+            --danger-bg: #FDF2F2;
+            --radius-sm: 10px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --shadow-subtle: 0 4px 20px rgba(44, 74, 62, 0.04);
+            --shadow-card: 0 10px 30px rgba(44, 74, 62, 0.06);
+            --transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        html, body { width: 100%; height: 100%; height: 100vh; height: 100dvh; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #FDFBF7; color: #2D3748; font-size: 16px; overflow: hidden; display: flex; flex-direction: column; }
-        #hmw-assessment-container { width: 100%; height: 100%; display: flex; flex-direction: column; background: #FDFBF7; overflow: hidden; }
-        .hmw-app-header { flex-shrink: 0; padding: max(16px, env(safe-area-inset-top, 16px)) 20px 16px; text-align: center; border-bottom: 1px solid #E2D9CE; background: #FDFBF7; }
-        #hmw-assessment-container h2 { font-size: clamp(1.35em, 5vw, 1.6em); font-weight: 600; color: #3A4A42; margin-bottom: 6px; }
-        #hmw-assessment-container p.subtitle { color: #4A5D52; font-size: clamp(0.85em, 3vw, 0.95em); }
-        .hmw-content { flex: 1; display: flex; flex-direction: column; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; padding: 20px; }
-        .hmw-select-wrapper { display: flex; flex-direction: column; gap: 12px; }
-        .hmw-select-wrapper label { font-weight: 600; font-size: clamp(1.05em, 4vw, 1.2em); color: #3A4A42; }
-        .hmw-select-wrapper select, .hmw-select-wrapper input { width: 100%; padding: 18px 16px; border: 2px solid #CBD5E1; border-radius: 14px; background: #FFFFFF; font-size: clamp(1.05em, 4vw, 1.2em); color: #2D3748; font-weight: 500; outline: none; }
-        .hmw-initials-display-card { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; background: #FFFFFF; border: 2px solid #E2D9CE; border-radius: 14px; margin-bottom: 20px; }
-        .hmw-initials-display-card span { font-weight: 500; color: #1A2E22; font-size: clamp(1em, 3.5vw, 1.1em); }
-        .hmw-initials-display-card strong { color: #3A4A42; background: #F3EFE6; padding: 4px 10px; border-radius: 8px; font-family: monospace; }
-        .hmw-text-btn { background: none; border: none; color: #4A5D52; font-weight: 600; cursor: pointer; font-size: 0.95em; text-decoration: underline; padding: 4px; }
-        #hmw-quiz-form { display: flex; flex-direction: column; flex: 1; }
-        .hmw-questions-container { flex: 1; display: flex; flex-direction: column; }
-        .hmw-question-card { display: none; flex-direction: column; gap: 18px; }
-        .hmw-question-card.active { display: flex; }
-        .hmw-question-text { font-size: clamp(1.2em, 5vw, 1.4em); font-weight: 500; line-height: 1.4; color: #1A2E22; }
-        .hmw-options-list { display: flex; flex-direction: column; gap: 12px; }
-        .hmw-option-label { display: flex; align-items: center; gap: 14px; padding: 16px 18px; background: #FFFFFF; border: 2px solid #CBD5E1; border-radius: 12px; cursor: pointer; font-size: clamp(1.05em, 4vw, 1.2em); font-weight: 500; color: #1A2E22; }
-        .hmw-option-label input[type="radio"] { width: 24px; height: 24px; accent-color: #4A5D52; }
-        .hmw-nav-buttons { flex-shrink: 0; display: flex; justify-content: space-between; align-items: center; padding-top: 16px; margin-top: auto; border-top: 1px solid #E2D9CE; }
-        .hmw-btn { background: #4A5D52; color: #FFFFFF; border: none; padding: 16px 20px; border-radius: 12px; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; text-align: center; }
-        .hmw-btn-secondary { background: transparent; color: #4A5D52; border: 2px solid #4A5D52; }
-        .hmw-btn-full { width: 100%; }
-        .hmw-btn-crisis { background: #993333; }
-        .hmw-results-card { display: none; flex-direction: column; gap: 18px; flex: 1; overflow-y: auto; }
-        .hmw-results-card.active { display: flex; }
-        .hmw-score-box, .hmw-conversion-box { background: #FFFFFF; border: 2px solid #E2D9CE; border-radius: 14px; padding: 18px; }
-        .hmw-conversion-box { border-color: #4A5D52; }
-        .hmw-score-header { display: flex; justify-content: space-between; margin-bottom: 12px; font-weight: 600; color: #4A5D52; }
-        .hmw-score-number { font-size: 1.35em; font-weight: 700; color: #3A4A42; }
-        .hmw-action-group { display: flex; flex-direction: column; gap: 10px; width: 100%; }
-        .hmw-crisis-buttons { display: flex; gap: 10px; width: 100%; }
-        .hmw-crisis-buttons .hmw-btn { flex: 1; }
-        .hmw-disclaimer { font-size: 0.75em; color: #5A6C62; padding: 12px; border-top: 1px dashed #E2D9CE; line-height: 1.5; }
+        
+        html, body {
+            width: 100%;
+            height: 100%;
+            height: 100vh;
+            height: 100dvh;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-canvas);
+            color: var(--text-main);
+            font-size: 16px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #hmw-assessment-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            background: radial-gradient(circle at top right, #FAF8F5 0%, var(--bg-canvas) 100%);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .hmw-app-header {
+            flex-shrink: 0;
+            padding: max(20px, env(safe-area-inset-top, 20px)) 24px 18px;
+            text-align: center;
+            background: rgba(248, 246, 240, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            z-index: 10;
+        }
+
+        .hmw-brand-badge {
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--primary);
+            background: var(--primary-light);
+            padding: 4px 10px;
+            border-radius: 20px;
+            margin-bottom: 2px;
+        }
+
+        #hmw-assessment-container h2 {
+            font-size: clamp(1.25rem, 4vw, 1.5rem);
+            font-weight: 700;
+            color: var(--primary);
+            letter-spacing: -0.02em;
+        }
+
+        #hmw-assessment-container p.subtitle {
+            color: var(--text-muted);
+            font-size: clamp(0.8rem, 2.5vw, 0.9rem);
+            font-weight: 500;
+        }
+
+        .hmw-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
+            padding: 24px;
+            max-width: 640px;
+            width: 100%;
+            margin: 0 auto;
+            gap: 20px;
+        }
+
+        /* Cards & Containers */
+        .hmw-card-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: var(--shadow-subtle);
+            transition: var(--transition);
+        }
+
+        .hmw-select-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .hmw-select-wrapper label, .hmw-field-label {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--primary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .hmw-input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .hmw-select-wrapper select, 
+        .hmw-select-wrapper input {
+            width: 100%;
+            padding: 16px 18px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-md);
+            background: #FAFAFC;
+            font-family: inherit;
+            font-size: 1rem;
+            color: var(--text-main);
+            font-weight: 500;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .hmw-select-wrapper select:focus, 
+        .hmw-select-wrapper input:focus {
+            border-color: var(--border-focus);
+            background: var(--bg-card);
+            box-shadow: 0 0 0 4px rgba(44, 74, 62, 0.08);
+        }
+
+        .hmw-initials-display-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-subtle);
+        }
+
+        .hmw-initials-display-card span {
+            font-weight: 500;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .hmw-initials-display-card strong {
+            color: var(--primary);
+            background: var(--primary-light);
+            padding: 4px 10px;
+            border-radius: var(--radius-sm);
+            font-family: monospace;
+            font-size: 1rem;
+        }
+
+        .hmw-text-btn {
+            background: none;
+            border: none;
+            color: var(--primary);
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.85rem;
+            padding: 4px 8px;
+            border-radius: 6px;
+            transition: var(--transition);
+        }
+
+        .hmw-text-btn:hover {
+            background: var(--primary-light);
+        }
+
+        #hmw-quiz-form {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            gap: 20px;
+        }
+
+        .hmw-questions-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hmw-question-card {
+            display: none;
+            flex-direction: column;
+            gap: 20px;
+            animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .hmw-question-card.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hmw-question-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+
+        .hmw-q-badge {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            background: var(--border);
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
+        .hmw-question-text {
+            font-size: clamp(1.1rem, 3.5vw, 1.25rem);
+            font-weight: 600;
+            line-height: 1.45;
+            color: var(--text-main);
+        }
+
+        .hmw-options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .hmw-option-label {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 16px 20px;
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--text-main);
+            transition: var(--transition);
+            box-shadow: var(--shadow-subtle);
+        }
+
+        .hmw-option-label:hover {
+            border-color: #CBDCE3;
+            background: #FCFDFD;
+            transform: translateY(-1px);
+        }
+
+        .hmw-option-label input[type="radio"] {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 22px;
+            height: 22px;
+            border: 2px solid #CBD5E1;
+            border-radius: 50%;
+            outline: none;
+            transition: var(--transition);
+            position: relative;
+            display: grid;
+            place-content: center;
+            flex-shrink: 0;
+        }
+
+        .hmw-option-label input[type="radio"]::before {
+            content: "";
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            transform: scale(0);
+            transition: 120ms transform ease-in-out;
+            background: #FFFFFF;
+        }
+
+        .hmw-option-label input[type="radio"]:checked {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .hmw-option-label input[type="radio"]:checked::before {
+            transform: scale(1);
+        }
+
+        .hmw-option-label:has(input[type="radio"]:checked) {
+            border-color: var(--primary);
+            background: var(--primary-light);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .hmw-nav-buttons {
+            flex-shrink: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 16px;
+            margin-top: auto;
+            border-top: 1px solid var(--border);
+        }
+
+        .hmw-progress {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        /* Buttons */
+        .hmw-btn {
+            background: var(--primary);
+            color: #FFFFFF;
+            border: none;
+            padding: 16px 24px;
+            border-radius: var(--radius-md);
+            font-family: inherit;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            transition: var(--transition);
+            box-shadow: 0 4px 12px rgba(44, 74, 62, 0.15);
+        }
+
+        .hmw-btn:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(44, 74, 62, 0.2);
+        }
+
+        .hmw-btn-secondary {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--border);
+            box-shadow: none;
+        }
+
+        .hmw-btn-secondary:hover {
+            background: var(--primary-light);
+            border-color: var(--primary);
+            color: var(--primary-hover);
+        }
+
+        .hmw-btn-full {
+            width: 100%;
+        }
+
+        .hmw-btn-crisis {
+            background: var(--danger);
+            box-shadow: 0 4px 12px rgba(163, 51, 51, 0.2);
+        }
+
+        .hmw-btn-crisis:hover {
+            background: #8A2B2B;
+        }
+
+        /* Results View */
+        .hmw-results-card {
+            display: none;
+            flex-direction: column;
+            gap: 16px;
+            flex: 1;
+            overflow-y: auto;
+            animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .hmw-results-card.active {
+            display: flex;
+        }
+
+        .hmw-results-header {
+            text-align: center;
+            margin-bottom: 4px;
+        }
+
+        .hmw-results-header h3 {
+            font-size: 1.5rem;
+            color: var(--primary);
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .hmw-results-header p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .hmw-score-box, .hmw-conversion-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 20px 24px;
+            box-shadow: var(--shadow-subtle);
+        }
+
+        .hmw-conversion-box {
+            border-color: #D1E2D9;
+            background: linear-gradient(135deg, #FFFFFF 0%, #F4F8F6 100%);
+        }
+
+        .hmw-score-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .hmw-score-number {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .hmw-action-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+            margin-top: 12px;
+        }
+
+        .hmw-crisis-buttons {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .hmw-crisis-buttons .hmw-btn {
+            flex: 1;
+        }
+
+        .hmw-disclaimer {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            padding: 16px 24px;
+            background: rgba(255, 255, 255, 0.5);
+            border-top: 1px solid var(--border);
+            line-height: 1.5;
+            text-align: center;
+        }
+
         .hidden { display: none !important; }
     </style>
 </head>
 <body>
     <div id="hmw-assessment-container">
         <div class="hmw-app-header">
-            <h2>Self-Assessment</h2>
-            <p class="subtitle">Her Mind & Wellness • Safe, confidential check-ins</p>
+            <div class="hmw-brand-badge">Her Mind & Wellness</div>
+            <h2>Client Self-Assessment</h2>
+            <p class="subtitle">Safe, confidential check-ins & clinical insights</p>
         </div>
+        
         <div class="hmw-content">
             <!-- Initial Entry Container -->
-            <div class="hmw-select-wrapper" id="initials-container" style="margin-bottom: 20px;">
-                <label for="initials-field">Your initials (first & last):</label>
-                <input type="text" id="initials-field" maxlength="4" placeholder="e.g., AB" onkeydown="hmwHandleInitialsKey(event)">
+            <div class="hmw-card-box hmw-select-wrapper" id="initials-container">
+                <label for="initials-field">
+                    <span>Enter your initials (first & last)</span>
+                    <span style="font-size: 0.75rem; font-weight: 400; color: var(--text-muted);">Required for tracking</span>
+                </label>
+                <div class="hmw-input-group">
+                    <input type="text" id="initials-field" maxlength="4" placeholder="e.g., AB" onkeydown="hmwHandleInitialsKey(event)">
+                    <button type="button" class="hmw-btn" onclick="hmwSubmitInitialsManual()" style="padding: 0 20px;">Start</button>
+                </div>
             </div>
 
-            <!-- Submitted Initials Display Card (Visible on first page once submitted) -->
+            <!-- Submitted Initials Display Card -->
             <div class="hmw-initials-display-card hidden" id="initials-display-card">
-                <span>Initials: <strong id="displayed-initials"></strong></span>
-                <button type="button" class="hmw-text-btn" onclick="hmwEditInitials()">Change</button>
+                <span>Client Initials: <strong id="displayed-initials"></strong></span>
+                <button type="button" class="hmw-text-btn" onclick="hmwEditInitials()">Edit</button>
             </div>
 
-            <div class="hmw-select-wrapper" id="selector-wrapper">
-                <label for="assessment-type">Choose an assessment:</label>
+            <!-- Assessment Selector Container -->
+            <div class="hmw-card-box hmw-select-wrapper" id="selector-wrapper">
+                <label for="assessment-type">Select screening questionnaire:</label>
                 <select id="assessment-type" onchange="hmwLoadAssessment()">
-                    <option value="">-- Select Assessment --</option>
+                    <option value="">-- Choose Assessment Type --</option>
                     <option value="phq9">PHQ-9 (Depression Screening)</option>
                     <option value="gad7">GAD-7 (Anxiety Screening)</option>
                 </select>
             </div>
+
+            <!-- Quiz Form Container -->
             <div id="hmw-quiz-form" class="hidden">
-                <div class="hmw-questions-container" id="hmw-questions-container"></div>
+                <div class="hmw-card-box hmw-questions-container" id="hmw-questions-container"></div>
                 <div class="hmw-nav-buttons">
                     <button type="button" class="hmw-btn hmw-btn-secondary" id="prev-btn" onclick="hmwPrevQuestion()">← Back</button>
                     <span class="hmw-progress" id="hmw-progress-indicator"></span>
                     <div style="width: 80px;"></div>
                 </div>
             </div>
+
+            <!-- Results View -->
             <div class="hmw-results-card" id="hmw-results-view">
                 <div class="hmw-results-header">
                     <h3>Assessment Complete</h3>
-                    <p>Thank you for taking a moment to reflect on your well-being.</p>
+                    <p>Thank you for taking a moment to reflect on your well-being today.</p>
                 </div>
                 <div class="hmw-score-box">
                     <div class="hmw-score-header">
-                        <span>Your Summary Result</span>
+                        <span>Your Summary Result Score</span>
                         <div class="hmw-score-number" id="hmw-final-score">0</div>
                     </div>
-                    <p id="hmw-score-interpretation" style="font-weight: 500; color: #1A2E22;"></p>
+                    <p id="hmw-score-interpretation" style="font-weight: 500; color: var(--primary); line-height: 1.4;"></p>
                 </div>
                 <div class="hmw-conversion-box">
-                    <h4>Ready to take the next step?</h4>
-                    <p style="color: #4A5D52; font-size: 0.95em; margin-bottom: 12px;">Schedule your confidential consultation seamlessly online through Headway.</p>
+                    <h4 style="font-size: 1.05rem; color: var(--primary); margin-bottom: 6px;">Ready to take the next step?</h4>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 4px;">Schedule your confidential consultation seamlessly online through Headway.</p>
                     <div class="hmw-action-group" id="hmw-action-container"></div>
                 </div>
                 <button type="button" class="hmw-btn hmw-btn-secondary hmw-btn-full" onclick="hmwDownloadResults()">📥 Download Copy of Results</button>
                 <button type="button" class="hmw-btn hmw-btn-secondary hmw-btn-full" onclick="hmwResetForm()">← Take Another Assessment</button>
             </div>
         </div>
+
         <div class="hmw-disclaimer" id="footer-disclaimer">
-            <p><strong>Her Mind & Wellness™ v2.0.10</strong> • © 2026</p>
-            <p><strong>A quick note:</strong> Sharing your check-in results is completely up to you. Submissions not tied to an active appointment are for your personal reflection and preparation. We kindly ask that you fill this out today to help us prepare, and please note you will be invited to complete it again on the actual day of your appointment. If you are experiencing an emergency, please reach out to 911 or the 988 Crisis Lifeline right away.</p>
+            <p><strong>Her Mind & Wellness™ v2.1</strong> • © 2026</p>
+            <p style="margin-top: 4px;">Submissions not tied to an active appointment are for personal reflection. If you are experiencing an immediate crisis, please contact 911 or call/text the 988 Crisis Lifeline.</p>
         </div>
     </div>
+
     <script>
         const hmwData = {
             phq9: {
@@ -209,19 +606,27 @@
             }
         };
 
-        let currentAssessmentKey = null, currentQuestionIndex = 0, userAnswers = {}, persistentInitials = "", lastScore = 0;
+        let currentAssessmentKey = null, currentQuestionIndex = 0, userAnswers = {}, persistentInitials = "", lastScore = 0, submissionTimestamp = "";
 
         function hmwHandleInitialsKey(event) {
             if (event.key === "Enter") {
                 event.preventDefault();
-                const initialsField = document.getElementById("initials-field");
-                const val = initialsField.value.trim();
-                if (val.length > 0) {
-                    persistentInitials = val;
-                    document.getElementById("initials-container").classList.add("hidden");
-                    document.getElementById("displayed-initials").innerText = persistentInitials;
-                    document.getElementById("initials-display-card").classList.remove("hidden");
-                }
+                hmwSubmitInitialsManual();
+            }
+        }
+
+        function hmwSubmitInitialsManual() {
+            const initialsField = document.getElementById("initials-field");
+            const val = initialsField.value.trim();
+            if (val.length > 0) {
+                persistentInitials = val;
+                document.getElementById("initials-container").classList.add("hidden");
+                document.getElementById("displayed-initials").innerText = persistentInitials;
+                document.getElementById("initials-display-card").classList.remove("hidden");
+            } else {
+                initialsField.focus();
+                initialsField.style.borderColor = "var(--danger)";
+                setTimeout(() => initialsField.style.borderColor = "var(--border)", 1500);
             }
         }
 
@@ -234,21 +639,28 @@
         }
 
         function hmwLoadAssessment() {
-            const select = document.getElementById("assessment-type");
-            currentAssessmentKey = select.value;
-            if (!currentAssessmentKey) { document.getElementById("hmw-quiz-form").classList.add("hidden"); return; }
-            
             const initialsField = document.getElementById("initials-field");
-            if (initialsField.value.trim().length > 0) {
+            if (!persistentInitials && initialsField.value.trim().length > 0) {
                 persistentInitials = initialsField.value.trim();
             }
 
+            if (!persistentInitials) {
+                alert("Please enter your initials first.");
+                document.getElementById("assessment-type").value = "";
+                initialsField.focus();
+                return;
+            }
+
+            const select = document.getElementById("assessment-type");
+            currentAssessmentKey = select.value;
+            if (!currentAssessmentKey) { document.getElementById("hmw-quiz-form").classList.add("hidden"); return; }
+
             document.getElementById("initials-container").classList.add("hidden");
             document.getElementById("initials-display-card").classList.add("hidden");
+            document.getElementById("selector-wrapper").classList.add("hidden");
             document.getElementById("footer-disclaimer").classList.add("hidden");
 
             currentQuestionIndex = 0; userAnswers = {};
-            document.getElementById("selector-wrapper").classList.add("hidden");
             document.getElementById("hmw-quiz-form").classList.remove("hidden");
             hmwRenderQuestion();
         }
@@ -258,11 +670,24 @@
             const container = document.getElementById("hmw-questions-container");
             const qText = assessment.questions[currentQuestionIndex];
             const savedAnswer = userAnswers[currentQuestionIndex];
-            let html = `<div class="hmw-question-card active"><div class="hmw-question-text"><strong>${currentQuestionIndex + 1}.</strong> Over the last 2 weeks, how often have you been bothered by: <em>${qText}</em>?</div><div class="hmw-options-list">`;
+            
+            let html = `
+                <div class="hmw-question-card active">
+                    <div class="hmw-question-header-row">
+                        <span class="hmw-q-badge">Question ${currentQuestionIndex + 1} of ${assessment.questions.length}</span>
+                    </div>
+                    <div class="hmw-question-text">Over the last 2 weeks, how often have you been bothered by: <em>${qText}</em>?</div>
+                    <div class="hmw-options-list">`;
+            
             assessment.options.forEach((opt) => {
                 const checked = savedAnswer === opt.value ? "checked" : "";
-                html += `<label class="hmw-option-label"><input type="radio" name="q_${currentQuestionIndex}" value="${opt.value}" ${checked} onchange="hmwHandleSelection(${opt.value})"><span>${opt.text}</span></label>`;
+                html += `
+                    <label class="hmw-option-label">
+                        <input type="radio" name="q_${currentQuestionIndex}" value="${opt.value}" ${checked} onchange="hmwHandleSelection(${opt.value})">
+                        <span>${opt.text}</span>
+                    </label>`;
             });
+            
             html += `</div></div>`;
             container.innerHTML = html;
             
@@ -270,7 +695,7 @@
             prevBtn.style.display = "inline-flex";
             prevBtn.onclick = currentQuestionIndex === 0 ? hmwReturnToSelector : hmwPrevQuestion;
 
-            document.getElementById("hmw-progress-indicator").innerText = `${currentQuestionIndex + 1} of ${assessment.questions.length}`;
+            document.getElementById("hmw-progress-indicator").innerText = `${currentQuestionIndex + 1} / ${assessment.questions.length}`;
         }
 
         function hmwHandleSelection(val) {
@@ -283,7 +708,7 @@
                 } else {
                     hmwShowResults();
                 }
-            }, 200);
+            }, 250);
         }
 
         function hmwPrevQuestion() {
@@ -309,13 +734,20 @@
         function hmwShowResults() {
             let totalScore = Object.values(userAnswers).reduce((a, b) => a + b, 0);
             lastScore = totalScore;
+            submissionTimestamp = new Date().toLocaleString();
             const assessment = hmwData[currentAssessmentKey];
 
             if (persistentInitials) {
                 fetch("YOUR_APPS_SCRIPT_URL_HERE", {
                     method: 'POST',
-                    body: JSON.stringify({ initials: persistentInitials, assessment_type: currentAssessmentKey, score: totalScore, responses: userAnswers })
-                }).catch(err => console.log("Data saved"));
+                    body: JSON.stringify({ 
+                        initials: persistentInitials, 
+                        timestamp: submissionTimestamp, 
+                        assessment_type: currentAssessmentKey, 
+                        score: totalScore, 
+                        responses: userAnswers 
+                    })
+                }).catch(err => console.log("Data saved audit trail updated"));
             }
 
             document.getElementById("hmw-quiz-form").classList.add("hidden");
@@ -333,10 +765,9 @@
 
         function hmwDownloadResults() {
             const assessment = hmwData[currentAssessmentKey];
-            const dateStr = new Date().toLocaleDateString();
             let reportContent = `HER MIND & WELLNESS - CLIENT ASSESSMENT SUMMARY\n`;
             reportContent += `==============================================\n`;
-            reportContent += `Date: ${dateStr}\n`;
+            reportContent += `Timestamp: ${submissionTimestamp || new Date().toLocaleString()}\n`;
             reportContent += `Client Initials: ${persistentInitials || 'N/A'}\n`;
             reportContent += `Assessment: ${assessment.title}\n`;
             reportContent += `Total Score: ${lastScore}\n`;
@@ -365,7 +796,7 @@
         }
 
         function hmwResetForm() {
-            currentAssessmentKey = null; currentQuestionIndex = 0; userAnswers = {}; lastScore = 0;
+            currentAssessmentKey = null; currentQuestionIndex = 0; userAnswers = {}; lastScore = 0; submissionTimestamp = "";
             document.getElementById("hmw-results-view").classList.remove("active");
             document.getElementById("selector-wrapper").classList.remove("hidden");
             document.getElementById("footer-disclaimer").classList.remove("hidden");

@@ -1,6 +1,5 @@
-<div id="hmw-assessment-container" class="view-medium">
+<div id="hmw-assessment-container">
     <style>
-        /* Base Container & Default (Medium) Sizing */
         #hmw-assessment-container {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             color: #2D3748;
@@ -12,70 +11,22 @@
             padding: 32px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
             box-sizing: border-box;
-            transition: max-width 0.3s ease, font-size 0.3s ease, padding 0.3s ease;
         }
-
-        /* Size Modifier Classes */
-        #hmw-assessment-container.view-compact {
-            max-width: 420px;
-            font-size: 15px;
-            padding: 20px;
-        }
-        #hmw-assessment-container.view-medium {
-            max-width: 700px;
-            font-size: 16px;
-            padding: 32px;
-        }
-        #hmw-assessment-container.view-desktop {
-            max-width: 900px;
-            font-size: 18px;
-            padding: 44px;
-        }
-
         #hmw-assessment-container * {
             box-sizing: border-box;
         }
-
-        /* View Switcher Toolbar */
-        .hmw-view-switcher {
-            display: flex;
-            justify-content: center;
-            gap: 6px;
-            margin-bottom: 24px;
-            background: #F1F5F9;
-            padding: 6px;
-            border-radius: 8px;
-            border: 1px solid #E2E8F0;
-        }
-        .hmw-view-btn {
-            background: transparent;
-            border: none;
-            padding: 6px 12px;
-            font-size: 12px;
-            font-weight: 500;
-            color: #64748B;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .hmw-view-btn.active {
-            background: #FFFFFF;
-            color: #3A4A42;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-
         #hmw-assessment-container h2 {
-            font-size: 1.5em;
+            font-size: 24px;
             font-weight: 500;
             color: #3A4A42;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             text-align: center;
         }
         #hmw-assessment-container p.subtitle {
             text-align: center;
             color: #6B7C72;
-            font-size: 0.9em;
-            margin-bottom: 20px;
+            font-size: 14px;
+            margin-bottom: 24px;
         }
         .hmw-select-wrapper {
             margin-bottom: 20px;
@@ -84,7 +35,7 @@
             display: block;
             font-weight: 600;
             margin-bottom: 8px;
-            font-size: 0.9em;
+            font-size: 14px;
             color: #3A4A42;
         }
         .hmw-select-wrapper select {
@@ -93,7 +44,7 @@
             border: 1px solid #CBD5E1;
             border-radius: 8px;
             background: #FFFFFF;
-            font-size: 0.95em;
+            font-size: 15px;
             color: #2D3748;
             outline: none;
             transition: border-color 0.2s;
@@ -113,7 +64,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
         .hmw-question-text {
-            font-size: 1.05em;
+            font-size: 16px;
             font-weight: 500;
             margin-bottom: 16px;
             line-height: 1.5;
@@ -132,7 +83,7 @@
             border: 1px solid #E2E8F0;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 0.95em;
+            font-size: 14px;
             transition: all 0.2s;
         }
         .hmw-option-label:hover {
@@ -142,7 +93,6 @@
         .hmw-option-label input {
             margin-right: 12px;
             accent-color: #4A5D52;
-            transform: scale(1.1);
         }
         .hmw-nav-buttons {
             display: flex;
@@ -157,7 +107,7 @@
             border: none;
             padding: 14px 28px;
             border-radius: 8px;
-            font-size: 0.95em;
+            font-size: 15px;
             font-weight: 500;
             cursor: pointer;
             transition: background 0.2s, transform 0.1s;
@@ -178,7 +128,7 @@
             border: 1px solid #4A5D52;
             width: auto;
             padding: 10px 20px;
-            font-size: 0.9em;
+            font-size: 14px;
         }
         .hmw-btn-secondary:hover {
             background: #F1F5F9;
@@ -192,7 +142,7 @@
             background: #7A2828;
         }
         .hmw-progress {
-            font-size: 0.85em;
+            font-size: 13px;
             color: #6B7C72;
             font-weight: 500;
         }
@@ -220,7 +170,7 @@
             padding-bottom: 10px;
         }
         .hmw-score-number {
-            font-size: 1.2em;
+            font-size: 20px;
             font-weight: 600;
             color: #3A4A42;
         }
@@ -230,7 +180,6 @@
             gap: 12px;
             align-items: center;
             margin-top: 24px;
-            width: 100%;
         }
         .hmw-conversion-box {
             background: #FFFFFF;
@@ -242,31 +191,23 @@
         }
         .hmw-conversion-box h4 {
             color: #3A4A42;
-            font-size: 1.15em;
+            font-size: 18px;
             margin-bottom: 8px;
             font-weight: 600;
         }
         .hmw-conversion-box p {
             color: #6B7C72;
-            font-size: 0.9em;
+            font-size: 14px;
             margin-bottom: 16px;
             line-height: 1.5;
         }
         .hmw-disclaimer {
-            font-size: 0.75em;
+            font-size: 11px;
             color: #8C9C92;
             margin-top: 25px;
             line-height: 1.4;
         }
     </style>
-
-    <!-- Optional Display Size Switcher for Viewing Convenience -->
-    <div class="hmw-view-switcher">
-        <span style="font-size: 11px; align-self: center; color: #64748B; margin-right: 4px;">Display Size:</span>
-        <button type="button" class="hmw-view-btn" onclick="hmwSetView('compact', this)">Mobile</button>
-        <button type="button" class="hmw-view-btn active" onclick="hmwSetView('medium', this)">Medium</button>
-        <button type="button" class="hmw-view-btn" onclick="hmwSetView('desktop', this)">Desktop</button>
-    </div>
 
     <h2>Client Self-Assessment Tool</h2>
     <p class="subtitle">Her Mind & Wellness • Safe, confidential check-ins</p>
@@ -295,21 +236,21 @@
     <!-- Results View -->
     <div class="hmw-results-card" id="hmw-results-view">
         <h3>Assessment Complete</h3>
-        <p style="font-size: 0.9em; color: #6B7C72; margin-top: 4px;">Thank you for taking a moment to reflect on your well-being.</p>
+        <p style="font-size: 14px; color: #6B7C72; margin-top: 4px;">Thank you for taking a moment to reflect on your well-being.</p>
         
         <div class="hmw-score-box">
             <div class="hmw-score-header">
-                <span style="font-size: 0.9em; color: #6B7C72; font-weight: 500;">Your Summary Result</span>
+                <span style="font-size: 14px; color: #6B7C72; font-weight: 500;">Your Summary Result</span>
                 <div class="hmw-score-number" id="hmw-final-score">Score: 0</div>
             </div>
-            <p id="hmw-score-interpretation" style="font-size: 0.95em; color: #2D3748; line-height: 1.5; font-weight: 500;"></p>
-            <p style="font-size: 0.85em; color: #6B7C72; margin-top: 8px;">Bringing these insights to a session can help us tailor a supportive, personalized plan moving forward.</p>
+            <p id="hmw-score-interpretation" style="font-size: 15px; color: #2D3748; line-height: 1.5; font-weight: 500;"></p>
+            <p style="font-size: 13px; color: #6B7C72; margin-top: 8px;">Bringing these insights to a session can help us tailor a supportive, personalized plan moving forward.</p>
         </div>
         
         <div class="hmw-conversion-box">
             <h4>Ready to take the next step?</h4>
             <p>Schedule your confidential consultation seamlessly online through Headway. We're here to support your path forward.</p>
-            <div class="hmw-action-group" id="hmw-action-container">
+            <div class="hmw-action-group" id="hmw-action-container" style="width: 100%;">
                 <!-- Dynamic Buttons injected here -->
             </div>
         </div>
@@ -323,16 +264,6 @@
     </div>
 
     <script>
-        function hmwSetView(size, btnElement) {
-            const container = document.getElementById("hmw-assessment-container");
-            container.className = "view-" + size;
-            
-            // Update active state on buttons
-            const buttons = btnElement.parentElement.querySelectorAll(".hmw-view-btn");
-            buttons.forEach(b => b.classList.remove("active"));
-            btnElement.classList.add("active");
-        }
-
         const hmwData = {
             phq9: {
                 title: "PHQ-9 Depression Screening",

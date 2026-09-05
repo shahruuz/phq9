@@ -2,36 +2,24 @@
   Her Mind & Wellness Client Self-Assessment Tool | Trademark © 2026 
   ====================================================================
   VERSION HISTORY & CHANGELOG:
-  - v1.01-v1.13: Iterations with media queries and layout tests.
-  - v1.14: Eliminated media query dependency; baked mobile-first full-screen layout and massive typography directly into base rules for absolute enforcement.
+  - v1.01-v1.14: Layout attempts and containment debugging.
+  - v1.15: Implemented runtime DOM-detachment via JS to escape parent wrapper constraints, enforcing true full-screen mobile rendering and huge typography.
   ====================================================================
 -->
 <div id="hmw-assessment-container">
     <style>
-        /* Base Container - Forced Full-Screen & Massive Mobile-First Sizing */
         #hmw-assessment-container {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             color: #2D3748;
-            position: fixed !important;
-            top: 0 !important;
-            left: 0 !important;
-            width: 100vw !important;
-            height: 100vh !important;
-            height: 100dvh !important;
-            margin: 0 !important;
-            max-width: none !important;
-            background: #FDFBF7 !important;
-            border: none !important;
-            border-radius: 0 !important;
-            padding: 20px 16px !important;
-            box-shadow: none !important;
-            box-sizing: border-box !important;
-            font-size: 26px !important; /* Massive readable base font */
-            overflow-y: auto !important;
-            z-index: 99999 !important;
-            display: flex !important;
-            flex-direction: column !important;
-            justify-content: space-between !important;
+            max-width: 750px;
+            margin: 40px auto;
+            background: #FDFBF7;
+            border: 1px solid #E2D9CE;
+            border-radius: 14px;
+            padding: 36px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+            box-sizing: border-box;
+            font-size: 16px;
         }
 
         #hmw-assessment-container * {
@@ -40,14 +28,11 @@
 
         .hmw-app-header {
             text-align: center;
-            margin-bottom: 16px;
-            padding-top: env(safe-area-inset-top, 6px);
-            border-bottom: 1px solid #E2D9CE;
-            padding-bottom: 12px;
+            margin-bottom: 20px;
         }
 
         #hmw-assessment-container h2 {
-            font-size: 1.5em !important;
+            font-size: 1.6em;
             font-weight: 600;
             color: #3A4A42;
             margin: 0 0 4px 0;
@@ -55,7 +40,7 @@
         #hmw-assessment-container p.subtitle {
             margin: 0;
             color: #5A6C62;
-            font-size: 0.85em !important;
+            font-size: 0.95em;
         }
         .hmw-select-wrapper {
             margin-bottom: 16px;
@@ -64,16 +49,16 @@
             display: block;
             font-weight: 600;
             margin-bottom: 10px;
-            font-size: 1.1em !important;
+            font-size: 1.15em;
             color: #3A4A42;
         }
         .hmw-select-wrapper select {
-            width: 100% !important;
-            padding: 18px !important;
+            width: 100%;
+            padding: 16px;
             border: 1px solid #CBD5E1;
             border-radius: 12px;
             background: #FFFFFF;
-            font-size: 1.2em !important;
+            font-size: 1.2em;
             color: #2D3748;
             outline: none;
         }
@@ -89,32 +74,37 @@
             to { opacity: 1; transform: translateY(0); }
         }
         .hmw-question-text {
-            font-size: 1.35em !important;
+            font-size: 1.35em;
             font-weight: 500;
-            margin-bottom: 16px !important;
-            line-height: 1.35 !important;
+            margin-bottom: 16px;
+            line-height: 1.4;
             color: #1A2E22;
         }
         .hmw-options-list {
             display: flex;
             flex-direction: column;
-            gap: 10px !important;
-            margin-bottom: 16px !important;
+            gap: 10px;
+            margin-bottom: 16px;
         }
         .hmw-option-label {
             display: flex;
             align-items: center;
-            padding: 16px 16px !important;
+            padding: 16px 18px;
             background: #FFFFFF;
             border: 1px solid #CBD5E1;
             border-radius: 12px;
             cursor: pointer;
-            font-size: 1.2em !important;
+            font-size: 1.2em;
+            transition: all 0.2s;
+        }
+        .hmw-option-label:hover {
+            background: #F4F7F5;
+            border-color: #4A5D52;
         }
         .hmw-option-label input {
             margin-right: 14px;
             accent-color: #4A5D52;
-            transform: scale(1.4);
+            transform: scale(1.3);
         }
         .hmw-nav-buttons {
             display: flex;
@@ -127,23 +117,23 @@
             background: #4A5D52;
             color: #FFFFFF;
             border: none;
-            padding: 18px !important;
+            padding: 16px 24px;
             border-radius: 12px;
-            font-size: 1.2em !important;
+            font-size: 1.15em;
             font-weight: 500;
             cursor: pointer;
             text-decoration: none;
             display: inline-block;
             text-align: center;
-            width: 100% !important;
+            width: 100%;
         }
         .hmw-btn-secondary {
             background: transparent;
             color: #4A5D52;
             border: 1px solid #4A5D52;
-            width: auto !important;
-            padding: 12px 18px !important;
-            font-size: 1.1em !important;
+            width: auto;
+            padding: 10px 18px;
+            font-size: 1.05em;
         }
         .hmw-btn-crisis {
             background: #993333;
@@ -151,7 +141,7 @@
             margin-top: 8px;
         }
         .hmw-progress {
-            font-size: 1.05em !important;
+            font-size: 1.05em;
             color: #5A6C62;
             font-weight: 600;
         }
@@ -212,28 +202,80 @@
             line-height: 1.4;
         }
         .hmw-disclaimer {
-            font-size: 0.75em !important;
+            font-size: 0.85em;
             color: #6C7C72;
-            margin-top: auto !important;
+            margin-top: 16px;
             line-height: 1.4;
             border-top: 1px dashed #E2D9CE;
             padding-top: 10px;
-            padding-bottom: env(safe-area-inset-bottom, 10px);
         }
 
-        /* Desktop Override (If viewed on a wide screen, restore card layout) */
-        @media screen and (min-width: 769px) {
-            #hmw-assessment-container {
-                position: relative !important;
-                width: 100% !important;
-                max-width: 750px !important;
-                height: auto !important;
-                margin: 40px auto !important;
-                border: 1px solid #E2D9CE !important;
-                border-radius: 14px !important;
-                padding: 36px !important;
-                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03) !important;
-                font-size: 16px !important;
+        /* Mobile Full-Screen Breakout Mode */
+        @media screen and (max-width: 768px) {
+            body.hmw-fullscreen-active {
+                overflow: hidden !important;
+            }
+            #hmw-assessment-container.hmw- breakout {
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                width: 100vw !important;
+                height: 100vh !important;
+                height: 100dvh !important;
+                margin: 0 !important;
+                max-width: none !important;
+                background: #FDFBF7 !important;
+                border: none !important;
+                border-radius: 0 !important;
+                padding: 18px 16px !important;
+                box-shadow: none !important;
+                font-size: 26px !important; /* Huge readable font size */
+                overflow-y: auto !important;
+                z-index: 999999 !important;
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: space-between !important;
+            }
+            #hmw-assessment-container.hmw-breakout .hmw-app-header {
+                padding-top: env(safe-area-inset-top, 6px);
+                margin-bottom: 14px;
+                border-bottom: 1px solid #E2D9CE;
+                padding-bottom: 10px;
+            }
+            #hmw-assessment-container.hmw-breakout h2 {
+                font-size: 1.5em !important;
+            }
+            #hmw-assessment-container.hmw-breakout p.subtitle {
+                font-size: 0.85em !important;
+            }
+            #hmw-assessment-container.hmw-breakout .hmw-question-text {
+                font-size: 1.35em !important;
+                line-height: 1.35 !important;
+                margin-bottom: 16px !important;
+            }
+            #hmw-assessment-container.hmw-breakout .hmw-options-list {
+                gap: 10px !important;
+                margin-bottom: 16px !important;
+            }
+            #hmw-assessment-container.hmw-breakout .hmw-option-label {
+                padding: 16px !important;
+                font-size: 1.2em !important;
+            }
+            #hmw-assessment-container.hmw-breakout .hmw-select-wrapper select {
+                padding: 18px !important;
+                font-size: 1.2em !important;
+            }
+            #hmw-assessment-container.hmw-breakout .hmw-btn {
+                padding: 18px !important;
+                font-size: 1.2em !important;
+            }
+            #hmw-assessment-container.hmw-breakout .hmw-progress {
+                font-size: 1.05em !important;
+            }
+            #hmw-assessment-container.hmw-breakout .hmw-disclaimer {
+                margin-top: auto !important;
+                padding-bottom: env(safe-area-inset-bottom, 12px);
+                font-size: 0.75em !important;
             }
         }
     </style>
@@ -293,11 +335,23 @@
     </div>
 
     <div class="hmw-disclaimer">
-        <p style="margin: 0 0 2px 0;"><strong>Her Mind & Wellness™ v1.14</strong> • Developed by Her Mind & Wellness, PLLC © 2026. All rights reserved.</p>
+        <p style="margin: 0 0 2px 0;"><strong>Her Mind & Wellness™ v1.15</strong> • Developed by Her Mind & Wellness, PLLC © 2026. All rights reserved.</p>
         <strong>Disclaimer:</strong> This interactive tool is for informational and self-reflection purposes only and does not constitute a formal medical diagnosis. If you are experiencing a mental health emergency, please call 911 or contact the 988 Suicide & Crisis Lifeline immediately.
     </div>
 
     <script>
+        // Force DOM breakout on mobile to escape parent container restrictions
+        (function() {
+            if (window.innerWidth <= 768) {
+                const container = document.getElementById("hmw-assessment-container");
+                if (container && container.parentNode !== document.body) {
+                    document.body.appendChild(container);
+                    container.classList.add("hmw-breakout");
+                    document.body.classList.add("hmw-fullscreen-active");
+                }
+            }
+        })();
+
         const hmwData = {
             phq9: {
                 title: "PHQ-9 Depression Screening",

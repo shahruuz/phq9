@@ -78,7 +78,7 @@
         .hmw-option-label {
             display: flex;
             align-items: center;
-            padding: 12px 16px;
+            padding: 14px 16px;
             background: #FFFFFF;
             border: 1px solid #E2E8F0;
             border-radius: 8px;
@@ -87,12 +87,12 @@
             transition: all 0.2s;
         }
         .hmw-option-label:hover {
-            background: #F1F5F9;
-            border-color: #CBD5E1;
+            background: #F4F7F5;
+            border-color: #4A5D52;
         }
         .hmw-option-label input {
             margin-right: 12px;
-            accent-color: #5A6E62;
+            accent-color: #4A5D52;
         }
         .hmw-nav-buttons {
             display: flex;
@@ -105,23 +105,30 @@
             background: #4A5D52;
             color: #FFFFFF;
             border: none;
-            padding: 12px 24px;
-            border-radius: 6px;
-            font-size: 14px;
+            padding: 14px 28px;
+            border-radius: 8px;
+            font-size: 15px;
             font-weight: 500;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: background 0.2s, transform 0.1s;
             text-decoration: none;
             display: inline-block;
             text-align: center;
+            width: 100%;
         }
         .hmw-btn:hover {
             background: #3A4A42;
+        }
+        .hmw-btn:active {
+            transform: scale(0.98);
         }
         .hmw-btn-secondary {
             background: transparent;
             color: #4A5D52;
             border: 1px solid #4A5D52;
+            width: auto;
+            padding: 10px 20px;
+            font-size: 14px;
         }
         .hmw-btn-secondary:hover {
             background: #F1F5F9;
@@ -137,6 +144,7 @@
         .hmw-progress {
             font-size: 13px;
             color: #6B7C72;
+            font-weight: 500;
         }
         .hmw-results-card {
             display: none;
@@ -149,21 +157,49 @@
             background: #FFFFFF;
             border: 1px solid #E2D9CE;
             border-radius: 8px;
-            padding: 20px;
+            padding: 24px;
             margin: 20px 0;
+            text-align: left;
+        }
+        .hmw-score-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            border-bottom: 1px solid #F1F5F9;
+            padding-bottom: 10px;
         }
         .hmw-score-number {
-            font-size: 28px;
+            font-size: 20px;
             font-weight: 600;
             color: #3A4A42;
-            margin-bottom: 5px;
         }
         .hmw-action-group {
             display: flex;
             flex-direction: column;
             gap: 12px;
             align-items: center;
+            margin-top: 24px;
+        }
+        .hmw-conversion-box {
+            background: #FFFFFF;
+            border: 2px solid #4A5D52;
+            border-radius: 10px;
+            padding: 24px;
             margin-top: 20px;
+            text-align: center;
+        }
+        .hmw-conversion-box h4 {
+            color: #3A4A42;
+            font-size: 18px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        .hmw-conversion-box p {
+            color: #6B7C72;
+            font-size: 14px;
+            margin-bottom: 16px;
+            line-height: 1.5;
         }
         .hmw-disclaimer {
             font-size: 11px;
@@ -191,27 +227,36 @@
         <div id="hmw-questions-container"></div>
         
         <div class="hmw-nav-buttons">
-            <button type="button" class="hmw-btn hmw-btn-secondary" id="prev-btn" onclick="hmwPrevQuestion()" style="display:none;">Back</button>
-            <span class="hmw-progress" id="hmw-progress-indicator">Question 1 of 9</span>
-            <button type="button" class="hmw-btn" id="next-btn" onclick="hmwNextQuestion()">Next</button>
+            <button type="button" class="hmw-btn hmw-btn-secondary" id="prev-btn" onclick="hmwPrevQuestion()" style="display:none;">← Back</button>
+            <span class="hmw-progress" id="hmw-progress-indicator">Step 1 of 9</span>
+            <div></div>
         </div>
     </div>
 
     <!-- Results View -->
     <div class="hmw-results-card" id="hmw-results-view">
         <h3>Assessment Complete</h3>
-        <div class="hmw-score-box">
-            <div class="hmw-score-number" id="hmw-final-score">Score: 0</div>
-            <p id="hmw-score-interpretation" style="font-size: 14px; color: #4A5D52; line-height: 1.5;"></p>
-        </div>
-        <p style="font-size: 14px; margin-bottom: 10px;">This score helps guide our conversation during your session. Take the next step in your care:</p>
+        <p style="font-size: 14px; color: #6B7C72; margin-top: 4px;">Thank you for taking a moment to reflect on your well-being.</p>
         
-        <div class="hmw-action-group" id="hmw-action-container">
-            <!-- Dynamic Buttons injected here based on severity -->
+        <div class="hmw-score-box">
+            <div class="hmw-score-header">
+                <span style="font-size: 14px; color: #6B7C72; font-weight: 500;">Your Summary Result</span>
+                <div class="hmw-score-number" id="hmw-final-score">Score: 0</div>
+            </div>
+            <p id="hmw-score-interpretation" style="font-size: 15px; color: #2D3748; line-height: 1.5; font-weight: 500;"></p>
+            <p style="font-size: 13px; color: #6B7C72; margin-top: 8px;">Bringing these insights to a session can help us tailor a supportive, personalized plan moving forward.</p>
+        </div>
+        
+        <div class="hmw-conversion-box">
+            <h4>Ready to take the next step?</h4>
+            <p>Schedule your confidential consultation seamlessly online through Headway. We're here to support your path forward.</p>
+            <div class="hmw-action-group" id="hmw-action-container" style="width: 100%;">
+                <!-- Dynamic Buttons injected here -->
+            </div>
         </div>
 
         <br>
-        <button type="button" class="hmw-btn hmw-btn-secondary" onclick="hmwResetForm()">Start Over</button>
+        <button type="button" class="hmw-btn hmw-btn-secondary" onclick="hmwResetForm()">Take Another Assessment</button>
     </div>
 
     <div class="hmw-disclaimer">
@@ -240,11 +285,11 @@
                     "Thoughts that you would be better off dead or of hurting yourself in some way"
                 ],
                 interpret(score) {
-                    if (score <= 4) return "Minimal or no depression symptoms.";
-                    if (score <= 9) return "Mild depression symptoms.";
-                    if (score <= 14) return "Moderate depression symptoms.";
-                    if (score <= 19) return "Moderately severe depression symptoms.";
-                    return "Severe depression symptoms.";
+                    if (score <= 4) return "Minimal or no depression symptoms indicated.";
+                    if (score <= 9) return "Mild depression symptoms indicated.";
+                    if (score <= 14) return "Moderate depression symptoms indicated.";
+                    if (score <= 19) return "Moderately severe depression symptoms indicated.";
+                    return "Severe depression symptoms indicated.";
                 }
             },
             gad7: {
@@ -265,10 +310,10 @@
                     "Feeling afraid, as if something awful might happen"
                 ],
                 interpret(score) {
-                    if (score <= 4) return "Minimal anxiety.";
-                    if (score <= 9) return "Mild anxiety.";
-                    if (score <= 14) return "Moderate anxiety.";
-                    return "Severe anxiety.";
+                    if (score <= 4) return "Minimal anxiety symptoms indicated.";
+                    if (score <= 9) return "Mild anxiety symptoms indicated.";
+                    if (score <= 14) return "Moderate anxiety symptoms indicated.";
+                    return "Severe anxiety symptoms indicated.";
                 }
             }
         };
@@ -311,7 +356,7 @@
                 const checked = savedAnswer === opt.value ? "checked" : "";
                 html += `
                     <label class="hmw-option-label">
-                        <input type="radio" name="q_${currentQuestionIndex}" value="${opt.value}" ${checked} onchange="hmwSaveAnswer(${opt.value})">
+                        <input type="radio" name="q_${currentQuestionIndex}" value="${opt.value}" ${checked} onchange="hmwHandleSelection(${opt.value})">
                         ${opt.text}
                     </label>
                 `;
@@ -321,33 +366,21 @@
             container.innerHTML = html;
 
             document.getElementById("prev-btn").style.display = currentQuestionIndex > 0 ? "inline-block" : "none";
-            document.getElementById("hmw-progress-indicator").innerText = `Question ${currentQuestionIndex + 1} of ${assessment.questions.length}`;
-            
-            const nextBtn = document.getElementById("next-btn");
-            if (currentQuestionIndex === assessment.questions.length - 1) {
-                nextBtn.innerText = "See Results";
-            } else {
-                nextBtn.innerText = "Next";
-            }
+            document.getElementById("hmw-progress-indicator").innerText = `Step ${currentQuestionIndex + 1} of ${assessment.questions.length}`;
         }
 
-        function hmwSaveAnswer(val) {
+        function hmwHandleSelection(val) {
             userAnswers[currentQuestionIndex] = val;
-        }
-
-        function hmwNextQuestion() {
-            if (userAnswers[currentQuestionIndex] === undefined) {
-                alert("Please select an option before proceeding.");
-                return;
-            }
-
+            
             const assessment = hmwData[currentAssessmentKey];
-            if (currentQuestionIndex < assessment.questions.length - 1) {
-                currentQuestionIndex++;
-                hmwRenderQuestion();
-            } else {
-                hmwShowResults();
-            }
+            setTimeout(() => {
+                if (currentQuestionIndex < assessment.questions.length - 1) {
+                    currentQuestionIndex++;
+                    hmwRenderQuestion();
+                } else {
+                    hmwShowResults();
+                }
+            }, 250);
         }
 
         function hmwPrevQuestion() {
@@ -364,14 +397,12 @@
             document.getElementById("hmw-quiz-form").style.display = "none";
             document.getElementById("hmw-results-view").classList.add("active");
             
-            document.getElementById("hmw-final-score").innerText = `Total Score: ${totalScore}`;
+            document.getElementById("hmw-final-score").innerText = `Score: ${totalScore}`;
             document.getElementById("hmw-score-interpretation").innerText = assessment.interpret(totalScore);
 
-            // Dynamic Action Buttons based on severity or safety concerns
             const actionContainer = document.getElementById("hmw-action-container");
-            let actionHtml = `<a href="https://www.headway.com" target="_blank" class="hmw-btn">Schedule Consultation via Headway</a>`;
+            let actionHtml = `<a href="https://www.headway.com" target="_blank" class="hmw-btn">Schedule Your Session via Headway</a>`;
 
-            // Check if PHQ-9 question 9 (index 8) has a score > 0 or total score is high
             const selfHarmScore = userAnswers[8] || 0;
             if (totalScore >= 15 || selfHarmScore > 0) {
                 actionHtml += `

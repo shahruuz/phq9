@@ -13,6 +13,8 @@
         ====================================================================
         VERSION HISTORY & CHANGELOG:
         
+        v2.0.8: Added an editable initials display chip on the selector screen allowing users to easily modify their initials before or after taking an assessment, while keeping it hidden during active questioning.
+        
         v2.0.7: Preserved saved initials across resets so users aren't re-prompted, and dynamically hid the bottom disclaimer during active assessment questions.
         
         v2.0.6: Polished disclaimer text for absolute clarity regarding same-day completion requirements.
@@ -74,6 +76,10 @@
         .hmw-select-wrapper { display: flex; flex-direction: column; gap: 12px; }
         .hmw-select-wrapper label { font-weight: 600; font-size: clamp(1.05em, 4vw, 1.2em); color: #3A4A42; }
         .hmw-select-wrapper select, .hmw-select-wrapper input { width: 100%; padding: 18px 16px; border: 2px solid #CBD5E1; border-radius: 14px; background: #FFFFFF; font-size: clamp(1.05em, 4vw, 1.2em); color: #2D3748; font-weight: 500; outline: none; }
+        .hmw-initials-display-card { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; background: #FFFFFF; border: 2px solid #E2D9CE; border-radius: 14px; margin-bottom: 20px; }
+        .hmw-initials-display-card span { font-weight: 500; color: #1A2E22; font-size: clamp(1em, 3.5vw, 1.1em); }
+        .hmw-initials-display-card strong { color: #3A4A42; background: #F3EFE6; padding: 4px 10px; border-radius: 8px; font-family: monospace; }
+        .hmw-text-btn { background: none; border: none; color: #4A5D52; font-weight: 600; cursor: pointer; font-size: 0.95em; text-decoration: underline; padding: 4px; }
         #hmw-quiz-form { display: flex; flex-direction: column; flex: 1; }
         .hmw-questions-container { flex: 1; display: flex; flex-direction: column; }
         .hmw-question-card { display: none; flex-direction: column; gap: 18px; }
@@ -107,10 +113,18 @@
             <p class="subtitle">Her Mind & Wellness • Safe, confidential check-ins</p>
         </div>
         <div class="hmw-content">
+            <!-- Initial Entry Container -->
             <div class="hmw-select-wrapper" id="initials-container" style="margin-bottom: 20px;">
                 <label for="initials-field">Your initials (first & last):</label>
                 <input type="text" id="initials-field" maxlength="4" placeholder="e.g., AB" onkeydown="hmwHandleInitialsKey(event)">
             </div>
+
+            <!-- Submitted Initials Display Card (Visible on first page once submitted) -->
+            <div class="hmw-initials-display-card hidden" id="initials-display-card">
+                <span>Initials: <strong id="displayed-initials"></strong></span>
+                <button type="button" class="hmw-text-btn" onclick="hmwEditInitials()">Change</button>
+            </div>
+
             <div class="hmw-select-wrapper" id="selector-wrapper">
                 <label for="assessment-type">Choose an assessment:</label>
                 <select id="assessment-type" onchange="hmwLoadAssessment()">
@@ -122,7 +136,7 @@
             <div id="hmw-quiz-form" class="hidden">
                 <div class="hmw-questions-container" id="hmw-questions-container"></div>
                 <div class="hmw-nav-buttons">
-                    <button type="button" class="hmw-btn hmw-btn-secondary" id="prev-btn" onclick="hmwPrevQuestion()" style="display:none;">← Back</button>
+                    <button type="button" class="hmw-btn hmw-btn-secondary" id="prev-btn" onclick="hmwPrevQuestion()">← Back</button>
                     <span class="hmw-progress" id="hmw-progress-indicator"></span>
                     <div style="width: 80px;"></div>
                 </div>
@@ -148,7 +162,7 @@
             </div>
         </div>
         <div class="hmw-disclaimer" id="footer-disclaimer">
-            <p><strong>Her Mind & Wellness™ v2.0.7</strong> • © 2026</p>
+            <p><strong>Her Mind & Wellness™ v2.0.8</strong> • © 2026</p>
             <p><strong>Disclaimer:</strong> Data sharing is completely voluntary. Submissions not tied to a scheduled appointment are non-binding. This assessment needs to be filled out today, and please note you will be asked to complete it again on the actual day of your appointment. For emergencies, call 911 or 988.</p>
         </div>
     </div>
@@ -200,8 +214,18 @@
                 if (val.length > 0) {
                     persistentInitials = val;
                     document.getElementById("initials-container").classList.add("hidden");
+                    document.getElementById("displayed-initials").innerText = persistentInitials;
+                    document.getElementById("initials-display-card").classList.remove("hidden");
                 }
             }
+        }
+
+        function hmwEditInitials() {
+            document.getElementById("initials-display-card").classList.add("hidden");
+            const initialsField = document.getElementById("initials-field");
+            initialsField.value = persistentInitials;
+            document.getElementById("initials-container").classList.remove("hidden");
+            initialsField.focus();
         }
 
         function hmwLoadAssessment() {
@@ -209,13 +233,14 @@
             currentAssessmentKey = select.value;
             if (!currentAssessmentKey) { document.getElementById("hmw-quiz-form").classList.add("hidden"); return; }
             
-            // Capture initials if typed but Enter wasn't pressed before selecting assessment
+            // If they typed initials but didn't press enter, grab it
             const initialsField = document.getElementById("initials-field");
             if (initialsField.value.trim().length > 0) {
                 persistentInitials = initialsField.value.trim();
             }
 
             document.getElementById("initials-container").classList.add("hidden");
+            document.getElementById("initials-display-card").classList.add("hidden");
             document.getElementById("footer-disclaimer").classList.add("hidden");
 
             currentQuestionIndex = 0; userAnswers = {};
@@ -236,7 +261,12 @@
             });
             html += `</div></div>`;
             container.innerHTML = html;
-            document.getElementById("prev-btn").style.display = currentQuestionIndex > 0 ? "inline-flex" : "none";
+            
+            // Back button handles returning to main screen if on Q1, or previous question otherwise
+            const prevBtn = document.getElementById("prev-btn");
+            prevBtn.style.display = "inline-flex";
+            prevBtn.onclick = currentQuestionIndex === 0 ? hmwReturnToSelector : hmwPrevQuestion;
+
             document.getElementById("hmw-progress-indicator").innerText = `${currentQuestionIndex + 1} of ${assessment.questions.length}`;
         }
 
@@ -255,6 +285,22 @@
 
         function hmwPrevQuestion() {
             if (currentQuestionIndex > 0) { currentQuestionIndex--; hmwRenderQuestion(); }
+        }
+
+        function hmwReturnToSelector() {
+            document.getElementById("hmw-quiz-form").classList.add("hidden");
+            document.getElementById("selector-wrapper").classList.remove("hidden");
+            document.getElementById("footer-disclaimer").classList.remove("hidden");
+            if (persistentInitials) {
+                document.getElementById("displayed-initials").innerText = persistentInitials;
+                document.getElementById("initials-display-card").classList.remove("hidden");
+            } else {
+                document.getElementById("initials-container").classList.remove("hidden");
+            }
+            document.getElementById("assessment-type").value = "";
+            currentAssessmentKey = null;
+            currentQuestionIndex = 0;
+            userAnswers = {};
         }
 
         function hmwShowResults() {
@@ -287,8 +333,12 @@
             document.getElementById("selector-wrapper").classList.remove("hidden");
             document.getElementById("footer-disclaimer").classList.remove("hidden");
             
-            // Keep initials hidden and stored so the user is not prompted again
-            document.getElementById("initials-container").classList.add("hidden");
+            if (persistentInitials) {
+                document.getElementById("displayed-initials").innerText = persistentInitials;
+                document.getElementById("initials-display-card").classList.remove("hidden");
+            } else {
+                document.getElementById("initials-container").classList.remove("hidden");
+            }
             document.getElementById("assessment-type").value = "";
         }
     </script>

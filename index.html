@@ -8,6 +8,34 @@
     <meta name="apple-mobile-web-app-title" content="HMW Assessment">
     <meta name="theme-color" content="#FDFBF7">
     <title>Client Self-Assessment Tool • Her Mind & Wellness</title>
+    <!--
+        Her Mind & Wellness Client Self-Assessment Tool | Trademark © 2026
+        ====================================================================
+        VERSION HISTORY & CHANGELOG:
+        
+        v2.0: Complete structural rewrite for true fullscreen app experience
+              - Converted from nested div wrapper to proper HTML5 document structure
+              - Implemented native flexbox fullscreen layout (100vh/100dvh) with no margin/padding waste
+              - Added viewport meta tags for mobile app capability and notch safety (viewport-fit=cover)
+              - Integrated safe-area-inset-* for iPhone notch/Dynamic Island/Android gesture bar compatibility
+              - Replaced fixed-pixel font sizes with responsive clamp() for auto-scaling across devices
+              - Refactored header as flex-shrink: 0 sticky element; content as scrollable middle; footer docked
+              - Removed DOM-detachment JS workaround (no longer needed with proper HTML structure)
+              - Enhanced touch UX: 24px radio buttons, active button transform feedback, improved tap targets
+              - Replaced -webkit appearance override with custom SVG select dropdown
+              - Improved spacing model: consistent gaps, max() padding for safe areas, environment variables
+              - Added apple-mobile-web-app-capable meta tags for iOS home screen installation
+              - Simplified color palette and removed unnecessary animation complexity
+              - Refactored CSS class naming for clarity (.hmw-questions-container, .hmw-results-header, etc.)
+              - Improved results view scrollability without header/footer movement
+              - Better mobile responsiveness: optimized for 320px-2560px widths
+              - Version bumped to v2.0 (complete rebuild, not incremental)
+        
+        v1.15: Implemented runtime DOM-detachment via JS to escape parent wrapper constraints, 
+               enforcing true full-screen mobile rendering and huge typography.
+        
+        v1.01-v1.14: Layout attempts and containment debugging.
+    -->
     <style>
         * {
             margin: 0;
@@ -482,8 +510,8 @@
             </div>
         </div>
 
-        <div class="hmw-disclaimer" style="display: none;">
-            <p><strong>Her Mind & Wellness™ v2.0</strong> • Developed by Her Mind & Wellness, PLLC © 2026. All rights reserved.</p>
+        <div class="hmw-disclaimer">
+            <p><strong>Her Mind & Wellness™ v2.0</strong> (Fullscreen App) • Developed by Her Mind & Wellness, PLLC © 2026. All rights reserved.</p>
             <p><strong>Disclaimer:</strong> This tool is for informational purposes only and does not constitute medical diagnosis. If experiencing a mental health emergency, call 911 or contact 988 Suicide & Crisis Lifeline immediately.</p>
         </div>
     </div>

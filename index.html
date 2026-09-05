@@ -293,7 +293,7 @@
                 <div id="severity-badge" style="display: inline-block; background: #f0ebe1; padding: 4px 12px; border-radius: 12px; font-size: 0.85rem; font-weight: 600; color: var(--primary-color); margin-bottom: 12px;">Score Details</div>
                 <div class="result-description" id="result-desc">Processing results...</div>
 
-                <!-- Conditional Crisis Box (Shows for high scores on both PHQ-9 and GAD-7) -->
+                <!-- Conditional Crisis Box -->
                 <div id="crisis-container" class="crisis-box hidden">
                     <h4>Support is Available Right Now</h4>
                     <p>Because you indicated feeling overwhelmed or distressed, please remember you don't have to carry this alone. Free, confidential support is available 24/7:</p>
@@ -428,8 +428,8 @@
             let showCrisis = false;
 
             if (currentType === 'phq9') {
-                if (userAnswers[8] > 0) {
-                    showCrisis = true; // Q9 self-harm safety flag
+                if (userAnswers[8] > 0 || totalScore >= 10) {
+                    showCrisis = true; // Triggers for moderate (10+) or self-harm mention
                 }
 
                 if (totalScore <= 4) {
@@ -441,14 +441,16 @@
                 } else if (totalScore <= 14) {
                     severityText = "Moderate";
                     description = "Your responses suggest moderate depressive symptoms that may be impacting your daily life and energy. Support and guidance can make a meaningful difference.";
-                    showCrisis = true; // Trigger crisis box for moderate/severe scores
                 } else {
                     severityText = "Severe";
                     description = "Your responses suggest moderately severe to severe depressive symptoms. Professional guidance and care are strongly recommended to help support you through this.";
-                    showCrisis = true; // Trigger crisis box for moderate/severe scores
                 }
             } else {
                 // GAD-7 Anxiety Check
+                if (totalScore >= 10) {
+                    showCrisis = true; // Triggers for any moderate (10-14) or severe (15+) anxiety score
+                }
+
                 if (totalScore <= 4) {
                     severityText = "Minimal";
                     description = "Your responses suggest minimal anxiety levels. Maintaining your current wellness routines can help support ongoing calm.";
@@ -457,13 +459,10 @@
                     description = "Your responses suggest mild anxiety. Practicing mindfulness and exploring supportive strategies can help manage everyday stressors.";
                 } else if (totalScore <= 14) {
                     severityText = "Moderate";
-                    severityText = "Moderate";
                     description = "Your responses suggest moderate anxiety that may feel persistent or overwhelming at times. Speaking with a clinician can offer relief and effective tools.";
-                    showCrisis = true; // Trigger crisis box for moderate anxiety
                 } else {
                     severityText = "Severe";
                     description = "Your responses suggest severe anxiety symptoms. Reaching out for professional psychiatric care can provide structured, compassionate support.";
-                    showCrisis = true; // Trigger crisis box for severe anxiety (like your score of 21)
                 }
             }
 

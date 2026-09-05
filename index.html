@@ -5,12 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Her Mind & Wellness | Client Self-Assessment</title>
 
-    <!--
-    ========================================================================
-    HER MIND & WELLNESS CLIENT SELF-ASSESSMENT TOOL (v4.0 Redesign)
-    ========================================================================
-    -->
-
     <style>
         :root {
             --primary: #795568;
@@ -293,11 +287,45 @@
             margin-bottom: 24px;
         }
 
+        .quiz-top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .menu-back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: none;
+            border: none;
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 13px;
+            padding: 4px 8px 4px 0;
+            transition: opacity 0.15s;
+        }
+
+        .menu-back-btn:hover {
+            opacity: 0.75;
+        }
+
+        .menu-back-btn svg {
+            width: 15px;
+            height: 15px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2.2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
         .quiz-top {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             font-size: 12px;
             font-weight: 600;
             color: var(--text-muted);
@@ -397,11 +425,6 @@
             justify-content: space-between;
             align-items: center;
             margin-top: 16px;
-        }
-
-        .nav-group-left {
-            display: flex;
-            gap: 8px;
         }
 
         .nav-button {
@@ -803,6 +826,13 @@
     <!-- QUIZ SCREEN -->
     <section id="quizScreen" class="screen">
         <div class="quiz-header">
+            <!-- MAIN MENU BUTTON WITH ARROW ADDED HERE -->
+            <div class="quiz-top-bar">
+                <button type="button" class="menu-back-btn" onclick="hmwStartOver()">
+                    <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                    Main Menu
+                </button>
+            </div>
             <div class="quiz-top">
                 <span id="assessmentTitle">Mood &amp; Depression</span>
                 <span id="questionCounter">Question 1 of 9</span>
@@ -819,16 +849,10 @@
         </div>
 
         <div class="quiz-navigation">
-            <div class="nav-group-left">
-                <button id="backButton" type="button" class="nav-button hidden" onclick="hmwGoBack()">
-                    <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-                    Back
-                </button>
-                <button type="button" class="nav-button" onclick="hmwStartOver()">
-                    <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-                    Main Menu
-                </button>
-            </div>
+            <button id="backButton" type="button" class="nav-button hidden" onclick="hmwGoBack()">
+                <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                Previous Question
+            </button>
         </div>
         <div class="quiz-help">Select the option that best reflects your experience over the past two weeks.</div>
 
@@ -924,7 +948,7 @@ const HMW_ASSESSMENTS = {
         severity: function(score) {
             if (score <= 4) return { label: "Minimal", title: "Minimal symptom range reported.", description: "Your responses fall within a lower range of frequency." };
             if (score <= 9) return { label: "Mild", title: "Mild symptom range reported.", description: "Your responses indicate some mild challenges worth keeping an eye on." };
-            if (score <= 14) return { label: "Moderate", title: "Moderate symptom range reported.", description: "Your responses suggest symptoms that may be having a meaningful impact on your routine." };
+            if (score <= 14) return { label: "Moderate", title: "Moderate symptom range reported.", description: "Your responses suggest symptoms that may have a meaningful impact on your routine." };
             if (score <= 19) return { label: "Moderately severe", title: "Moderately severe symptoms reported.", description: "Professional support can provide effective tools and relief." };
             return { label: "Severe", title: "Severe symptoms reported.", description: "Connecting with a mental health professional is strongly recommended." };
         }

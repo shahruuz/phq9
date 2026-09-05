@@ -2,16 +2,9 @@
   Her Mind & Wellness Client Self-Assessment Tool | Trademark © 2026 
   ====================================================================
   VERSION HISTORY & CHANGELOG:
-  - v1.01: Initial widget layout with PHQ-9 and GAD-7 screening tools.
-  - v1.02: Added manual display size switchers and formal trademark notice.
-  - v1.03: Removed manual switcher; introduced automatic screen detection.
-  - v1.04: Configured strict 100vw/100vh mobile viewports.
-  - v1.05: Added embedded changelog structure in code comments.
-  - v1.06: Complete mobile UI redesign into a modern, full-screen native app layout.
-  - v1.07: Fixed mobile container clipping and drastically increased text scale/readability.
-  - v1.08: Balanced font scaling/spacing to match optimal reference proportion and integrated Headway link.
-  - v1.10: Reverted to v1.08 layout structure with enhanced larger font sizing.
-  - v1.11: Massive mobile font expansion paired with true full-screen viewport layout.
+  - v1.01-v1.08: Initial versions, native card designs, and Headway integration.
+  - v1.09-v1.11: Mobile full-screen layout iterations.
+  - v1.12: Drastically enlarged mobile typography scales with forced specificity overrides.
   ====================================================================
 -->
 <div id="hmw-assessment-container">
@@ -236,7 +229,7 @@
             padding-top: 14px;
         }
 
-        /* True Full-Screen Edge-to-Edge Mobile Layout with Extra Large Text */
+        /* MASSIVE Mobile Font & Full-Screen Overrides */
         @media screen and (max-width: 768px) {
             html, body {
                 margin: 0 !important;
@@ -246,58 +239,62 @@
                 overflow-x: hidden;
             }
             #hmw-assessment-container {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100vw;
-                height: 100vh;
-                height: 100dvh;
-                margin: 0;
-                max-width: none;
-                border: none;
-                border-radius: 0;
-                padding: 24px 18px;
-                box-shadow: none;
-                font-size: 22px; /* Large base scale */
-                overflow-y: auto;
-                z-index: 99999;
-                display: flex;
-                flex-direction: column;
-                justify-content: space-between;
-                background: #FDFBF7;
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                width: 100vw !important;
+                height: 100vh !important;
+                height: 100dvh !important;
+                margin: 0 !important;
+                max-width: none !important;
+                border: none !important;
+                border-radius: 0 !important;
+                padding: 20px 16px !important;
+                box-shadow: none !important;
+                font-size: 26px !important; /* Extremely large base font scale */
+                overflow-y: auto !important;
+                z-index: 99999 !important;
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: space-between !important;
+                background: #FDFBF7 !important;
             }
             .hmw-app-header {
-                padding-top: env(safe-area-inset-top, 8px);
-                margin-bottom: 20px;
+                padding-top: env(safe-area-inset-top, 6px);
+                margin-bottom: 16px;
                 border-bottom: 1px solid #E2D9CE;
-                padding-bottom: 14px;
+                padding-bottom: 12px;
             }
             #hmw-assessment-container h2 {
-                font-size: 1.5em;
+                font-size: 1.6em !important;
             }
             #hmw-assessment-container p.subtitle {
-                font-size: 0.95em;
+                font-size: 0.9em !important;
             }
             .hmw-question-text {
-                font-size: 1.3em;
-                line-height: 1.45;
+                font-size: 1.35em !important;
+                line-height: 1.4 !important;
+                margin-bottom: 18px !important;
             }
             .hmw-option-label {
-                padding: 18px 16px;
-                font-size: 1.2em;
+                padding: 20px 16px !important;
+                font-size: 1.25em !important;
             }
             .hmw-select-wrapper select {
-                padding: 16px;
-                font-size: 1.15em;
+                padding: 18px !important;
+                font-size: 1.2em !important;
             }
             .hmw-btn {
-                padding: 18px;
-                font-size: 1.2em;
+                padding: 20px !important;
+                font-size: 1.25em !important;
+            }
+            .hmw-progress {
+                font-size: 1.1em !important;
             }
             .hmw-disclaimer {
-                margin-top: auto;
+                margin-top: auto !important;
                 padding-bottom: env(safe-area-inset-bottom, 12px);
-                font-size: 0.85em;
+                font-size: 0.8em !important;
             }
         }
     </style>
@@ -357,7 +354,7 @@
     </div>
 
     <div class="hmw-disclaimer">
-        <p style="margin: 0 0 4px 0;"><strong>Her Mind & Wellness™ v1.11</strong> • Developed by Her Mind & Wellness, PLLC © 2026. All rights reserved.</p>
+        <p style="margin: 0 0 4px 0;"><strong>Her Mind & Wellness™ v1.12</strong> • Developed by Her Mind & Wellness, PLLC © 2026. All rights reserved.</p>
         <strong>Disclaimer:</strong> This interactive tool is for informational and self-reflection purposes only and does not constitute a formal medical diagnosis. If you are experiencing a mental health emergency, please call 911 or contact the 988 Suicide & Crisis Lifeline immediately.
     </div>
 

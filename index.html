@@ -13,23 +13,17 @@
 
     VERSION HISTORY & CHANGELOG
 
-    v3.3.0 — Conversion-First Flow & Restored Anxiety Screening
+    v3.5.0 — Two-Week Timeframe Clarification
     ------------------------------------------------------------
-    • Restored dual assessment options (Mood & Depression + Anxiety & Worry).
-    • Prioritized scheduling CTA at the top of the results screen to maximize conversions.
-    • Placed emergency 988 call/text support directly below the primary conversion card.
-    • Preserved seamless Back navigation and warm, patient-first UI styling.
+    • Added explicit "Over the last 2 weeks" framing to the first question of each assessment.
+    • Preserved all meaningful SVG icons, warm color palettes, and Headway integration flow.
 
-    v3.2.0 — Conversion-Optimized Streamlining
-    --------------------------------------------
-    • Streamlined user journey toward confidential scheduling and emergency support.
-
-    v3.1.0 — Warm & Hopeful Patient Experience
-    --------------------------------------------
-    • Restored Back navigation during the questionnaire. Reworked color palette.
+    v3.4.0 — Meaningful & Heart-Warming Visual Redesign
+    ------------------------------------------------------------
+    • Replaced basic characters with bespoke, harmonious SVG icons for mood, anxiety, privacy, and hope.
 
     ========================================================================
-    CURRENT VERSION: v3.3.0
+    CURRENT VERSION: v3.5.0
     ========================================================================
     -->
 
@@ -171,10 +165,20 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 7px;
+            gap: 8px;
             margin-top: 15px;
             font-size: 13px;
             color: var(--text-light);
+        }
+
+        .privacy-note svg {
+            width: 15px;
+            height: 15px;
+            stroke: var(--primary);
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
         }
 
         /* ASSESSMENT CARDS GRID */
@@ -217,16 +221,25 @@
         }
 
         .assessment-icon {
-            width: 46px;
-            height: 46px;
+            width: 48px;
+            height: 48px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 13px;
+            border-radius: 14px;
             background: var(--primary-light);
             color: var(--primary-dark);
-            font-size: 21px;
             margin-bottom: 17px;
+        }
+
+        .assessment-icon svg {
+            width: 24px;
+            height: 24px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 1.8;
+            stroke-linecap: round;
+            stroke-linejoin: round;
         }
 
         .assessment-card h2 {
@@ -247,6 +260,9 @@
             color: var(--primary-dark);
             font-weight: 600;
             font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
         }
 
         /* HOPE NOTE & DISCLAIMER */
@@ -266,7 +282,20 @@
 
         .hope-icon {
             flex: 0 0 auto;
-            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-dark);
+        }
+
+        .hope-icon svg {
+            width: 20px;
+            height: 20px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 1.8;
+            stroke-linecap: round;
+            stroke-linejoin: round;
         }
 
         .disclaimer {
@@ -401,6 +430,17 @@
             color: var(--primary-dark);
             font-size: 13px;
             font-weight: 600;
+            gap: 6px;
+        }
+
+        .back-button svg {
+            width: 15px;
+            height: 15px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
         }
 
         .back-button.hidden {
@@ -531,6 +571,17 @@
             font-weight: 600;
             font-size: 14px;
             border-radius: 10px;
+            gap: 6px;
+        }
+
+        .crisis-button svg {
+            width: 16px;
+            height: 16px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
         }
 
         /* NEXT STEP & CONVERSION CTA (FIRST) */
@@ -583,6 +634,17 @@
             font-weight: 600;
             text-decoration: none;
             transition: background 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+            gap: 8px;
+        }
+
+        .primary-button svg {
+            width: 18px;
+            height: 18px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
         }
 
         .primary-button:hover {
@@ -655,7 +717,7 @@
                 and whether professional support may be helpful.
             </p>
             <div class="privacy-note">
-                <span>🔒</span>
+                <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                 <span>Your responses stay confidential in your browser.</span>
             </div>
         </div>
@@ -668,10 +730,15 @@
                 onclick="hmwStartAssessment('phq9')"
                 aria-label="Start Mood and Depression screening"
             >
-                <div class="assessment-icon">♡</div>
+                <div class="assessment-icon">
+                    <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                </div>
                 <h2>Mood &amp; Depression</h2>
                 <p>A brief questionnaire about mood, interest, energy, sleep, and common symptoms of depression.</p>
-                <div class="card-link">Begin check-in →</div>
+                <div class="card-link">
+                    Begin check-in 
+                    <svg style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </div>
             </button>
 
             <!-- ANXIETY -->
@@ -681,15 +748,22 @@
                 onclick="hmwStartAssessment('gad7')"
                 aria-label="Start Anxiety and Worry screening"
             >
-                <div class="assessment-icon">◌</div>
+                <div class="assessment-icon">
+                    <svg viewBox="0 0 24 24"><path d="M12 3v18M5.5 10.5C3 12 2 15 3 18c3 1 6-1 9-5 3 4 6 6 9 5 1-3 0-6-2.5-7.5M12 12c-3-2-5-5-5-8 4 0 7 2 5 8z"/></svg>
+                </div>
                 <h2>Anxiety &amp; Worry</h2>
                 <p>A brief questionnaire about worry, nervousness, restlessness, and symptoms of anxiety.</p>
-                <div class="card-link">Begin check-in →</div>
+                <div class="card-link">
+                    Begin check-in 
+                    <svg style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </div>
             </button>
         </div>
 
         <div class="hope-note">
-            <div class="hope-icon">🌿</div>
+            <div class="hope-icon">
+                <svg viewBox="0 0 24 24"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 21 8.5 21 15c0 3-2 5-5 5h-5z"/><path d="M2 21c0-3 1.8-5.5 4.5-6.5"/></svg>
+            </div>
             <div>
                 Taking a moment to check in with yourself is a meaningful first step. Choose what feels most accurate for you.
             </div>
@@ -720,10 +794,11 @@
 
         <div class="quiz-navigation">
             <button id="backButton" type="button" class="back-button hidden" onclick="hmwGoBack()" aria-label="Go back to previous question">
-                ← Back
+                <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                Back
             </button>
         </div>
-        <div class="quiz-help">Choose the answer that best describes how you've been feeling.</div>
+        <div class="quiz-help">Choose the answer that best describes how you've been feeling over the last 2 weeks.</div>
     </section>
 
     <!-- RESULTS SCREEN -->
@@ -747,6 +822,7 @@
                 target="_blank"
                 rel="noopener noreferrer"
             >
+                <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
                 Schedule a Confidential Consultation
             </a>
             <div class="headway-note">Scheduling continues securely through Headway.</div>
@@ -790,7 +866,7 @@ const HMW_ASSESSMENTS = {
         shortName: "PHQ-9",
         maxScore: 27,
         questions: [
-            "Little interest or pleasure in doing things",
+            "Over the last 2 weeks, how often have you had little interest or pleasure in doing things?",
             "Feeling down, depressed, or hopeless",
             "Trouble falling or staying asleep, or sleeping too much",
             "Feeling tired or having little energy",
@@ -814,7 +890,7 @@ const HMW_ASSESSMENTS = {
         shortName: "GAD-7",
         maxScore: 21,
         questions: [
-            "Feeling nervous, anxious, or on edge",
+            "Over the last 2 weeks, how often have you been feeling nervous, anxious, or on edge?",
             "Not being able to stop or control worrying",
             "Worrying too much about different things",
             "Trouble relaxing",
@@ -934,8 +1010,14 @@ function hmwRenderCrisisMessage() {
         <h3>Are you in immediate danger?</h3>
         <p>One of your responses indicates thoughts of self-harm. Please reach out for immediate support.</p>
         <div class="crisis-actions">
-            <a class="crisis-button" href="tel:988">Call 988</a>
-            <a class="crisis-button" href="sms:988">Text 988</a>
+            <a class="crisis-button" href="tel:988">
+                <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                Call 988
+            </a>
+            <a class="crisis-button" href="sms:988">
+                <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                Text 988
+            </a>
         </div>
         <p style="margin-top:13px;font-size:12px;">If you are in immediate physical danger, call 911.</p>
     `;

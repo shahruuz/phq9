@@ -1,892 +1,974 @@
-<!-- 
-    CHANGELOG & VERSION HISTORY:
-    -------------------------------------------------------------------------
-    v1.5.0 (Current) - Conversion-focused redesign: schedule CTA first,
-                       warmer compassionate language, adaptive messaging,
-                       improved results hierarchy, softer design.
-    v1.4.0           - Added version stamp to changelog and footer.
-    v1.3.0           - Enabled crisis box triggers for GAD-7 and PHQ-9.
-    v1.2.0           - Initial polished Her Mind & Wellness self-assessment UI.
-    -------------------------------------------------------------------------
--->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Her Mind & Wellness | A Moment to Check In</title>
-<style>
-    :root {
-        --primary: #6E4D5E;
-        --primary-dark: #4D3341;
-        --primary-light: #F7EFEF;
-        --accent: #7C9472;
-        --accent-dark: #526649;
-        --accent-light: #EFF4EE;
-        --warm-bg: #F9F5F0;
-        --card-bg: #FFFFFF;
-        --text-main: #2D272A;
-        --text-muted: #6E646A;
-        --border-color: #E2D7D4;
-        --danger: #963D44;
-        --danger-bg: #FDF2F2;
-        --shadow-soft: 0 12px 32px rgba(110, 77, 94, 0.07);
-        --shadow-hover: 0 16px 40px rgba(110, 77, 94, 0.12);
-        --radius-lg: 20px;
-        --radius-md: 14px;
-    }
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body {
-        margin: 0;
-        background: 
-            radial-gradient(circle at 10% 10%, rgba(209, 172, 153, 0.10), transparent 40%),
-            radial-gradient(circle at 90% 90%, rgba(124, 148, 114, 0.08), transparent 40%),
-            var(--warm-bg);
-        color: var(--text-main);
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        line-height: 1.55;
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-    }
-    button { font: inherit; cursor: pointer; }
-    a { color: var(--primary); }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Her Mind & Wellness | A Moment to Check In</title>
+    <style>
+        :root {
+            --primary: #6E4D5E;
+            --primary-dark: #4D3341;
+            --primary-light: #F7EFEF;
+            --accent: #7C9472;
+            --accent-dark: #526649;
+            --accent-light: #EFF4EE;
+            --warm-bg: #F9F5F0;
+            --card-bg: #FFFFFF;
+            --text-main: #2D272A;
+            --text-muted: #6E646A;
+            --border-color: #E2D7D4;
+            --danger: #963D44;
+            --danger-bg: #FDF2F2;
+            --shadow-soft: 0 12px 32px rgba(110, 77, 94, 0.07);
+            --shadow-hover: 0 16px 40px rgba(110, 77, 94, 0.12);
+            --radius-lg: 20px;
+            --radius-md: 14px;
+        }
 
-    /* HEADER */
-    .site-header {
-        background: rgba(255, 255, 255, 0.92);
-        border-bottom: 1px solid var(--border-color);
-        backdrop-filter: blur(12px);
-        position: sticky;
-        top: 0;
-        z-index: 10;
-    }
-    .header-inner {
-        max-width: 640px;
-        margin: auto;
-        padding: 16px 20px;
-        text-align: center;
-    }
-    .logo {
-        font-size: 20px;
-        font-weight: 700;
-        letter-spacing: -0.3px;
-        color: var(--primary-dark);
-        text-decoration: none;
-    }
-    .logo-subtitle {
-        margin-top: 2px;
-        font-size: 11px;
-        color: var(--text-muted);
-        text-transform: uppercase;
-        letter-spacing: 1.2px;
-        font-weight: 600;
-    }
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
 
-    /* CONTAINER */
-    .container {
-        width: min(calc(100% - 32px), 600px);
-        margin: 0 auto;
-        padding: 36px 0 64px;
-        flex: 1;
-    }
-    .screen { display: none; }
-    .screen.active {
-        display: block;
-        animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(8px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
+        body {
+            margin: 0;
+            background: 
+                radial-gradient(circle at 10% 10%, rgba(209, 172, 153, 0.1), transparent 40%),
+                radial-gradient(circle at 90% 90%, rgba(124, 148, 114, 0.08), transparent 40%),
+                var(--warm-bg);
+            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.55;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
 
-    /* INTRO */
-    .intro { text-align: center; margin-bottom: 32px; }
-    .intro h1 {
-        margin: 0 0 12px;
-        font-size: clamp(28px, 5vw, 34px);
-        line-height: 1.25;
-        font-weight: 700;
-        color: var(--primary-dark);
-        letter-spacing: -0.4px;
-    }
-    .intro p {
-        max-width: 480px;
-        margin: 0 auto;
-        color: var(--text-muted);
-        font-size: 15.5px;
-    }
-    .badge-row {
-        display: flex;
-        justify-content: center;
-        gap: 10px;
-        flex-wrap: wrap;
-        margin-top: 18px;
-    }
-    .privacy-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 7px 14px;
-        background: var(--accent-light);
-        color: var(--accent-dark);
-        border-radius: 99px;
-        font-size: 12.5px;
-        font-weight: 600;
-    }
-    .privacy-badge svg {
-        width: 14px; height: 14px;
-        stroke: currentColor; fill: none; stroke-width: 2.2;
-    }
+        button { font: inherit; cursor: pointer; }
+        a { color: var(--primary); }
 
-    /* ASSESSMENT CARDS */
-    .assessment-grid { display: grid; gap: 16px; }
-    .assessment-card {
-        background: var(--card-bg);
-        border: 1px solid var(--border-color);
-        border-radius: var(--radius-lg);
-        padding: 24px;
-        box-shadow: var(--shadow-soft);
-        text-align: left;
-        transition: all 0.25s ease;
-        width: 100%;
-        color: inherit;
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-    }
-    .assessment-card:hover {
-        transform: translateY(-2px);
-        box-shadow: var(--shadow-hover);
-        border-color: var(--primary);
-    }
-    .card-header-row {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
-    .assessment-icon {
-        width: 44px; height: 44px;
-        display: flex; align-items: center; justify-content: center;
-        border-radius: 12px;
-        background: var(--primary-light);
-        color: var(--primary-dark);
-    }
-    .assessment-icon svg {
-        width: 20px; height: 20px;
-        stroke: currentColor; fill: none; stroke-width: 2;
-    }
-    .card-arrow {
-        width: 32px; height: 32px;
-        border-radius: 50%;
-        background: var(--warm-bg);
-        display: flex; align-items: center; justify-content: center;
-        color: var(--primary-dark);
-        transition: all 0.2s;
-    }
-    .assessment-card:hover .card-arrow {
-        background: var(--primary);
-        color: #fff;
-    }
-    .card-arrow svg {
-        width: 15px; height: 15px;
-        stroke: currentColor; fill: none; stroke-width: 2.2;
-    }
-    .assessment-card h2 {
-        margin: 0;
-        font-size: 18px;
-        font-weight: 700;
-        color: var(--text-main);
-    }
-    .assessment-card p {
-        margin: 0;
-        color: var(--text-muted);
-        font-size: 14px;
-        line-height: 1.5;
-    }
+        /* HEADER */
+        .site-header {
+            background: rgba(255, 255, 255, 0.92);
+            border-bottom: 1px solid var(--border-color);
+            backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        .header-inner {
+            max-width: 640px;
+            margin: auto;
+            padding: 16px 20px;
+            text-align: center;
+        }
+        .logo {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            color: var(--primary-dark);
+            text-decoration: none;
+        }
+        .logo-subtitle {
+            margin-top: 2px;
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            font-weight: 600;
+        }
 
-    .info-card {
-        margin-top: 22px;
-        padding: 16px 18px;
-        background: var(--card-bg);
-        border: 1px solid var(--border-color);
-        border-radius: var(--radius-md);
-        font-size: 13px;
-        color: var(--text-muted);
-        display: flex;
-        gap: 12px;
-        align-items: flex-start;
-        box-shadow: var(--shadow-soft);
-    }
-    .info-card svg {
-        width: 18px; height: 18px;
-        stroke: var(--accent-dark); fill: none; stroke-width: 2;
-        flex-shrink: 0; margin-top: 1px;
-    }
+        /* CONTAINER */
+        .container {
+            width: min(calc(100% - 32px), 600px);
+            margin: 0 auto;
+            padding: 36px 0 64px;
+            flex: 1;
+        }
+        .screen { display: none; }
+        .screen.active {
+            display: block;
+            animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-    /* QUIZ */
-    .quiz-header { margin-bottom: 22px; }
-    .quiz-top {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 8px;
-        font-size: 12px;
-        font-weight: 700;
-        color: var(--text-muted);
-        text-transform: uppercase;
-        letter-spacing: 0.7px;
-    }
-    .progress-track {
-        height: 5px;
-        background: var(--border-color);
-        border-radius: 99px;
-        overflow: hidden;
-    }
-    .progress-bar {
-        height: 100%;
-        width: 0;
-        background: var(--primary);
-        border-radius: inherit;
-        transition: width 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .question-card {
-        background: var(--card-bg);
-        border: 1px solid var(--border-color);
-        border-radius: var(--radius-lg);
-        padding: 28px 22px;
-        box-shadow: var(--shadow-soft);
-    }
-    .question-text {
-        font-size: clamp(19px, 4.2vw, 23px);
-        line-height: 1.4;
-        font-weight: 700;
-        margin: 0 0 22px;
-        color: var(--text-main);
-    }
-    .answer-list { display: grid; gap: 10px; margin-bottom: 20px; }
-    .answer-button {
-        border: 1px solid var(--border-color);
-        background: var(--card-bg);
-        color: var(--text-main);
-        border-radius: var(--radius-md);
-        padding: 14px 16px;
-        text-align: left;
-        transition: all 0.2s ease;
-        min-height: 52px;
-    }
-    .answer-button:hover {
-        border-color: var(--primary);
-        background: var(--primary-light);
-    }
-    .answer-button.selected {
-        background: var(--primary-light);
-        border-color: var(--primary);
-        box-shadow: inset 0 0 0 1px var(--primary);
-        font-weight: 600;
-    }
-    .answer-label { display: flex; align-items: center; gap: 12px; }
-    .answer-dot {
-        width: 17px; height: 17px;
-        border: 2px solid #C4B5BC;
-        border-radius: 50%;
-        flex: 0 0 auto;
-        transition: all 0.15s ease;
-    }
-    .selected .answer-dot { border: 5px solid var(--primary); }
-    .quiz-navigation {
-        display: flex;
-        border-top: 1px solid var(--border-color);
-        padding-top: 16px;
-    }
-    .nav-button {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        min-height: 42px;
-        padding: 8px 16px;
-        border: 1px solid var(--border-color);
-        background: var(--card-bg);
-        border-radius: var(--radius-md);
-        color: var(--primary-dark);
-        font-size: 13.5px;
-        font-weight: 600;
-    }
-    .nav-button:hover { background: var(--primary-light); }
-    .nav-button svg {
-        width: 14px; height: 14px;
-        stroke: currentColor; fill: none; stroke-width: 2.2;
-    }
-    .quiz-help {
-        text-align: center;
-        margin-top: 14px;
-        color: var(--text-muted);
-        font-size: 13px;
-    }
+        /* INTRO */
+        .intro { text-align: center; margin-bottom: 32px; }
+        .intro h1 {
+            margin: 0 0 12px;
+            font-size: clamp(28px, 5vw, 34px);
+            line-height: 1.25;
+            font-weight: 700;
+            color: var(--primary-dark);
+            letter-spacing: -0.4px;
+        }
+        .intro p {
+            max-width: 480px;
+            margin: 0 auto;
+            color: var(--text-muted);
+            font-size: 15.5px;
+        }
+        .badge-row {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 18px;
+        }
+        .privacy-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 14px;
+            background: var(--accent-light);
+            color: var(--accent-dark);
+            border-radius: 99px;
+            font-size: 12.5px;
+            font-weight: 600;
+        }
+        .privacy-badge svg {
+            width: 14px;
+            height: 14px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2.2;
+        }
 
-    /* RESULTS */
-    .results-header { text-align: center; margin-bottom: 22px; }
-    .results-header h1 {
-        margin: 0 0 6px;
-        color: var(--primary-dark);
-        font-size: 26px;
-        font-weight: 700;
-    }
-    .results-header p {
-        margin: 0;
-        color: var(--text-muted);
-        font-size: 14.5px;
-    }
+        /* ASSESSMENT CARDS */
+        .assessment-grid { display: grid; gap: 16px; }
+        .assessment-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: var(--shadow-soft);
+            text-align: left;
+            transition: all 0.25s ease;
+            width: 100%;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            cursor: pointer;
+        }
+        .assessment-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--primary);
+        }
+        .card-header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .assessment-icon {
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            background: var(--primary-light);
+            color: var(--primary-dark);
+        }
+        .assessment-icon svg {
+            width: 20px;
+            height: 20px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+        }
+        .card-arrow {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--warm-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-dark);
+            transition: all 0.2s;
+        }
+        .assessment-card:hover .card-arrow {
+            background: var(--primary);
+            color: #fff;
+        }
+        .card-arrow svg {
+            width: 15px;
+            height: 15px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2.2;
+        }
+        .assessment-card h2 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+        .assessment-card p {
+            margin: 0;
+            color: var(--text-muted);
+            font-size: 14px;
+            line-height: 1.5;
+        }
 
-    /* 1. Schedule CTA – first */
-    .next-step {
-        position: relative;
-        margin-bottom: 18px;
-        padding: 26px 22px;
-        background: linear-gradient(135deg, #FFFFFF, #F8F4F0);
-        border: 1px solid var(--border-color);
-        border-radius: var(--radius-lg);
-        box-shadow: var(--shadow-soft);
-        text-align: center;
-        overflow: hidden;
-    }
-    .next-step::before {
-        content: "";
-        position: absolute;
-        left: 0; top: 0;
-        width: 100%; height: 4px;
-        background: linear-gradient(90deg, var(--accent), var(--primary));
-    }
-    .next-step h2 {
-        margin: 0 0 8px;
-        font-size: 19px;
-        color: var(--primary-dark);
-        font-weight: 700;
-    }
-    .next-step p {
-        margin: 0 auto 18px;
-        max-width: 460px;
-        color: var(--text-muted);
-        font-size: 14.5px;
-    }
-    .primary-button {
-        display: inline-flex;
-        justify-content: center;
-        align-items: center;
-        width: 100%;
-        min-height: 52px;
-        padding: 12px 20px;
-        border: 0;
-        border-radius: var(--radius-md);
-        background: var(--primary);
-        color: #fff;
-        font-weight: 700;
-        text-decoration: none;
-        gap: 10px;
-        font-size: 15px;
-        box-shadow: 0 4px 14px rgba(110, 77, 94, 0.28);
-        transition: background 0.15s ease;
-    }
-    .primary-button:hover { background: var(--primary-dark); }
-    .primary-button svg {
-        width: 16px; height: 16px;
-        stroke: currentColor; fill: none; stroke-width: 2.2;
-    }
-    .headway-note {
-        margin-top: 10px;
-        font-size: 12px;
-        color: var(--text-muted);
-    }
+        .info-card {
+            margin-top: 22px;
+            padding: 16px 18px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            font-size: 13px;
+            color: var(--text-muted);
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            box-shadow: var(--shadow-soft);
+        }
+        .info-card svg {
+            width: 18px;
+            height: 18px;
+            stroke: var(--accent-dark);
+            fill: none;
+            stroke-width: 2;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
 
-    /* 2. Score card */
-    .result-card {
-        background: var(--card-bg);
-        border: 1px solid var(--border-color);
-        border-radius: var(--radius-lg);
-        box-shadow: var(--shadow-soft);
-        overflow: hidden;
-        margin-bottom: 18px;
-    }
-    .score-section {
-        text-align: center;
-        padding: 28px 20px;
-        background: linear-gradient(135deg, var(--primary-light), #F0E2E7);
-    }
-    .score-label {
-        font-size: 11.5px;
-        color: var(--text-muted);
-        text-transform: uppercase;
-        letter-spacing: 1.1px;
-        font-weight: 700;
-    }
-    .score {
-        font-size: 52px;
-        line-height: 1;
-        margin: 8px 0;
-        color: var(--primary-dark);
-        font-weight: 800;
-    }
-    .score-max {
-        font-size: 12.5px;
-        color: var(--text-muted);
-    }
-    .severity {
-        display: inline-block;
-        margin-top: 12px;
-        padding: 5px 13px;
-        border-radius: 99px;
-        background: #fff;
-        color: var(--primary-dark);
-        font-size: 12.5px;
-        font-weight: 700;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-    }
-    .result-body { padding: 22px; }
-    .result-body h2 {
-        font-size: 17.5px;
-        margin: 0 0 6px;
-        color: var(--text-main);
-    }
-    .result-body p {
-        color: var(--text-muted);
-        margin: 0;
-        font-size: 14.5px;
-    }
+        /* QUIZ */
+        .quiz-header { margin-bottom: 22px; }
+        .quiz-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.7px;
+        }
+        .progress-track {
+            height: 5px;
+            background: var(--border-color);
+            border-radius: 99px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            width: 0;
+            background: var(--primary);
+            border-radius: inherit;
+            transition: width 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .question-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 28px 22px;
+            box-shadow: var(--shadow-soft);
+        }
+        .question-text {
+            font-size: clamp(19px, 4.2vw, 23px);
+            line-height: 1.4;
+            font-weight: 700;
+            margin: 0 0 22px;
+            color: var(--text-main);
+        }
+        .answer-list { display: grid; gap: 10px; margin-bottom: 20px; }
+        .answer-button {
+            border: 1px solid var(--border-color);
+            background: var(--card-bg);
+            color: var(--text-main);
+            border-radius: var(--radius-md);
+            padding: 14px 16px;
+            text-align: left;
+            transition: all 0.2s ease;
+            min-height: 52px;
+            cursor: pointer;
+        }
+        .answer-button:hover {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+        .answer-button.selected {
+            background: var(--primary-light);
+            border-color: var(--primary);
+            box-shadow: inset 0 0 0 1px var(--primary);
+            font-weight: 600;
+        }
+        .answer-label { display: flex; align-items: center; gap: 12px; }
+        .answer-dot {
+            width: 17px;
+            height: 17px;
+            border: 2px solid #C4B5BC;
+            border-radius: 50%;
+            flex: 0 0 auto;
+            transition: all 0.15s ease;
+        }
+        .selected .answer-dot { border: 5px solid var(--primary); }
+        .quiz-navigation {
+            display: flex;
+            border-top: 1px solid var(--border-color);
+            padding-top: 16px;
+        }
+        .nav-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            min-height: 42px;
+            padding: 8px 16px;
+            border: 1px solid var(--border-color);
+            background: var(--card-bg);
+            border-radius: var(--radius-md);
+            color: var(--primary-dark);
+            font-size: 13.5px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .nav-button:hover { background: var(--primary-light); }
+        .nav-button svg {
+            width: 14px;
+            height: 14px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2.2;
+        }
+        .quiz-help {
+            text-align: center;
+            margin-top: 14px;
+            color: var(--text-muted);
+            font-size: 13px;
+        }
 
-    /* 3. Crisis disclaimer (after schedule + score) */
-    .crisis-box {
-        margin-bottom: 18px;
-        padding: 18px;
-        border-radius: var(--radius-md);
-        background: var(--danger-bg);
-        border: 1px solid #EAD2D2;
-    }
-    .crisis-box h3 {
-        margin: 0 0 6px;
-        font-size: 15px;
-        color: var(--danger);
-        font-weight: 700;
-    }
-    .crisis-box p {
-        font-size: 13.5px;
-        color: var(--text-main);
-        margin: 0 0 4px;
-    }
-    .crisis-actions {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
-        margin-top: 14px;
-    }
-    .crisis-button {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 44px;
-        text-decoration: none;
-        border: 1px solid #D8AAAA;
-        color: var(--danger);
-        background: #fff;
-        font-weight: 700;
-        font-size: 13.5px;
-        border-radius: 10px;
-        gap: 8px;
-        transition: background 0.15s;
-    }
-    .crisis-button:hover { background: #FAECEC; }
-    .crisis-button svg {
-        width: 14px; height: 14px;
-        stroke: currentColor; fill: none; stroke-width: 2.2;
-    }
+        /* RESULTS */
+        .results-header { text-align: center; margin-bottom: 22px; }
+        .results-header h1 {
+            margin: 0 0 6px;
+            color: var(--primary-dark);
+            font-size: 26px;
+            font-weight: 700;
+        }
+        .results-header p {
+            margin: 0;
+            color: var(--text-muted);
+            font-size: 14.5px;
+        }
 
-    .secondary-links {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-    }
-    .secondary-button {
-        width: 100%;
-        min-height: 46px;
-        border-radius: var(--radius-md);
-        border: 1px solid var(--border-color);
-        background: var(--card-bg);
-        color: var(--primary-dark);
-        font-weight: 600;
-        font-size: 14px;
-        transition: background 0.15s;
-    }
-    .secondary-button:hover { background: var(--primary-light); }
+        /* CTA */
+        .next-step {
+            position: relative;
+            margin-bottom: 18px;
+            padding: 26px 22px;
+            background: linear-gradient(135deg, #FFFFFF, #F8F4F0);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-soft);
+            text-align: center;
+            overflow: hidden;
+        }
+        .next-step::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent), var(--primary));
+        }
+        .next-step h2 {
+            margin: 0 0 8px;
+            font-size: 19px;
+            color: var(--primary-dark);
+            font-weight: 700;
+        }
+        .next-step p {
+            margin: 0 auto 18px;
+            max-width: 460px;
+            color: var(--text-muted);
+            font-size: 14.5px;
+        }
+        .primary-button {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            min-height: 52px;
+            padding: 12px 20px;
+            border: 0;
+            border-radius: var(--radius-md);
+            background: var(--primary);
+            color: #fff;
+            font-weight: 700;
+            text-decoration: none;
+            gap: 10px;
+            font-size: 15px;
+            box-shadow: 0 4px 14px rgba(110, 77, 94, 0.28);
+            transition: background 0.15s ease;
+            cursor: pointer;
+        }
+        .primary-button:hover { background: var(--primary-dark); }
+        .primary-button svg {
+            width: 16px;
+            height: 16px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2.2;
+        }
+        .headway-note {
+            margin-top: 10px;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
 
-    footer {
-        text-align: center;
-        padding: 26px 20px;
-        color: var(--text-muted);
-        font-size: 12px;
-    }
-    footer a {
-        color: var(--primary);
-        text-decoration: none;
-        font-weight: 600;
-    }
+        /* SCORE CARD */
+        .result-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-soft);
+            overflow: hidden;
+            margin-bottom: 18px;
+        }
+        .score-section {
+            text-align: center;
+            padding: 28px 20px;
+            background: linear-gradient(135deg, var(--primary-light), #F0E2E7);
+        }
+        .score-label {
+            font-size: 11.5px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1.1px;
+            font-weight: 700;
+        }
+        .score {
+            font-size: 52px;
+            line-height: 1;
+            margin: 8px 0;
+            color: var(--primary-dark);
+            font-weight: 800;
+        }
+        .score-max {
+            font-size: 12.5px;
+            color: var(--text-muted);
+        }
+        .severity {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 5px 13px;
+            border-radius: 99px;
+            background: #fff;
+            color: var(--primary-dark);
+            font-size: 12.5px;
+            font-weight: 700;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+        .result-body { padding: 22px; }
+        .result-body h2 {
+            font-size: 17.5px;
+            margin: 0 0 6px;
+            color: var(--text-main);
+        }
+        .result-body p {
+            color: var(--text-muted);
+            margin: 0;
+            font-size: 14.5px;
+        }
 
-    @media (max-width: 520px) {
-        .crisis-actions { grid-template-columns: 1fr; }
-    }
-</style>
+        /* CRISIS BOX */
+        .crisis-box {
+            margin-bottom: 18px;
+            padding: 18px;
+            border-radius: var(--radius-md);
+            background: var(--danger-bg);
+            border: 1px solid #EAD2D2;
+        }
+        .crisis-box h3 {
+            margin: 0 0 6px;
+            font-size: 15px;
+            color: var(--danger);
+            font-weight: 700;
+        }
+        .crisis-box p {
+            font-size: 13.5px;
+            color: var(--text-main);
+            margin: 0 0 4px;
+        }
+        .crisis-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 14px;
+        }
+        .crisis-button {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 44px;
+            text-decoration: none;
+            border: 1px solid #D8AAAA;
+            color: var(--danger);
+            background: #fff;
+            font-weight: 700;
+            font-size: 13.5px;
+            border-radius: 10px;
+            gap: 8px;
+            transition: background 0.15s;
+            cursor: pointer;
+        }
+        .crisis-button:hover { background: #FAECEC; }
+        .crisis-button svg {
+            width: 14px;
+            height: 14px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2.2;
+        }
+
+        /* SECONDARY BUTTONS */
+        .secondary-links {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .secondary-button {
+            width: 100%;
+            min-height: 46px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            background: var(--card-bg);
+            color: var(--primary-dark);
+            font-weight: 600;
+            font-size: 14px;
+            transition: background 0.15s;
+            cursor: pointer;
+        }
+        .secondary-button:hover { background: var(--primary-light); }
+
+        footer {
+            text-align: center;
+            padding: 26px 20px;
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+        footer a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        @media (max-width: 520px) {
+            .crisis-actions { grid-template-columns: 1fr; }
+        }
+    </style>
 </head>
 <body>
-<header class="site-header">
-    <div class="header-inner">
-        <a href="https://hermindandwellness.com" target="_blank" rel="noopener noreferrer" class="logo">Her Mind &amp; Wellness</a>
-        <div class="logo-subtitle">Private Psychiatric Care</div>
-    </div>
-</header>
+    <header class="site-header">
+        <div class="header-inner">
+            <a href="https://hermindandwellness.com" target="_blank" rel="noopener noreferrer" class="logo">Her Mind &amp; Wellness</a>
+            <div class="logo-subtitle">Private Psychiatric Care</div>
+        </div>
+    </header>
 
-<main class="container">
-    <!-- START SCREEN -->
-    <section id="startScreen" class="screen active">
-        <div class="intro">
-            <h1>How have you been feeling lately?</h1>
-            <p>
-                These are the same gentle screening questions clinicians use every day — 
-                a quiet way to put words to what the last couple of weeks have felt like.
-            </p>
-            <div class="badge-row">
-                <div class="privacy-badge">
-                    <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                    <span>Stays in your browser</span>
-                </div>
-                <div class="privacy-badge" style="background: var(--primary-light); color: var(--primary-dark);">
-                    <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                    <span>Free & confidential</span>
+    <main class="container">
+        <!-- START SCREEN -->
+        <section id="startScreen" class="screen active">
+            <div class="intro">
+                <h1>How have you been feeling lately?</h1>
+                <p>These are the same gentle screening questions clinicians use every day — a quiet way to put words to what the last couple of weeks have felt like.</p>
+                <div class="badge-row">
+                    <div class="privacy-badge">
+                        <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        <span>Stays in your browser</span>
+                    </div>
+                    <div class="privacy-badge" style="background: var(--primary-light); color: var(--primary-dark);">
+                        <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                        <span>Free &amp; confidential</span>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="assessment-grid">
-            <button type="button" class="assessment-card" onclick="hmwStartAssessment('phq9')">
-                <div class="card-header-row">
-                    <div class="assessment-icon">
-                        <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            <div class="assessment-grid">
+                <button type="button" class="assessment-card" onclick="hmwStartAssessment('phq9')">
+                    <div class="card-header-row">
+                        <div class="assessment-icon">
+                            <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                        </div>
+                        <div class="card-arrow">
+                            <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </div>
                     </div>
-                    <div class="card-arrow">
-                        <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    <div>
+                        <h2>Mood &amp; Depression Check-In</h2>
+                        <p>Nine gentle questions about mood, energy, sleep, and how you've been feeling about yourself.</p>
                     </div>
-                </div>
-                <div>
-                    <h2>Mood &amp; Depression Check-In</h2>
-                    <p>Nine gentle questions about mood, energy, sleep, and how you’ve been feeling about yourself.</p>
-                </div>
-            </button>
+                </button>
 
-            <button type="button" class="assessment-card" onclick="hmwStartAssessment('gad7')">
-                <div class="card-header-row">
-                    <div class="assessment-icon">
-                        <svg viewBox="0 0 24 24"><path d="M12 3v18M5.5 10.5C3 12 2 15 3 18c3 1 6-1 9-5 3 4 6 6 9 5 1-3 0-6-2.5-7.5M12 12c-3-2-5-5-5-8 4 0 7 2 5 8z"/></svg>
+                <button type="button" class="assessment-card" onclick="hmwStartAssessment('gad7')">
+                    <div class="card-header-row">
+                        <div class="assessment-icon">
+                            <svg viewBox="0 0 24 24"><path d="M12 3v18M5.5 10.5C3 12 2 15 3 18c3 1 6-1 9-5 3 4 6 6 9 5 1-3 0-6-2.5-7.5M12 12c-3-2-5-5-5-8 4 0 7 2 5 8z"/></svg>
+                        </div>
+                        <div class="card-arrow">
+                            <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </div>
                     </div>
-                    <div class="card-arrow">
-                        <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    <div>
+                        <h2>Anxiety &amp; Worry Check-In</h2>
+                        <p>Seven questions on nervousness, worry, restlessness, and physical tension.</p>
                     </div>
-                </div>
-                <div>
-                    <h2>Anxiety &amp; Worry Check-In</h2>
-                    <p>Seven questions on nervousness, worry, restlessness, and physical tension.</p>
-                </div>
-            </button>
-        </div>
-
-        <div class="info-card">
-            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-            <div>These are supportive self-reflection tools based on standard clinical measures. They can point you toward a conversation worth having — they don’t replace a diagnosis from a licensed professional.</div>
-        </div>
-    </section>
-
-    <!-- QUIZ SCREEN -->
-    <section id="quizScreen" class="screen">
-        <div class="quiz-header">
-            <div class="quiz-top">
-                <span id="assessmentTitle">Mood &amp; Depression</span>
-                <span id="questionCounter">Question 1 of 9</span>
-            </div>
-            <div class="progress-track">
-                <div id="progressBar" class="progress-bar"></div>
-            </div>
-        </div>
-
-        <div class="question-card">
-            <h1 id="questionText" class="question-text" tabindex="-1">Loading...</h1>
-            <div id="answerList" class="answer-list"></div>
-            <div class="quiz-navigation">
-                <button id="backButton" type="button" class="nav-button" onclick="hmwGoBack()">
-                    <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-                    <span id="backButtonText">Back</span>
                 </button>
             </div>
-        </div>
-        <div class="quiz-help">There’s no rush — choose whatever feels closest to true right now.</div>
-    </section>
 
-    <!-- RESULTS SCREEN -->
-    <section id="resultsScreen" class="screen">
-        <div class="results-header">
-            <h1>Thank you for taking this time</h1>
-            <p>Here’s a gentle reflection of what you shared.</p>
-        </div>
-
-        <!-- 1. Schedule CTA first -->
-        <div id="ctaContainer"></div>
-
-        <!-- 2. Score / reflection -->
-        <div class="result-card">
-            <div class="score-section">
-                <div class="score-label">Your score</div>
-                <div id="resultScore" class="score">0</div>
-                <div id="resultMax" class="score-max">out of 27</div>
-                <div id="severityLabel" class="severity">Minimal</div>
+            <div class="info-card">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                <div>These are supportive self-reflection tools based on standard clinical measures. They can point you toward a conversation worth having — they don't replace a diagnosis from a licensed professional.</div>
             </div>
-            <div class="result-body">
-                <h2 id="resultTitle">Your responses suggest minimal symptoms.</h2>
-                <p id="resultDescription">Your score falls within a lower range.</p>
+        </section>
+
+        <!-- QUIZ SCREEN -->
+        <section id="quizScreen" class="screen">
+            <div class="quiz-header">
+                <div class="quiz-top">
+                    <span id="assessmentTitle">Mood &amp; Depression</span>
+                    <span id="questionCounter">Question 1 of 9</span>
+                </div>
+                <div class="progress-track">
+                    <div id="progressBar" class="progress-bar"></div>
+                </div>
             </div>
-        </div>
 
-        <!-- 3. Emergency disclaimer option -->
-        <div id="crisisContainer"></div>
+            <div class="question-card">
+                <h1 id="questionText" class="question-text" tabindex="-1">Loading...</h1>
+                <div id="answerList" class="answer-list"></div>
+                <div class="quiz-navigation">
+                    <button id="backButton" type="button" class="nav-button" onclick="hmwGoBack()">
+                        <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        <span id="backButtonText">Back</span>
+                    </button>
+                </div>
+            </div>
 
-        <div class="secondary-links">
-            <button id="otherAssessmentButton" type="button" class="secondary-button" onclick="hmwStartOtherAssessment()">
-                Also check in on anxiety
-            </button>
-            <button type="button" class="secondary-button" onclick="hmwStartOver()">
-                Return to main menu
-            </button>
-        </div>
-    </section>
-</main>
+            <div class="quiz-help">There's no rush — choose whatever feels closest to true right now.</div>
+        </section>
 
-<footer>
-    <div>Created by <a href="https://hermindandwellness.com" target="_blank" rel="noopener noreferrer">Her Mind and Wellness</a></div>
-    <div style="margin-top:4px;">Texas Telehealth Psychiatric Care • Free self-assessment tool</div>
-    <div style="margin-top:6px; font-weight: 600; color: var(--primary);">Build Version: v1.5.0</div>
-</footer>
+        <!-- RESULTS SCREEN -->
+        <section id="resultsScreen" class="screen">
+            <div class="results-header">
+                <h1>Thank you for taking this time</h1>
+                <p>Here's a gentle reflection of what you shared.</p>
+            </div>
 
-<script>
-const HMW_ASSESSMENTS = {
-    phq9: {
-        name: "Mood & Depression",
-        maxScore: 27,
-        questions: [
-            "Over the last 2 weeks, how often have you had little interest or pleasure in doing things?",
-            "Felt down, depressed, or hopeless?",
-            "Had trouble falling or staying asleep, or sleeping too much?",
-            "Felt tired or had little energy?",
-            "Experienced poor appetite or overeating?",
-            "Felt bad about yourself — or that you are a failure or have let yourself or your family down?",
-            "Had trouble concentrating on things, such as reading the newspaper or watching television?",
-            "Been moving or speaking so slowly that other people could have noticed? Or the opposite — being so fidgety or restless that you have been moving around a lot more than usual?",
-            "Had thoughts that you would be better off dead or of hurting yourself in some way?"
-        ],
-        answers: ["Not at all", "Several days", "More than half the days", "Nearly every day"],
-        severity: function(score) {
-            if (score <= 4) return { band: "low", label: "Minimal", title: "Things look fairly light right now", description: "What you’re describing sounds manageable. Many people feel this way from time to time — it’s still worth noticing if anything shifts." };
-            if (score <= 9) return { band: "low", label: "Mild", title: "A bit more than usual", description: "You’re carrying a little more than usual lately. It may not feel urgent, but it’s worth paying gentle attention to." };
-            if (score <= 14) return { band: "elevated", label: "Moderate", title: "The last couple of weeks have been hard", description: "It sounds like things have genuinely been difficult. Symptoms in this range often respond well to support — you don’t have to carry this alone." };
-            if (score <= 19) return { band: "elevated", label: "Moderately severe", title: "This sounds heavy", description: "What you’re going through right now sounds significant. Real, effective help exists for this — reaching for it is a reasonable and kind next step." };
-            return { band: "elevated", label: "Severe", title: "You’re describing real distress", description: "Please consider talking with a mental health professional soon. You don’t have to navigate this by yourself." };
+            <!-- CTA (Schedule) -->
+            <div id="ctaContainer"></div>
+
+            <!-- Score Card -->
+            <div class="result-card">
+                <div class="score-section">
+                    <div class="score-label">Your score</div>
+                    <div id="resultScore" class="score">0</div>
+                    <div id="resultMax" class="score-max">out of 27</div>
+                    <div id="severityLabel" class="severity">Minimal</div>
+                </div>
+                <div class="result-body">
+                    <h2 id="resultTitle">Your responses suggest minimal symptoms.</h2>
+                    <p id="resultDescription">Your score falls within a lower range.</p>
+                </div>
+            </div>
+
+            <!-- Crisis Box (if needed) -->
+            <div id="crisisContainer"></div>
+
+            <!-- Secondary Actions -->
+            <div class="secondary-links">
+                <button id="otherAssessmentButton" type="button" class="secondary-button" onclick="hmwStartOtherAssessment()">
+                    Also check in on anxiety
+                </button>
+                <button type="button" class="secondary-button" onclick="hmwStartOver()">
+                    Return to main menu
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div>Created by <a href="https://hermindandwellness.com" target="_blank" rel="noopener noreferrer">Her Mind and Wellness</a></div>
+        <div style="margin-top: 4px;">Texas Telehealth Psychiatric Care • Free self-assessment tool</div>
+        <div style="margin-top: 6px; font-weight: 600; color: var(--primary);">Build Version: v1.5.2</div>
+    </footer>
+
+    <script>
+        const HMW_ASSESSMENTS = {
+            phq9: {
+                name: "Mood & Depression",
+                maxScore: 27,
+                questions: [
+                    "Over the last 2 weeks, how often have you had little interest or pleasure in doing things?",
+                    "Felt down, depressed, or hopeless?",
+                    "Had trouble falling or staying asleep, or sleeping too much?",
+                    "Felt tired or had little energy?",
+                    "Experienced poor appetite or overeating?",
+                    "Felt bad about yourself — or that you are a failure or have let yourself or your family down?",
+                    "Had trouble concentrating on things, such as reading the newspaper or watching television?",
+                    "Been moving or speaking so slowly that other people could have noticed? Or the opposite — being so fidgety or restless that you have been moving around a lot more than usual?",
+                    "Had thoughts that you would be better off dead or of hurting yourself in some way?"
+                ],
+                answers: ["Not at all", "Several days", "More than half the days", "Nearly every day"],
+                severity: function(score) {
+                    if (score <= 4) return {
+                        band: "low",
+                        label: "Minimal",
+                        title: "Things look fairly light right now",
+                        description: "What you're describing sounds manageable. Many people feel this way from time to time — it's still worth noticing if anything shifts."
+                    };
+                    if (score <= 9) return {
+                        band: "low",
+                        label: "Mild",
+                        title: "A bit more than usual",
+                        description: "You're carrying a little more than usual lately. It may not feel urgent, but it's worth paying gentle attention to."
+                    };
+                    if (score <= 14) return {
+                        band: "elevated",
+                        label: "Moderate",
+                        title: "The last couple of weeks have been hard",
+                        description: "It sounds like things have genuinely been difficult. Symptoms in this range often respond well to support — you don't have to carry this alone."
+                    };
+                    if (score <= 19) return {
+                        band: "elevated",
+                        label: "Moderately severe",
+                        title: "This sounds heavy",
+                        description: "What you're going through right now sounds significant. Real, effective help exists for this — reaching for it is a reasonable and kind next step."
+                    };
+                    return {
+                        band: "elevated",
+                        label: "Severe",
+                        title: "You're describing real distress",
+                        description: "Please consider talking with a mental health professional soon. You don't have to navigate this by yourself."
+                    };
+                }
+            },
+            gad7: {
+                name: "Anxiety & Worry",
+                maxScore: 21,
+                questions: [
+                    "Over the last 2 weeks, how often have you been feeling nervous, anxious, or on edge?",
+                    "Experienced not being able to stop or control worrying?",
+                    "Been worrying too much about different things?",
+                    "Experienced trouble relaxing?",
+                    "Been so restless that it is hard to sit still?",
+                    "Become easily annoyed or irritable?",
+                    "Felt afraid as if something awful might happen?"
+                ],
+                answers: ["Not at all", "Several days", "More than half the days", "Nearly every day"],
+                severity: function(score) {
+                    if (score <= 4) return {
+                        band: "low",
+                        label: "Minimal",
+                        title: "Worry levels look fairly light",
+                        description: "Your responses fall in a lower range — that's a good sign."
+                    };
+                    if (score <= 9) return {
+                        band: "low",
+                        label: "Mild",
+                        title: "Some everyday tension is showing up",
+                        description: "A bit of worry and tension are present. Keeping an eye on it is a reasonable next step."
+                    };
+                    if (score <= 14) return {
+                        band: "elevated",
+                        label: "Moderate",
+                        title: "Anxiety is taking up real space",
+                        description: "Anxiety appears to be affecting your days in a noticeable way. Support can genuinely help you feel steadier."
+                    };
+                    return {
+                        band: "elevated",
+                        label: "Severe",
+                        title: "The anxiety sounds intense",
+                        description: "What you're describing sounds frequent and heavy. Please consider connecting with a professional — there are effective ways to feel more like yourself again."
+                    };
+                }
+            }
+        };
+
+        let hmwState = {
+            assessment: null,
+            currentQuestion: 0,
+            answers: []
+        };
+
+        function hmwShowScreen(id) {
+            document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+            document.getElementById(id).classList.add("active");
+            window.scrollTo({ top: 0, behavior: "smooth" });
         }
-    },
-    gad7: {
-        name: "Anxiety & Worry",
-        maxScore: 21,
-        questions: [
-            "Over the last 2 weeks, how often have you been feeling nervous, anxious, or on edge?",
-            "Experienced not being able to stop or control worrying?",
-            "Been worrying too much about different things?",
-            "Experienced trouble relaxing?",
-            "Been so restless that it is hard to sit still?",
-            "Become easily annoyed or irritable?",
-            "Felt afraid as if something awful might happen?"
-        ],
-        answers: ["Not at all", "Several days", "More than half the days", "Nearly every day"],
-        severity: function(score) {
-            if (score <= 4) return { band: "low", label: "Minimal", title: "Worry levels look fairly light", description: "Your responses fall in a lower range — that’s a good sign." };
-            if (score <= 9) return { band: "low", label: "Mild", title: "Some everyday tension is showing up", description: "A bit of worry and tension are present. Keeping an eye on it is a reasonable next step." };
-            if (score <= 14) return { band: "elevated", label: "Moderate", title: "Anxiety is taking up real space", description: "Anxiety appears to be affecting your days in a noticeable way. Support can genuinely help you feel steadier." };
-            return { band: "elevated", label: "Severe", title: "The anxiety sounds intense", description: "What you’re describing sounds frequent and heavy. Please consider connecting with a professional — there are effective ways to feel more like yourself again." };
-        }
-    }
-};
 
-let hmwState = { assessment: null, currentQuestion: 0, answers: [] };
-
-function hmwShowScreen(id) {
-    document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
-    document.getElementById(id).classList.add("active");
-    window.scrollTo({ top: 0, behavior: "smooth" });
-}
-
-function hmwStartAssessment(type) {
-    const assessment = HMW_ASSESSMENTS[type];
-    if (!assessment) return;
-    hmwState = { assessment: type, currentQuestion: 0, answers: [] };
-    document.getElementById("assessmentTitle").textContent = assessment.name;
-    hmwShowScreen("quizScreen");
-    hmwRenderQuestion();
-}
-
-function hmwStartOtherAssessment() {
-    const other = hmwState.assessment === "phq9" ? "gad7" : "phq9";
-    hmwStartAssessment(other);
-}
-
-function hmwRenderQuestion() {
-    const assessment = HMW_ASSESSMENTS[hmwState.assessment];
-    const index = hmwState.currentQuestion;
-    const total = assessment.questions.length;
-
-    document.getElementById("questionCounter").textContent = `Question ${index + 1} of ${total}`;
-    document.getElementById("questionText").textContent = assessment.questions[index];
-    document.getElementById("progressBar").style.width = `${(index / total) * 100}%`;
-
-    const answerList = document.getElementById("answerList");
-    answerList.innerHTML = "";
-    assessment.answers.forEach((answer, answerIndex) => {
-        const button = document.createElement("button");
-        button.type = "button";
-        button.className = "answer-button";
-        button.innerHTML = `<span class="answer-label"><span class="answer-dot"></span><span>${answer}</span></span>`;
-        button.addEventListener("click", () => hmwSelectAnswer(answerIndex));
-        if (hmwState.answers[index] === answerIndex) button.classList.add("selected");
-        answerList.appendChild(button);
-    });
-
-    document.getElementById("backButtonText").textContent = index === 0 ? "Back" : "Previous question";
-}
-
-function hmwSelectAnswer(answerIndex) {
-    const assessment = HMW_ASSESSMENTS[hmwState.assessment];
-    hmwState.answers[hmwState.currentQuestion] = answerIndex;
-    setTimeout(() => {
-        if (hmwState.currentQuestion < assessment.questions.length - 1) {
-            hmwState.currentQuestion++;
+        function hmwStartAssessment(type) {
+            const assessment = HMW_ASSESSMENTS[type];
+            if (!assessment) return;
+            hmwState = { assessment: type, currentQuestion: 0, answers: [] };
+            document.getElementById("assessmentTitle").textContent = assessment.name;
+            hmwShowScreen("quizScreen");
             hmwRenderQuestion();
-        } else {
-            hmwCompleteAssessment();
         }
-    }, 160);
-}
 
-function hmwGoBack() {
-    if (hmwState.currentQuestion > 0) {
-        hmwState.currentQuestion--;
-        hmwRenderQuestion();
-    } else {
-        hmwStartOver();
-    }
-}
-
-function hmwCompleteAssessment() {
-    const type = hmwState.assessment;
-    const assessment = HMW_ASSESSMENTS[type];
-    const score = hmwState.answers.reduce((total, val) => total + (Number(val) || 0), 0);
-    const severity = assessment.severity(score);
-
-    document.getElementById("resultScore").textContent = score;
-    document.getElementById("resultMax").textContent = `out of ${assessment.maxScore}`;
-    document.getElementById("severityLabel").textContent = severity.label;
-    document.getElementById("resultTitle").textContent = severity.title;
-    document.getElementById("resultDescription").textContent = severity.description;
-    document.getElementById("progressBar").style.width = "100%";
-
-    let showCrisis = false;
-    if (type === "phq9") {
-        const q9 = hmwState.answers[8];
-        showCrisis = (typeof q9 === "number" && q9 > 0) || score >= 10;
-    } else if (type === "gad7") {
-        showCrisis = score >= 10;
-    }
-
-    hmwRenderCta(severity.band, showCrisis);
-    hmwRenderCrisisMessage(showCrisis);
-
-    document.getElementById("otherAssessmentButton").textContent =
-        type === "phq9" ? "Also check in on anxiety" : "Also check in on mood";
-
-    hmwShowScreen("resultsScreen");
-}
-
-function hmwRenderCta(band, showCrisis) {
-    const container = document.getElementById("ctaContainer");
-    const isElevated = band === "elevated" || showCrisis;
-
-    const heading = isElevated
-        ? "Support is ready when you are"
-        : "If you’d ever like to talk something through";
-
-    const body = isElevated
-        ? "What you shared suggests real support could make a meaningful difference. Elizabeth Ghadimi, a licensed psychiatric provider, offers confidential telehealth consultations across Texas whenever you’re ready."
-        : "Even when things feel manageable, having someone to check in with can help you stay that way. Elizabeth Ghadimi offers confidential consultations if you’d like to talk something through.";
-
-    const buttonText = isElevated
-        ? "Schedule a confidential consultation"
-        : "Explore a consultation";
-
-    container.innerHTML = `
-        <div class="next-step">
-            <h2>${heading}</h2>
-            <p>${body}</p>
-            <a class="primary-button"
-               href="https://care.headway.co/providers/elizabeth-ghadimi?utm_source=assessment&utm_medium=direct_link&utm_campaign=207711"
-               target="_blank" rel="noopener noreferrer">
-                <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                ${buttonText}
-            </a>
-            <div class="headway-note">Booking is handled securely through Headway. There’s no obligation — this is simply here if and when it’s useful.</div>
-        </div>
-    `;
-}
-
-function hmwRenderCrisisMessage(showCrisis) {
-    const container = document.getElementById("crisisContainer");
-    container.innerHTML = "";
-    if (!showCrisis) return;
-
-    const box = document.createElement("div");
-    box.className = "crisis-box";
-    box.innerHTML = `
-        <h3>Please reach out if you need support right now</h3>
-        <p>Some of what you shared suggests you may be in real distress. You don’t have to handle this alone — free, confidential help is available any hour of the day.</p>
-        <div class="crisis-actions">
-            <a class="crisis-button" href="tel:988">
-                <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-                Call 988
-            </a>
-            <a class="crisis-button" href="sms:988">
-                <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                Text 988
-            </a>
-        </div>
-    `;
-    container.appendChild(box);
-}
-
-function hmwStartOver() {
-    hmwState = { assessment: null, currentQuestion: 0, answers: [] };
-    document.getElementById("crisisContainer").innerHTML = "";
-    document.getElementById("ctaContainer").innerHTML = "";
-    hmwShowScreen("startScreen");
-}
-
-document.addEventListener("keydown", function(event) {
-    if (document.getElementById("quizScreen").classList.contains("active")) {
-        const num = parseInt(event.key, 10);
-        if (num >= 1 && num <= 4) {
-            const buttons = document.querySelectorAll(".answer-button");
-            if (buttons[num - 1]) buttons[num - 1].click();
+        function hmwStartOtherAssessment() {
+            const other = hmwState.assessment === "phq9" ? "gad7" : "phq9";
+            hmwStartAssessment(other);
         }
-    }
-});
-</script>
+
+        function hmwRenderQuestion() {
+            const assessment = HMW_ASSESSMENTS[hmwState.assessment];
+            const index = hmwState.currentQuestion;
+            const total = assessment.questions.length;
+
+            document.getElementById("questionCounter").textContent = `Question ${index + 1} of ${total}`;
+            document.getElementById("questionText").textContent = assessment.questions[index];
+            document.getElementById("progressBar").style.width = `${(index / total) * 100}%`;
+
+            const answerList = document.getElementById("answerList");
+            answerList.innerHTML = "";
+
+            assessment.answers.forEach((answer, answerIndex) => {
+                const button = document.createElement("button");
+                button.type = "button";
+                button.className = "answer-button";
+                button.innerHTML = `<span class="answer-label"><span class="answer-dot"></span><span>${answer}</span></span>`;
+                button.addEventListener("click", () => hmwSelectAnswer(answerIndex));
+                if (hmwState.answers[index] === answerIndex) button.classList.add("selected");
+                answerList.appendChild(button);
+            });
+
+            document.getElementById("backButtonText").textContent = index === 0 ? "Back" : "Previous question";
+        }
+
+        function hmwSelectAnswer(answerIndex) {
+            const assessment = HMW_ASSESSMENTS[hmwState.assessment];
+            hmwState.answers[hmwState.currentQuestion] = answerIndex;
+
+            setTimeout(() => {
+                if (hmwState.currentQuestion < assessment.questions.length - 1) {
+                    hmwState.currentQuestion++;
+                    hmwRenderQuestion();
+                } else {
+                    hmwCompleteAssessment();
+                }
+            }, 160);
+        }
+
+        function hmwGoBack() {
+            if (hmwState.currentQuestion > 0) {
+                hmwState.currentQuestion--;
+                hmwRenderQuestion();
+            } else {
+                hmwStartOver();
+            }
+        }
+
+        function hmwCompleteAssessment() {
+            const type = hmwState.assessment;
+            const assessment = HMW_ASSESSMENTS[type];
+            const score = hmwState.answers.reduce((total, val) => total + (Number(val) || 0), 0);
+            const severity = assessment.severity(score);
+
+            document.getElementById("resultScore").textContent = score;
+            document.getElementById("resultMax").textContent = `out of ${assessment.maxScore}`;
+            document.getElementById("severityLabel").textContent = severity.label;
+            document.getElementById("resultTitle").textContent = severity.title;
+            document.getElementById("resultDescription").textContent = severity.description;
+            document.getElementById("progressBar").style.width = "100%";
+
+            let showCrisis = false;
+            if (type === "phq9") {
+                const q9 = hmwState.answers[8];
+                showCrisis = (typeof q9 === "number" && q9 > 0) || score >= 10;
+            } else if (type === "gad7") {
+                showCrisis = score >= 10;
+            }
+
+            hmwRenderCta(severity.band, showCrisis);
+            hmwRenderCrisisMessage(showCrisis);
+
+            document.getElementById("otherAssessmentButton").textContent =
+                type === "phq9" ? "Also check in on anxiety" : "Also check in on mood";
+
+            hmwShowScreen("resultsScreen");
+        }
+
+        function hmwRenderCta(band, showCrisis) {
+            const container = document.getElementById("ctaContainer");
+            const isElevated = band === "elevated" || showCrisis;
+
+            const heading = isElevated
+                ? "Support is ready when you are"
+                : "If you'd ever like to talk something through";
+
+            const body = isElevated
+                ? "What you shared suggests real support could make a meaningful difference. Elizabeth Ghadimi, a licensed psychiatric provider, offers confidential telehealth consultations across Texas whenever you're ready."
+                : "Even when things feel manageable, having someone to check in with can help you stay that way. Elizabeth Ghadimi offers confidential consultations if you'd like to talk something through.";
+
+            const buttonText = isElevated
+                ? "Schedule a confidential consultation"
+                : "Explore a consultation";
+
+            container.innerHTML = `
+                <div class="next-step">
+                    <h2>${heading}</h2>
+                    <p>${body}</p>
+                    <a class="primary-button"
+                       href="https://care.headway.co/providers/elizabeth-ghadimi?utm_source=assessment&utm_medium=direct_link&utm_campaign=207711"
+                       target="_blank" rel="noopener noreferrer">
+                        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        ${buttonText}
+                    </a>
+                    <div class="headway-note">Booking is handled securely through Headway. There's no obligation — this is simply here if and when it's useful.</div>
+                </div>
+            `;
+        }
+
+        function hmwRenderCrisisMessage(showCrisis) {
+            const container = document.getElementById("crisisContainer");
+            container.innerHTML = "";
+
+            if (!showCrisis) return;
+
+            const box = document.createElement("div");
+            box.className = "crisis-box";
+            box.innerHTML = `
+                <h3>Please reach out if you need support right now</h3>
+                <p>Some of what you shared suggests you may be in real distress. You don't have to handle this alone — free, confidential help is available any hour of the day.</p>
+                <div class="crisis-actions">
+                    <a class="crisis-button" href="tel:988">
+                        <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                        Call 988
+                    </a>
+                    <a class="crisis-button" href="sms:988">
+                        <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                        Text 988
+                    </a>
+                </div>
+            `;
+            container.appendChild(box);
+        }
+
+        function hmwStartOver() {
+            hmwState = { assessment: null, currentQuestion: 0, answers: [] };
+            document.getElementById("crisisContainer").innerHTML = "";
+            document.getElementById("ctaContainer").innerHTML = "";
+            hmwShowScreen("startScreen");
+        }
+
+        // Keyboard shortcuts: press 1-4 to select answers during quiz
+        document.addEventListener("keydown", function(event) {
+            if (document.getElementById("quizScreen").classList.contains("active")) {
+                const num = parseInt(event.key, 10);
+                if (num >= 1 && num <= 4) {
+                    const buttons = document.querySelectorAll(".answer-button");
+                    if (buttons[num - 1]) buttons[num - 1].click();
+                }
+            }
+        });
+    </script>
 </body>
 </html>

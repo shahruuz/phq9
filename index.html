@@ -9,7 +9,8 @@
   - v1.05: Added embedded changelog structure in code comments.
   - v1.06: Complete mobile UI redesign into a modern, full-screen native app layout.
   - v1.07: Fixed mobile container clipping and drastically increased text scale/readability.
-  - v1.08: Updated to version 8 with integrated Headway booking link.
+  - v1.08: Balanced font scaling/spacing to match optimal reference proportion and integrated Headway link.
+  - v1.09: Configured true full-screen edge-to-edge layout for mobile viewports.
   ====================================================================
 -->
 <div id="hmw-assessment-container">
@@ -26,7 +27,7 @@
             padding: 36px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
             box-sizing: border-box;
-            font-size: 18px;
+            font-size: 16px;
         }
 
         #hmw-assessment-container * {
@@ -35,37 +36,37 @@
 
         .hmw-app-header {
             text-align: center;
-            margin-bottom: 28px;
+            margin-bottom: 24px;
         }
 
         #hmw-assessment-container h2 {
-            font-size: 1.75em;
+            font-size: 1.5em;
             font-weight: 600;
             color: #3A4A42;
-            margin: 0 0 8px 0;
+            margin: 0 0 6px 0;
         }
         #hmw-assessment-container p.subtitle {
             margin: 0;
             color: #5A6C62;
-            font-size: 1.05em;
+            font-size: 0.95em;
         }
         .hmw-select-wrapper {
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
         .hmw-select-wrapper label {
             display: block;
             font-weight: 600;
-            margin-bottom: 12px;
-            font-size: 1.1em;
+            margin-bottom: 10px;
+            font-size: 1em;
             color: #3A4A42;
         }
         .hmw-select-wrapper select {
             width: 100%;
-            padding: 18px;
+            padding: 14px;
             border: 1px solid #CBD5E1;
-            border-radius: 12px;
+            border-radius: 10px;
             background: #FFFFFF;
-            font-size: 1.15em;
+            font-size: 1em;
             color: #2D3748;
             outline: none;
             transition: border-color 0.2s;
@@ -85,27 +86,28 @@
             to { opacity: 1; transform: translateY(0); }
         }
         .hmw-question-text {
-            font-size: 1.25em;
+            font-size: 1.1em;
             font-weight: 500;
-            margin-bottom: 24px;
-            line-height: 1.55;
+            margin-bottom: 20px;
+            line-height: 1.5;
             color: #1A2E22;
         }
         .hmw-options-list {
             display: flex;
             flex-direction: column;
-            gap: 14px;
-            margin-bottom: 32px;
+            gap: 10px;
+            margin-bottom: 24px;
         }
         .hmw-option-label {
             display: flex;
-            align-items: center;
-            padding: 20px 22px;
+            align-items: flex-start;
+            padding: 14px 16px;
             background: #FFFFFF;
             border: 1px solid #CBD5E1;
-            border-radius: 12px;
+            border-radius: 10px;
             cursor: pointer;
-            font-size: 1.15em;
+            font-size: 1em;
+            line-height: 1.4;
             transition: all 0.2s;
         }
         .hmw-option-label:hover {
@@ -113,24 +115,26 @@
             border-color: #4A5D52;
         }
         .hmw-option-label input {
-            margin-right: 16px;
+            margin-right: 12px;
+            margin-top: 2px;
             accent-color: #4A5D52;
-            transform: scale(1.35);
+            transform: scale(1.15);
+            flex-shrink: 0;
         }
         .hmw-nav-buttons {
             display: flex;
             justify-content: space-between;
             align-items: center;
             border-top: 1px solid #E2D9CE;
-            padding-top: 24px;
+            padding-top: 20px;
         }
         .hmw-btn {
             background: #4A5D52;
             color: #FFFFFF;
             border: none;
-            padding: 18px 28px;
-            border-radius: 12px;
-            font-size: 1.15em;
+            padding: 14px 24px;
+            border-radius: 10px;
+            font-size: 1em;
             font-weight: 500;
             cursor: pointer;
             transition: background 0.2s, transform 0.1s;
@@ -150,8 +154,8 @@
             color: #4A5D52;
             border: 1px solid #4A5D52;
             width: auto;
-            padding: 14px 24px;
-            font-size: 1.05em;
+            padding: 10px 18px;
+            font-size: 0.95em;
         }
         .hmw-btn-secondary:hover {
             background: #F1F5F9;
@@ -165,7 +169,7 @@
             background: #7A2828;
         }
         .hmw-progress {
-            font-size: 1.05em;
+            font-size: 0.95em;
             color: #5A6C62;
             font-weight: 600;
         }
@@ -179,67 +183,69 @@
         .hmw-score-box {
             background: #FFFFFF;
             border: 1px solid #E2D9CE;
-            border-radius: 12px;
-            padding: 24px;
-            margin: 20px 0;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 16px 0;
             text-align: left;
         }
         .hmw-score-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             border-bottom: 1px solid #F1F5F9;
-            padding-bottom: 10px;
+            padding-bottom: 8px;
         }
         .hmw-score-number {
-            font-size: 1.35em;
+            font-size: 1.2em;
             font-weight: 600;
             color: #3A4A42;
         }
         .hmw-action-group {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
             align-items: center;
-            margin-top: 24px;
+            margin-top: 20px;
             width: 100%;
         }
         .hmw-conversion-box {
             background: #FFFFFF;
             border: 2px solid #4A5D52;
-            border-radius: 12px;
-            padding: 24px;
-            margin-top: 20px;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 16px;
             text-align: center;
         }
         .hmw-conversion-box h4 {
             color: #3A4A42;
-            font-size: 1.3em;
-            margin-bottom: 8px;
+            font-size: 1.15em;
+            margin-bottom: 6px;
             font-weight: 600;
         }
         .hmw-conversion-box p {
             color: #5A6C62;
-            font-size: 1.1em;
-            margin-bottom: 16px;
-            line-height: 1.5;
+            font-size: 0.95em;
+            margin-bottom: 14px;
+            line-height: 1.45;
         }
         .hmw-disclaimer {
-            font-size: 0.9em;
+            font-size: 0.8em;
             color: #6C7C72;
-            margin-top: 30px;
-            line-height: 1.5;
+            margin-top: 24px;
+            line-height: 1.45;
             border-top: 1px dashed #E2D9CE;
-            padding-top: 16px;
+            padding-top: 14px;
         }
 
-        /* True Full-Screen App-Like Mobile Overrides (Screens under 768px) */
+        /* True Full-Screen Edge-to-Edge Mobile Overrides (Screens under 768px) */
         @media screen and (max-width: 768px) {
-            body {
+            html, body {
                 margin: 0 !important;
                 padding: 0 !important;
                 background-color: #FDFBF7 !important;
+                width: 100vw;
+                overflow-x: hidden;
             }
             #hmw-assessment-container {
                 position: fixed;
@@ -252,9 +258,9 @@
                 max-width: none;
                 border: none;
                 border-radius: 0;
-                padding: 24px 20px;
+                padding: 24px 18px;
                 box-shadow: none;
-                font-size: 19px;
+                font-size: 16px;
                 overflow-y: auto;
                 z-index: 99999;
                 display: flex;
@@ -263,37 +269,14 @@
                 background: #FDFBF7;
             }
             .hmw-app-header {
-                padding-top: 12px;
-                margin-bottom: 24px;
+                padding-top: env(safe-area-inset-top, 12px);
+                margin-bottom: 20px;
                 border-bottom: 1px solid #E2D9CE;
-                padding-bottom: 18px;
-            }
-            #hmw-assessment-container h2 {
-                font-size: 1.6em;
-            }
-            #hmw-assessment-container p.subtitle {
-                font-size: 1em;
-            }
-            .hmw-question-text {
-                font-size: 1.25em;
-                line-height: 1.5;
-            }
-            .hmw-option-label {
-                padding: 20px 18px;
-                font-size: 1.12em;
-            }
-            .hmw-select-wrapper select {
-                padding: 18px;
-                font-size: 1.12em;
-            }
-            .hmw-btn {
-                padding: 18px;
-                font-size: 1.12em;
+                padding-bottom: 16px;
             }
             .hmw-disclaimer {
                 margin-top: auto;
-                padding-top: 16px;
-                font-size: 0.85em;
+                padding-bottom: env(safe-area-inset-bottom, 12px);
             }
         }
     </style>
@@ -327,16 +310,16 @@
 
         <!-- Results View -->
         <div class="hmw-results-card" id="hmw-results-view">
-            <h3 style="font-size: 1.5em; color: #3A4A42; margin-bottom: 8px;">Assessment Complete</h3>
-            <p style="font-size: 1.05em; color: #5A6C62; margin-top: 4px;">Thank you for taking a moment to reflect on your well-being.</p>
+            <h3 style="font-size: 1.35em; color: #3A4A42; margin-bottom: 6px;">Assessment Complete</h3>
+            <p style="font-size: 0.95em; color: #5A6C62; margin-top: 4px;">Thank you for taking a moment to reflect on your well-being.</p>
             
             <div class="hmw-score-box">
                 <div class="hmw-score-header">
-                    <span style="font-size: 1.05em; color: #5A6C62; font-weight: 600;">Your Summary Result</span>
+                    <span style="font-size: 0.95em; color: #5A6C62; font-weight: 600;">Your Summary Result</span>
                     <div class="hmw-score-number" id="hmw-final-score">Score: 0</div>
                 </div>
-                <p id="hmw-score-interpretation" style="font-size: 1.15em; color: #2D3748; line-height: 1.5; font-weight: 500;"></p>
-                <p style="font-size: 1em; color: #5A6C62; margin-top: 10px;">Bringing these insights to a session can help us tailor a supportive, personalized plan moving forward.</p>
+                <p id="hmw-score-interpretation" style="font-size: 1.05em; color: #2D3748; line-height: 1.45; font-weight: 500;"></p>
+                <p style="font-size: 0.9em; color: #5A6C62; margin-top: 8px;">Bringing these insights to a session can help us tailor a supportive, personalized plan moving forward.</p>
             </div>
             
             <div class="hmw-conversion-box">
@@ -353,7 +336,7 @@
     </div>
 
     <div class="hmw-disclaimer">
-        <p style="margin: 0 0 6px 0;"><strong>Her Mind & Wellness™ v1.08</strong> • Developed by Her Mind & Wellness, PLLC © 2026. All rights reserved.</p>
+        <p style="margin: 0 0 4px 0;"><strong>Her Mind & Wellness™ v1.09</strong> • Developed by Her Mind & Wellness, PLLC © 2026. All rights reserved.</p>
         <strong>Disclaimer:</strong> This interactive tool is for informational and self-reflection purposes only and does not constitute a formal medical diagnosis. If you are experiencing a mental health emergency, please call 911 or contact the 988 Suicide & Crisis Lifeline immediately.
     </div>
 
@@ -451,7 +434,7 @@
                 html += `
                     <label class="hmw-option-label">
                         <input type="radio" name="q_${currentQuestionIndex}" value="${opt.value}" ${checked} onchange="hmwHandleSelection(${opt.value})">
-                        ${opt.text}
+                        <span>${opt.text}</span>
                     </label>
                 `;
             });

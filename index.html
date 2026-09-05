@@ -80,6 +80,12 @@
             font-weight: 700;
             letter-spacing: -0.3px;
             color: var(--primary-dark);
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .logo:hover {
+            opacity: 0.85;
         }
 
         .logo-subtitle {
@@ -644,6 +650,16 @@
             font-size: 11px;
         }
 
+        footer a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
         @media (max-width: 580px) {
             .container {
                 width: min(calc(100% - 24px), 640px);
@@ -659,7 +675,7 @@
 
 <header class="site-header">
     <div class="header-inner">
-        <div class="logo">Her Mind &amp; Wellness</div>
+        <a href="https://hermindandwellness.com" target="_blank" rel="noopener noreferrer" class="logo">Her Mind &amp; Wellness</a>
         <div class="logo-subtitle">Private Psychiatric Care</div>
     </div>
 </header>
@@ -799,7 +815,7 @@
 </main>
 
 <footer>
-    <div>Her Mind &amp; Wellness, PLLC</div>
+    <div>Created by <a href="https://hermindandwellness.com" target="_blank" rel="noopener noreferrer">Her Mind and Wellness</a></div>
     <div style="margin-top:4px;">Texas Telehealth Psychiatric Care</div>
 </footer>
 

@@ -288,10 +288,14 @@
             transition: all 0.2s ease;
             min-height: 52px;
             cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
         }
-        .answer-button:hover {
-            border-color: var(--primary);
-            background: var(--primary-light);
+        /* Only allow hover on devices that support true hovering (desktop) */
+        @media (hover: hover) {
+            .answer-button:hover {
+                border-color: var(--primary);
+                background: var(--primary-light);
+            }
         }
         .answer-button.selected {
             background: var(--primary-light);
@@ -820,41 +824,63 @@
 
         function hmwRenderQuestion() {
             const assessment = HMW_ASSESSMENTS[hmwState.assessment];
-            const index = hmwState.currentQuestion;
+            const qIdx = hmwState.currentQuestion;
             const total = assessment.questions.length;
 
-            document.getElementById("questionCounter").textContent = `Question ${index + 1} of ${total}`;
-            document.getElementById("questionText").textContent = assessment.questions[index];
-            document.getElementById("progressBar").style.width = `${(index / total) * 100}%`;
+            document.getElementById("questionCounter").textContent = `Question ${qIdx + 1} of ${total}`;
+            document.getElementById("questionText").textContent = assessment.questions[qIdx];
+            document.getElementById("progressBar").style.width = `${(qIdx / total) * 100}%`;
 
             const answerList = document.getElementById("answerList");
             answerList.innerHTML = "";
 
-            assessment.answers.forEach((answer, answerIndex) => {
+            assessment.answers.forEach((answer, aIdx) => {
                 const button = document.createElement("button");
                 button.type = "button";
-                button.className = "answer-button";
+                
+                // Check if this answer was selected for this specific question
+                const isSelected = (hmwState.answers[qIdx] === aIdx);
+                
+                if (isSelected) {
+                    button.className = "answer-button selected";
+                } else {
+                    button.className = "answer-button";
+                }
+                
                 button.innerHTML = `<span class="answer-label"><span class="answer-dot"></span><span>${answer}</span></span>`;
-                button.addEventListener("click", () => hmwSelectAnswer(answerIndex));
-                if (hmwState.answers[index] === answerIndex) button.classList.add("selected");
+                
+                // Bulletproof click handler
+                button.addEventListener("click", (event) => {
+                    event.stopPropagation();
+                    
+                    // Store answer immediately and synchronously
+                    hmwState.answers[hmwState.currentQuestion] = aIdx;
+                    
+                    // Disable all answer buttons to prevent double-clicks
+                    document.querySelectorAll(".answer-button").forEach(btn => {
+                        btn.style.pointerEvents = "none";
+                        btn.style.opacity = "0.6";
+                    });
+                    
+                    // Then proceed with transition
+                    setTimeout(() => {
+                        const assessment = HMW_ASSESSMENTS[hmwState.assessment];
+                        if (hmwState.currentQuestion < assessment.questions.length - 1) {
+                            hmwState.currentQuestion++;
+                            hmwRenderQuestion();
+                        } else {
+                            hmwCompleteAssessment();
+                        }
+                    }, 160);
+                });
+                
                 answerList.appendChild(button);
             });
 
-            document.getElementById("backButtonText").textContent = index === 0 ? "Back" : "Previous question";
-        }
-
-        function hmwSelectAnswer(answerIndex) {
-            const assessment = HMW_ASSESSMENTS[hmwState.assessment];
-            hmwState.answers[hmwState.currentQuestion] = answerIndex;
-
-            setTimeout(() => {
-                if (hmwState.currentQuestion < assessment.questions.length - 1) {
-                    hmwState.currentQuestion++;
-                    hmwRenderQuestion();
-                } else {
-                    hmwCompleteAssessment();
-                }
-            }, 160);
+            document.getElementById("backButtonText").textContent = qIdx === 0 ? "Back" : "Previous question";
+            
+            // Scroll to top after DOM fully updates
+            window.scrollTo({ top: 0, behavior: "smooth" });
         }
 
         function hmwGoBack() {

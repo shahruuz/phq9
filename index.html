@@ -26,7 +26,7 @@
         }
 
         * { box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
+        html { scroll-behavior: auto; }
 
         body {
             margin: 0;
@@ -278,6 +278,7 @@
             color: var(--text-main);
         }
         .answer-list { display: grid; gap: 10px; margin-bottom: 20px; }
+        
         .answer-button {
             border: 1px solid var(--border-color);
             background: var(--card-bg);
@@ -285,34 +286,68 @@
             border-radius: var(--radius-md);
             padding: 14px 16px;
             text-align: left;
-            transition: all 0.2s ease;
+            transition:
+                background 0.15s ease,
+                border-color 0.15s ease,
+                box-shadow 0.15s ease;
             min-height: 52px;
             cursor: pointer;
             -webkit-tap-highlight-color: transparent;
+            outline: none;
+            appearance: none;
+            -webkit-appearance: none;
         }
-        /* Only allow hover on devices that support true hovering (desktop) */
-        @media (hover: hover) {
-            .answer-button:hover {
+        /* Desktop hover only — never on touch devices */
+        @media (hover: hover) and (pointer: fine) {
+            .answer-button:hover:not(.selected) {
                 border-color: var(--primary);
                 background: var(--primary-light);
             }
         }
+        /* Actual selected answer */
         .answer-button.selected {
             background: var(--primary-light);
             border-color: var(--primary);
             box-shadow: inset 0 0 0 1px var(--primary);
             font-weight: 600;
         }
-        .answer-label { display: flex; align-items: center; gap: 12px; }
+        /* Don't let browser focus look like a selection */
+        .answer-button:focus {
+            outline: none;
+        }
+        /* Keep an accessible keyboard focus indicator */
+        .answer-button:focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+        /* Prevent mobile tap highlight from creating a lingering visual state */
+        .answer-button:active {
+            background: inherit;
+        }
+        /* But preserve the actual selected appearance while pressing */
+        .answer-button.selected:active {
+            background: var(--primary-light);
+        }
+        .answer-label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
         .answer-dot {
             width: 17px;
             height: 17px;
             border: 2px solid #C4B5BC;
             border-radius: 50%;
             flex: 0 0 auto;
-            transition: all 0.15s ease;
+            transition:
+                border-color 0.15s ease,
+                border-width 0.15s ease;
         }
-        .selected .answer-dot { border: 5px solid var(--primary); }
+        /* Selected radio dot */
+        .answer-button.selected .answer-dot {
+            border: 5px solid var(--primary);
+        }
+
         .quiz-navigation {
             display: flex;
             border-top: 1px solid var(--border-color);
@@ -701,7 +736,7 @@
     <footer>
         <div>Created by <a href="https://hermindandwellness.com" target="_blank" rel="noopener noreferrer">Her Mind and Wellness</a></div>
         <div style="margin-top: 4px;">Texas Telehealth Psychiatric Care • Free self-assessment tool</div>
-        <div style="margin-top: 6px; font-weight: 600; color: var(--primary);">Build Version: v1.5.2</div>
+        <div style="margin-top: 6px; font-weight: 600; color: var(--primary);">Build Version: v1.5.3</div>
     </footer>
 
     <script>
@@ -803,9 +838,17 @@
         };
 
         function hmwShowScreen(id) {
-            document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+            document.querySelectorAll(".screen").forEach(s => {
+                s.classList.remove("active");
+            });
             document.getElementById(id).classList.add("active");
-            window.scrollTo({ top: 0, behavior: "smooth" });
+            requestAnimationFrame(() => {
+                window.scrollTo({
+                    top: 0,
+                    left: 0,
+                    behavior: "auto"
+                });
+            });
         }
 
         function hmwStartAssessment(type) {
@@ -827,66 +870,109 @@
             const qIdx = hmwState.currentQuestion;
             const total = assessment.questions.length;
 
-            document.getElementById("questionCounter").textContent = `Question ${qIdx + 1} of ${total}`;
-            document.getElementById("questionText").textContent = assessment.questions[qIdx];
-            document.getElementById("progressBar").style.width = `${(qIdx / total) * 100}%`;
+            document.getElementById("questionCounter").textContent =
+                `Question ${qIdx + 1} of ${total}`;
+            document.getElementById("questionText").textContent =
+                assessment.questions[qIdx];
+            document.getElementById("progressBar").style.width =
+                `${(qIdx / total) * 100}%`;
 
             const answerList = document.getElementById("answerList");
             answerList.innerHTML = "";
+            
+            const savedAnswer = hmwState.answers[qIdx];
 
             assessment.answers.forEach((answer, aIdx) => {
                 const button = document.createElement("button");
                 button.type = "button";
-                
-                // Check if this answer was selected for this specific question
-                const isSelected = (hmwState.answers[qIdx] === aIdx);
-                
-                if (isSelected) {
-                    button.className = "answer-button selected";
+                button.className = "answer-button";
+
+                if (savedAnswer === aIdx) {
+                    button.classList.add("selected");
+                    button.setAttribute("aria-pressed", "true");
                 } else {
-                    button.className = "answer-button";
+                    button.setAttribute("aria-pressed", "false");
                 }
-                
-                button.innerHTML = `<span class="answer-label"><span class="answer-dot"></span><span>${answer}</span></span>`;
-                
-                // Bulletproof click handler
-                button.addEventListener("click", (event) => {
+
+                button.innerHTML = `
+                    <span class="answer-label">
+                        <span class="answer-dot"></span>
+                        <span>${answer}</span>
+                    </span>
+                `;
+
+                button.addEventListener("click", function(event) {
+                    event.preventDefault();
                     event.stopPropagation();
-                    
-                    // Store answer immediately and synchronously
-                    hmwState.answers[hmwState.currentQuestion] = aIdx;
-                    
-                    // Disable all answer buttons to prevent double-clicks
-                    document.querySelectorAll(".answer-button").forEach(btn => {
-                        btn.style.pointerEvents = "none";
-                        btn.style.opacity = "0.6";
+
+                    if (button.dataset.processing === "true") return;
+                    button.dataset.processing = "true";
+
+                    hmwState.answers[qIdx] = aIdx;
+
+                    const allButtons = answerList.querySelectorAll(".answer-button");
+                    allButtons.forEach(btn => {
+                        btn.classList.remove("selected");
+                        btn.setAttribute("aria-pressed", "false");
                     });
-                    
-                    // Then proceed with transition
+
+                    button.classList.add("selected");
+                    button.setAttribute("aria-pressed", "true");
+                    button.blur();
+
+                    window.scrollTo({
+                        top: 0,
+                        left: 0,
+                        behavior: "auto"
+                    });
+
                     setTimeout(() => {
-                        const assessment = HMW_ASSESSMENTS[hmwState.assessment];
+                        window.scrollTo({
+                            top: 0,
+                            left: 0,
+                            behavior: "auto"
+                        });
+
                         if (hmwState.currentQuestion < assessment.questions.length - 1) {
                             hmwState.currentQuestion++;
                             hmwRenderQuestion();
+                            window.scrollTo({
+                                top: 0,
+                                left: 0,
+                                behavior: "auto"
+                            });
                         } else {
                             hmwCompleteAssessment();
                         }
-                    }, 160);
+                    }, 220);
                 });
-                
+
                 answerList.appendChild(button);
             });
 
-            document.getElementById("backButtonText").textContent = qIdx === 0 ? "Back" : "Previous question";
-            
-            // Scroll to top after DOM fully updates
-            window.scrollTo({ top: 0, behavior: "smooth" });
+            document.getElementById("backButtonText").textContent =
+                qIdx === 0 ? "Back" : "Previous question";
+
+            requestAnimationFrame(() => {
+                window.scrollTo({
+                    top: 0,
+                    left: 0,
+                    behavior: "auto"
+                });
+            });
         }
 
         function hmwGoBack() {
             if (hmwState.currentQuestion > 0) {
                 hmwState.currentQuestion--;
                 hmwRenderQuestion();
+                requestAnimationFrame(() => {
+                    window.scrollTo({
+                        top: 0,
+                        left: 0,
+                        behavior: "auto"
+                    });
+                });
             } else {
                 hmwStartOver();
             }
